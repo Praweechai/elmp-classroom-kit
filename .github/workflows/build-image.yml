@@ -100,7 +100,7 @@ jobs:
               test -s /openedx/dist/$app/index.html && echo "ok  $app"
             done
             ls /openedx/dist'
-          docker image inspect "$image" --format 'size_mb={{ div .Size 1048576 }}' | tee -a build-stats.txt
+          echo "size_mb=$(( $(docker image inspect "$image" --format '{{ .Size }}') / 1048576 ))" | tee -a build-stats.txt
 
       - name: Push to GHCR
         if: ${{ inputs.push }}
