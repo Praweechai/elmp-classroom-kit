@@ -120,9 +120,8 @@ const HoursView = ({
       })]
     });
   }
-  return /*#__PURE__*/(0, _jsxRuntime.jsxs)("main", {
+  return /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
     className: "cls-page cls-root",
-    id: "main-content",
     children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("header", {
       className: "cls-page-head cls-page-head--row",
       children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("h1", {

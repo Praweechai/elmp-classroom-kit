@@ -68,7 +68,7 @@ const HoursView = ({
   }
 
   return (
-    <main className="cls-page cls-root" id="main-content">
+    <div className="cls-page cls-root">
       <header className="cls-page-head cls-page-head--row">
         <h1>{intl.formatMessage(messages.hoursPageTitle)}</h1>
         {years.length > 1 && (
@@ -91,7 +91,7 @@ const HoursView = ({
         <Notice onRetry={onRetry}>{intl.formatMessage(messages.unavailable)}</Notice>
       )}
       <div className="cls-stack cls-stack--lg">{body}</div>
-    </main>
+    </div>
   );
 };
 

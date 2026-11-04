@@ -27,9 +27,8 @@ const CertificatesView = ({
   const [kind, setKind] = (0, _react.useState)(null);
   const shown = kind ? items.filter(c => c.kind === kind) : items;
   const code = status === 'error' ? error?.code || 'unavailable' : null;
-  return /*#__PURE__*/(0, _jsxRuntime.jsxs)("main", {
+  return /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
     className: "cls-page cls-root",
-    id: "main-content",
     children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("header", {
       className: "cls-page-head",
       children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("h1", {

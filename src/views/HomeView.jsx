@@ -64,6 +64,7 @@ const HomeSkeleton = () => (
 );
 
 // S-70 Classroom home (doc 04 §6.1, F-90…F-92). Data: Open edX courses (view models) + Portal CA-03.
+// Renders inside the app's own <main> landmark.
 const HomeView = ({
   firstName, courses = [], coursesLoading = false, training, trainingStatus = 'loading', trainingError,
   latestCertificate, onDownloadCertificate, links = {}, highlightId, onRetry, now = new Date(),
@@ -76,7 +77,7 @@ const HomeView = ({
   const assignments = useMemo(() => portal?.assignments || [], [portal]);
   const required = useMemo(() => requiredIndex(assignments, locale), [assignments, locale]);
 
-  if (coursesLoading && trainingStatus === 'loading') { return <main className="cls-page cls-root"><HomeSkeleton /></main>; }
+  if (coursesLoading && trainingStatus === 'loading') { return <div className="cls-page cls-root"><HomeSkeleton /></div>; }
 
   const continueKey = portal?.continue?.course_key;
   const continueCourse = courses.find((c) => c.key === continueKey && c.state !== 'passed')
@@ -91,7 +92,7 @@ const HomeView = ({
   const nothingAtAll = !coursesLoading && !courses.length && !assignments.length;
 
   return (
-    <main className="cls-page cls-root" id="main-content">
+    <div className="cls-page cls-root">
       <div className="cls-home-grid">
         <div className="cls-main-col">
           <GreetingBand firstName={firstName} summary={summary} now={now} />
@@ -200,7 +201,7 @@ const HomeView = ({
           </aside>
         )}
       </div>
-    </main>
+    </div>
   );
 };
 

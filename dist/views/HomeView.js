@@ -83,6 +83,7 @@ const HomeSkeleton = () => /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
 });
 
 // S-70 Classroom home (doc 04 §6.1, F-90…F-92). Data: Open edX courses (view models) + Portal CA-03.
+// Renders inside the app's own <main> landmark.
 const HomeView = ({
   firstName,
   courses = [],
@@ -107,7 +108,7 @@ const HomeView = ({
   const assignments = (0, _react.useMemo)(() => portal?.assignments || [], [portal]);
   const required = (0, _react.useMemo)(() => requiredIndex(assignments, locale), [assignments, locale]);
   if (coursesLoading && trainingStatus === 'loading') {
-    return /*#__PURE__*/(0, _jsxRuntime.jsx)("main", {
+    return /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
       className: "cls-page cls-root",
       children: /*#__PURE__*/(0, _jsxRuntime.jsx)(HomeSkeleton, {})
     });
@@ -124,9 +125,8 @@ const HomeView = ({
   }).format(now));
   const summary = portal?.summary;
   const nothingAtAll = !coursesLoading && !courses.length && !assignments.length;
-  return /*#__PURE__*/(0, _jsxRuntime.jsx)("main", {
+  return /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
     className: "cls-page cls-root",
-    id: "main-content",
     children: /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
       className: "cls-home-grid",
       children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {

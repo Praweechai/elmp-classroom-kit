@@ -18,7 +18,7 @@ const CertificatesView = ({
   const code = status === 'error' ? (error?.code || 'unavailable') : null;
 
   return (
-    <main className="cls-page cls-root" id="main-content">
+    <div className="cls-page cls-root">
       <header className="cls-page-head">
         <h1>{intl.formatMessage(messages.certificatesTitle)}</h1>
         <p>{intl.formatMessage(messages.certificatesIntro)}</p>
@@ -63,7 +63,7 @@ const CertificatesView = ({
           )}
         </>
       )}
-    </main>
+    </div>
   );
 };
 
