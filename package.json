@@ -31,16 +31,22 @@
     "@formatjs/icu-messageformat-parser": "2.11.4",
     "@openedx/frontend-build": "^14.6.6",
     "@openedx/paragon": "23.19.2",
+    "@playwright/test": "^1.64.1",
+    "@storybook/addon-webpack5-compiler-babel": "^3.0.6",
+    "@storybook/react": "^8.6.19",
+    "@storybook/react-webpack5": "^8.6.19",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "http-server": "^14.1.1",
     "jest-axe": "^9.0.0",
     "prop-types": "^15.8.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-intl": "6.8.9"
+    "react-intl": "6.8.9",
+    "storybook": "^8.6.19"
   },
   "browserslist": [
     "extends @edx/browserslist-config"

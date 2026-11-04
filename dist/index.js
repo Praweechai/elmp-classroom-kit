@@ -75,6 +75,12 @@ Object.defineProperty(exports, "EmptyState", {
     return _Feedback.EmptyState;
   }
 });
+Object.defineProperty(exports, "GreetingBand", {
+  enumerable: true,
+  get: function () {
+    return _GreetingBand.default;
+  }
+});
 Object.defineProperty(exports, "HoursCard", {
   enumerable: true,
   get: function () {
@@ -282,6 +288,7 @@ var _RequiredGroup = _interopRequireDefault(require("./components/RequiredGroup"
 var _CertificateCard = _interopRequireDefault(require("./components/CertificateCard"));
 var _HoursCard = _interopRequireDefault(require("./components/HoursCard"));
 var _KeyFacts = _interopRequireDefault(require("./components/KeyFacts"));
+var _GreetingBand = _interopRequireDefault(require("./components/GreetingBand"));
 var _Feedback = require("./components/Feedback");
 var _Header = require("./components/Header");
 var _PortalClient = require("./portal/PortalClient");

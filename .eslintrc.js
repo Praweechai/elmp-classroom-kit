@@ -9,5 +9,9 @@ module.exports = createConfig('eslint', {
       files: ['src/**/*.test.js', 'src/**/*.test.jsx', 'src/testUtils.jsx', 'src/**/*.stories.jsx', 'src/__fixtures__/**', 'scripts/**'],
       rules: { 'import/no-extraneous-dependencies': ['error', { devDependencies: true }] },
     },
+    {
+      files: ['src/**/*.stories.jsx', '.storybook/**'],
+      rules: { 'max-len': 'off', 'react/prop-types': 'off', 'import/no-extraneous-dependencies': 'off' },
+    },
   ],
 });

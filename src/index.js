@@ -17,6 +17,7 @@ export { default as RequiredGroup } from './components/RequiredGroup';
 export { default as CertificateCard } from './components/CertificateCard';
 export { default as HoursCard } from './components/HoursCard';
 export { default as KeyFacts } from './components/KeyFacts';
+export { default as GreetingBand } from './components/GreetingBand';
 export {
   EmptyState, Notice, Skeleton, ToastProvider, useToast,
 } from './components/Feedback';

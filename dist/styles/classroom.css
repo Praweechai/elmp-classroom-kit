@@ -254,3 +254,33 @@ a.cls-row:hover { background: var(--elmp-gray-25); color: var(--cls-text); text-
   .cls-card:hover { transform: none; }
   .cls-group.is-highlighted { animation: none; outline: 2px solid var(--cls-action); outline-offset: 2px; }
 }
+
+/* ---------- Page layout + greeting (doc 04 §3, §5.3) ---------- */
+.cls-page { max-width: var(--cls-size-home-max); margin: 0 auto; padding: 20px 16px calc(var(--cls-size-bottom-bar) + 32px); }
+.cls-home-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; align-items: start; }
+.cls-main-col, .cls-side-col { display: flex; flex-direction: column; gap: 28px; min-width: 0; }
+.cls-side-col { gap: 16px; }
+.cls-stack { display: flex; flex-direction: column; gap: 12px; }
+.cls-cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.cls-section-title { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.cls-section-title h2 { font-size: 20px; font-weight: 700; letter-spacing: -.01em; line-height: 1.25; }
+.cls-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.cls-chip { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: var(--cls-radius-pill); border: 1px solid var(--cls-border);
+  background: #fff; font: inherit; font-size: 14px; font-weight: 500; color: var(--cls-text-2); cursor: pointer; }
+.cls-chip[aria-pressed="true"] { background: var(--cls-action); border-color: var(--cls-action); color: #fff; }
+.cls-greet h1 { font-size: 24px; font-weight: 750; letter-spacing: -.02em; line-height: 1.2; }
+.cls-greet h1:lang(th) { line-height: 1.4; letter-spacing: 0; }
+.cls-greet p { font-size: 15px; color: var(--cls-text-2); margin-top: 4px; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.cls-greet__late { color: var(--cls-late-text); font-weight: 600; }
+@media (min-width: 768px) {
+  .cls-page { padding: 32px 24px 48px; }
+  .cls-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cls-side-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cls-section-title h2 { font-size: 22px; }
+  .cls-greet h1 { font-size: 30px; }
+}
+@media (min-width: 1024px) {
+  .cls-home-grid { grid-template-columns: minmax(0, 1fr) 320px; }
+  .cls-side-col { display: flex; }
+}
+@media (min-width: 1280px) { .cls-page { padding: 32px 32px 48px; } .cls-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

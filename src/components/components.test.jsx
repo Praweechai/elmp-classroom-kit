@@ -7,6 +7,7 @@ import * as fx from '../__fixtures__/portal';
 import { BANNED_WORDS, renderKit, visibleWords } from '../testUtils';
 import CertificateCard from './CertificateCard';
 import ContinueCard from './ContinueCard';
+import GreetingBand from './GreetingBand';
 import CourseCard from './CourseCard';
 import {
   EmptyState, Notice, Skeleton, ToastProvider, useToast,
@@ -289,5 +290,40 @@ describe('accessibility (NFR-C4: axe, 0 violations)', () => {
       { locale },
     );
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe('GreetingBand (doc 04 §5.3)', () => {
+  const summary = {
+    overdue: 1, due_soon: 1, due_this_month: 2, ce_hours: 24, ce_target_hours: 40,
+  };
+
+  it('greets by Bangkok time and highlights overdue', () => {
+    renderKit(<GreetingBand firstName="Nok" summary={summary} now={new Date('2026-11-04T02:00:00Z')} />);
+    expect(screen.getByRole('heading', { level: 1, name: 'Good morning, Nok' })).toBeInTheDocument();
+    expect(screen.getByText('1 overdue')).toHaveClass('cls-greet__late');
+    expect(screen.getByText('2 due this month')).toBeInTheDocument();
+    expect(screen.getByText('24 / 40 CE hours')).toBeInTheDocument();
+  });
+
+  it('says "Nothing due" when everything is done, in Thai too', () => {
+    renderKit(
+      <GreetingBand
+        firstName="นก"
+        summary={{
+          ...summary, overdue: 0, due_soon: 0, due_this_month: 0,
+        }}
+        now={new Date('2026-11-04T12:00:00Z')}
+      />,
+      { locale: 'th' },
+    );
+    expect(screen.getByRole('heading', { name: 'สวัสดีตอนเย็น คุณนก' })).toBeInTheDocument();
+    expect(screen.getByText('ไม่มีงานค้าง เยี่ยมมาก')).toBeInTheDocument();
+  });
+
+  it('shows only the greeting when Portal data is missing (F-90 BR-3)', () => {
+    const { container } = renderKit(<GreetingBand firstName="Nok" now={new Date('2026-11-04T08:00:00Z')} />);
+    expect(screen.getByRole('heading', { name: 'Good afternoon, Nok' })).toBeInTheDocument();
+    expect(container.querySelector('.cls-greet p')).toBeNull();
   });
 });
