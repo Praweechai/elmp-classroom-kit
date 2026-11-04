@@ -1,3 +1,4 @@
+import storyLogo from './logo';
 import {
   BottomTabs, ClassroomHeader, EmptyState, LanguageToggle, Notice, Skeleton, ToastProvider, useToast,
 } from '../index';
@@ -6,17 +7,18 @@ const links = {
   home: '#home', certificates: '#certificates', hours: '#hours', account: '#account', signOut: '#sign-out',
 };
 const nok = { name: 'Nok Srisuk', position: 'Registered Nurse', department: 'ICU' };
+const logoUrl = storyLogo;
 
 export default { title: 'Shell' };
 
 export const Header = {
-  render: (_, { globals }) => <ClassroomHeader current="home" links={links} user={nok} unread={3} locale={globals.locale} />,
+  render: (_, { globals }) => <ClassroomHeader current="home" links={links} user={nok} unread={3} locale={globals.locale} logoUrl={logoUrl} />,
   parameters: { layout: 'fullscreen' },
 };
 
 export const HeaderForHrUser = {
   render: (_, { globals }) => (
-    <ClassroomHeader current="certificates" links={{ ...links, portal: '#portal' }} user={nok} unread={12} locale={globals.locale} />
+    <ClassroomHeader current="certificates" links={{ ...links, portal: '#portal' }} user={nok} unread={12} locale={globals.locale} logoUrl={logoUrl} />
   ),
   parameters: { layout: 'fullscreen' },
 };

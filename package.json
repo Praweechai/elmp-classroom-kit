@@ -1,6 +1,6 @@
 {
   "name": "@elmp/classroom-kit",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "ELMP Classroom kit: tokens, components, Portal client and EN/TH messages for the Mission Hospital Learning Classroom (Open edX Verawood MFE forks).",
   "license": "AGPL-3.0",
   "repository": "github:Praweechai/elmp-classroom-kit",
@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "tokens": "node scripts/build-tokens.js",
-    "build": "rm -rf dist && fedx-scripts babel src --out-dir dist --copy-files --no-copy-ignored --ignore \"**/*.test.jsx,**/*.test.js,**/__fixtures__/**,**/*.stories.jsx,src/testUtils.jsx,src/setupTest.js\"",
+    "build": "rm -rf dist && fedx-scripts babel src --out-dir dist --copy-files --no-copy-ignored --ignore \"**/*.test.jsx,**/*.test.js,**/__fixtures__/**,**/*.stories.jsx,src/testUtils.jsx,src/setupTest.js,src/stories/**\"",
     "lint": "fedx-scripts eslint --ext .js,.jsx src/",
     "test": "TZ=Asia/Bangkok fedx-scripts jest --coverage --passWithNoTests"
   },

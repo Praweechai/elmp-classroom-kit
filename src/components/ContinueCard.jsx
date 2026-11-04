@@ -25,7 +25,7 @@ const ContinueCard = ({
           <KitIcon src={PlayCircle} size={16} />
           {roadmap ? intl.formatMessage(messages.continueLabel, { roadmap }) : intl.formatMessage(messages.continue)}
         </p>
-        <h3 className="cls-continue__title">{title}</h3>
+        <h2 className="cls-continue__title">{title}</h2>
         {unitLine && <p className="cls-continue__unit">{unitLine}</p>}
         <ProgressBar value={progress} label={title} />
       </div>

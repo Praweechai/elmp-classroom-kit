@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 
 import * as fx from '../__fixtures__/portal';
+import storyLogo from './logo';
 import {
   BottomTabs, CertificateCard, ClassroomHeader, ContinueCard, CourseCard, GreetingBand, HoursCard, Notice,
   RequiredGroup, Skeleton, localized, messages, useClassroomIntl,
@@ -22,7 +23,7 @@ const Home = ({ locale, portalDown = false }) => {
   const { summary, assignments } = fx.training.data;
   return (
     <>
-      <ClassroomHeader current="home" links={links} user={{ name: localized(me.name, locale), position: localized(me.position, locale), department: localized(me.department, locale) }} unread={3} locale={locale} />
+      <ClassroomHeader current="home" links={links} user={{ name: localized(me.name, locale), position: localized(me.position, locale), department: localized(me.department, locale) }} unread={3} locale={locale} logoUrl={storyLogo} />
       <main className="cls-page">
         <div className="cls-home-grid">
           <div className="cls-main-col">

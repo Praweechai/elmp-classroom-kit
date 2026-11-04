@@ -92,5 +92,36 @@
   "cls.noAccess": "ไม่พบประวัติการอบรมของคุณ กรุณาติดต่อฝ่ายบุคคล",
   "cls.loading": "กำลังโหลด",
   "cls.dismiss": "ปิด",
-  "cls.close": "ปิด"
+  "cls.close": "ปิด",
+
+  "cls.home.title": "การเรียนของฉัน",
+  "cls.allDone.title": "เรียนครบแล้ว",
+  "cls.nextDue": "ครบกำหนดถัดไป: {title} · {date}",
+  "cls.filter.label": "แสดงหลักสูตร",
+  "cls.filter.all": "ทั้งหมด",
+  "cls.filter.roadmap": "แผนการอบรม",
+  "cls.filter.course": "หลักสูตร",
+  "cls.filter.none": "ไม่มีหลักสูตรในหมวดนี้",
+  "cls.noAccess.title": "ไม่พบประวัติการอบรมของคุณ",
+
+  "cls.certs.title": "ใบประกาศ",
+  "cls.certs.intro": "ดาวน์โหลดหลักฐานการอบรมของคุณ ใบประกาศแผนการอบรมมีรหัสที่ฝ่ายบุคคลตรวจสอบได้",
+  "cls.certs.empty": "เรียนจบหลักสูตรเพื่อรับใบประกาศใบแรกของคุณ",
+  "cls.download.failed": "เริ่มดาวน์โหลดไม่ได้ กรุณาลองอีกครั้ง",
+
+  "cls.hoursPage.title": "ชั่วโมง CE",
+  "cls.hoursPage.year": "ปี",
+  "cls.hoursPage.list": "หลักสูตรที่นับชั่วโมง",
+  "cls.hoursPage.date": "ผ่านเมื่อ",
+  "cls.hoursPage.course": "หลักสูตร",
+  "cls.hoursPage.hours": "ชั่วโมง",
+  "cls.hoursPage.none": "ยังไม่มีหลักสูตรที่ผ่านในปี {year}",
+  "cls.hoursPage.note": "นับเฉพาะหลักสูตรที่ผ่านในปีนี้ สอบถามฝ่ายบุคคลเรื่องการอบรมในสถานที่",
+
+  "cls.messages.title": "ข้อความ",
+  "cls.messages.readAll": "อ่านทั้งหมดแล้ว",
+  "cls.messages.empty": "ไม่มีข้อความใหม่",
+  "cls.messages.more": "แสดงเพิ่มเติม",
+  "cls.messages.unread": "ยังไม่อ่าน",
+  "cls.messages.unavailable": "ยังไม่สามารถแสดงข้อความได้ในขณะนี้"
 }

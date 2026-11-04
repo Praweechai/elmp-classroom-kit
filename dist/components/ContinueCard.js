@@ -47,7 +47,7 @@ const ContinueCard = ({
         }), roadmap ? intl.formatMessage(_i18n.messages.continueLabel, {
           roadmap
         }) : intl.formatMessage(_i18n.messages.continue)]
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)("h3", {
+      }), /*#__PURE__*/(0, _jsxRuntime.jsx)("h2", {
         className: "cls-continue__title",
         children: title
       }), unitLine && /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {

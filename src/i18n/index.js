@@ -46,6 +46,21 @@ export function formatHours(value, locale) {
   return new Intl.NumberFormat(lang === 'th' ? 'th-TH' : 'en-GB', { maximumFractionDigits: 1 }).format(Number(value) || 0);
 }
 
+// "5 min ago" / "5 นาทีที่แล้ว" for messages (doc 04 §5.15).
+export function timeAgo(value, locale, now = Date.now()) {
+  if (!value) { return ''; }
+  const seconds = Math.round((new Date(value).getTime() - now) / 1000);
+  const rtf = new Intl.RelativeTimeFormat(kitLanguage(locale) === 'th' ? 'th-TH' : 'en-GB', { numeric: 'auto', style: 'short' });
+  const steps = [[60, 'second'], [3600, 'minute'], [86400, 'hour'], [604800, 'day']];
+  const abs = Math.abs(seconds);
+  if (abs < 60) { return rtf.format(seconds, 'second'); }
+  for (let i = 1; i < steps.length; i += 1) {
+    if (abs < steps[i][0]) { return rtf.format(Math.round(seconds / steps[i - 1][0]), steps[i][1]); }
+  }
+  if (abs < 2592000) { return rtf.format(Math.round(seconds / 86400), 'day'); }
+  return formatDate(value, locale);
+}
+
 // Greeting by Bangkok time: morning < 12, afternoon < 17, evening (doc 04 §5.3).
 export function greetingKey(now = new Date()) {
   const hour = Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hourCycle: 'h23', timeZone: TIME_ZONE }).format(now));

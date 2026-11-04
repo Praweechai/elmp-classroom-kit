@@ -45,6 +45,12 @@ Object.defineProperty(exports, "CertificateCard", {
     return _CertificateCard.default;
   }
 });
+Object.defineProperty(exports, "CertificatesView", {
+  enumerable: true,
+  get: function () {
+    return _CertificatesView.default;
+  }
+});
 Object.defineProperty(exports, "ClassroomHeader", {
   enumerable: true,
   get: function () {
@@ -81,10 +87,22 @@ Object.defineProperty(exports, "GreetingBand", {
     return _GreetingBand.default;
   }
 });
+Object.defineProperty(exports, "HomeView", {
+  enumerable: true,
+  get: function () {
+    return _HomeView.default;
+  }
+});
 Object.defineProperty(exports, "HoursCard", {
   enumerable: true,
   get: function () {
     return _HoursCard.default;
+  }
+});
+Object.defineProperty(exports, "HoursView", {
+  enumerable: true,
+  get: function () {
+    return _HoursView.default;
   }
 });
 Object.defineProperty(exports, "KeyFacts", {
@@ -111,10 +129,22 @@ Object.defineProperty(exports, "LinkContext", {
     return _LinkContext.LinkContext;
   }
 });
+Object.defineProperty(exports, "NO_ACCESS", {
+  enumerable: true,
+  get: function () {
+    return _HomeView.NO_ACCESS;
+  }
+});
 Object.defineProperty(exports, "Notice", {
   enumerable: true,
   get: function () {
     return _Feedback.Notice;
+  }
+});
+Object.defineProperty(exports, "NotificationPanel", {
+  enumerable: true,
+  get: function () {
+    return _NotificationPanel.default;
   }
 });
 Object.defineProperty(exports, "PortalError", {
@@ -237,6 +267,12 @@ Object.defineProperty(exports, "resetPortalClient", {
     return _PortalClient.resetPortalClient;
   }
 });
+Object.defineProperty(exports, "timeAgo", {
+  enumerable: true,
+  get: function () {
+    return _i18n.timeAgo;
+  }
+});
 Object.defineProperty(exports, "toPortalError", {
   enumerable: true,
   get: function () {
@@ -289,6 +325,10 @@ var _CertificateCard = _interopRequireDefault(require("./components/CertificateC
 var _HoursCard = _interopRequireDefault(require("./components/HoursCard"));
 var _KeyFacts = _interopRequireDefault(require("./components/KeyFacts"));
 var _GreetingBand = _interopRequireDefault(require("./components/GreetingBand"));
+var _NotificationPanel = _interopRequireDefault(require("./components/NotificationPanel"));
+var _HomeView = _interopRequireWildcard(require("./views/HomeView"));
+var _CertificatesView = _interopRequireDefault(require("./views/CertificatesView"));
+var _HoursView = _interopRequireDefault(require("./views/HoursView"));
 var _Feedback = require("./components/Feedback");
 var _Header = require("./components/Header");
 var _PortalClient = require("./portal/PortalClient");

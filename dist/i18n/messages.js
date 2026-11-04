@@ -350,6 +350,114 @@ const messages = (0, _reactIntl.defineMessages)({
   close: {
     id: 'cls.close',
     defaultMessage: 'Close'
+  },
+  homeTitle: {
+    id: 'cls.home.title',
+    defaultMessage: 'My learning'
+  },
+  allDoneTitle: {
+    id: 'cls.allDone.title',
+    defaultMessage: 'All done'
+  },
+  nextDue: {
+    id: 'cls.nextDue',
+    defaultMessage: 'Next due: {title} · {date}'
+  },
+  filterLabel: {
+    id: 'cls.filter.label',
+    defaultMessage: 'Show courses'
+  },
+  filterAll: {
+    id: 'cls.filter.all',
+    defaultMessage: 'All'
+  },
+  filterRoadmap: {
+    id: 'cls.filter.roadmap',
+    defaultMessage: 'Roadmap'
+  },
+  filterCourse: {
+    id: 'cls.filter.course',
+    defaultMessage: 'Course'
+  },
+  noCoursesInFilter: {
+    id: 'cls.filter.none',
+    defaultMessage: 'No courses here.'
+  },
+  noAccessTitle: {
+    id: 'cls.noAccess.title',
+    defaultMessage: 'Your training record is missing'
+  },
+  certificatesTitle: {
+    id: 'cls.certs.title',
+    defaultMessage: 'Certificates'
+  },
+  certificatesIntro: {
+    id: 'cls.certs.intro',
+    defaultMessage: 'Download proof of your training. Roadmap certificates have a code HR can verify.'
+  },
+  certificatesEmpty: {
+    id: 'cls.certs.empty',
+    defaultMessage: 'Finish a course to earn your first certificate.'
+  },
+  downloadFailed: {
+    id: 'cls.download.failed',
+    defaultMessage: 'The download could not start. Please try again.'
+  },
+  hoursPageTitle: {
+    id: 'cls.hoursPage.title',
+    defaultMessage: 'CE hours'
+  },
+  hoursYearGroup: {
+    id: 'cls.hoursPage.year',
+    defaultMessage: 'Year'
+  },
+  hoursListTitle: {
+    id: 'cls.hoursPage.list',
+    defaultMessage: 'Courses that count'
+  },
+  hoursColDate: {
+    id: 'cls.hoursPage.date',
+    defaultMessage: 'Passed on'
+  },
+  hoursColCourse: {
+    id: 'cls.hoursPage.course',
+    defaultMessage: 'Course'
+  },
+  hoursColHours: {
+    id: 'cls.hoursPage.hours',
+    defaultMessage: 'Hours'
+  },
+  hoursNone: {
+    id: 'cls.hoursPage.none',
+    defaultMessage: 'No courses passed in {year} yet.'
+  },
+  hoursFootnote: {
+    id: 'cls.hoursPage.note',
+    defaultMessage: 'Only courses passed in this year count. Ask HR about on-site sessions.'
+  },
+  messagesTitle: {
+    id: 'cls.messages.title',
+    defaultMessage: 'Messages'
+  },
+  markAllRead: {
+    id: 'cls.messages.readAll',
+    defaultMessage: 'Mark all as read'
+  },
+  caughtUp: {
+    id: 'cls.messages.empty',
+    defaultMessage: "You're all caught up."
+  },
+  showMore: {
+    id: 'cls.messages.more',
+    defaultMessage: 'Show more'
+  },
+  unreadLabel: {
+    id: 'cls.messages.unread',
+    defaultMessage: 'Unread'
+  },
+  messagesUnavailable: {
+    id: 'cls.messages.unavailable',
+    defaultMessage: 'Messages are not available right now.'
   }
 });
 var _default = exports.default = messages;

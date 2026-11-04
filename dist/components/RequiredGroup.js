@@ -40,6 +40,7 @@ const CourseRow = ({
         size: 16
       })
     }), /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
+      className: "cls-row__title",
       children: title
     }), course.ce_hours != null && /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
       className: "cls-row__hours cls-num",
@@ -53,7 +54,9 @@ const CourseRow = ({
       src: _icons.ChevronRight,
       size: 20,
       className: "cls-row__chev"
-    }) : /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {})]
+    }) : /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
+      className: "cls-row__chev"
+    })]
   });
   return /*#__PURE__*/(0, _jsxRuntime.jsx)("li", {
     children: ready && href ? /*#__PURE__*/(0, _jsxRuntime.jsx)(Link, {

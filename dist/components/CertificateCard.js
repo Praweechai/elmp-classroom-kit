@@ -15,8 +15,10 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 const CertificateCard = ({
   certificate,
   onDownload,
-  onCopied
+  onCopied,
+  headingLevel = 3
 }) => {
+  const Heading = `h${headingLevel}`;
   const intl = (0, _i18n.useClassroomIntl)();
   const {
     locale
@@ -51,7 +53,7 @@ const CertificateCard = ({
       children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
         className: "cls-cert__type",
         children: intl.formatMessage(roadmap ? _i18n.messages.certificateRoadmap : _i18n.messages.certificateCourse)
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)("h3", {
+      }), /*#__PURE__*/(0, _jsxRuntime.jsx)(Heading, {
         className: "cls-cert__title",
         children: title
       }), /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
@@ -110,6 +112,7 @@ CertificateCard.propTypes = {
     url: _propTypes.default.string
   }).isRequired,
   onDownload: _propTypes.default.func,
-  onCopied: _propTypes.default.func
+  onCopied: _propTypes.default.func,
+  headingLevel: _propTypes.default.oneOf([2, 3])
 };
 var _default = exports.default = CertificateCard;

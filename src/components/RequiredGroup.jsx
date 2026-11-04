@@ -31,7 +31,7 @@ const CourseRow = ({ course, href }) => {
       >
         {state === 'passed' && <KitIcon src={Check} size={16} />}
       </span>
-      <span>{title}</span>
+      <span className="cls-row__title">{title}</span>
       {course.ce_hours != null && (
         <span className="cls-row__hours cls-num">
           {intl.formatMessage(messages.ceHours, { hours: formatHours(course.ce_hours, intl.locale) })}
@@ -40,7 +40,7 @@ const CourseRow = ({ course, href }) => {
       <span className="cls-row__status">
         {ready ? intl.formatMessage(COURSE_STATUS[state]) : intl.formatMessage(messages.preparing)}
       </span>
-      {ready && href ? <KitIcon src={ChevronRight} size={20} className="cls-row__chev" /> : <span />}
+      {ready && href ? <KitIcon src={ChevronRight} size={20} className="cls-row__chev" /> : <span className="cls-row__chev" />}
     </>
   );
   return (

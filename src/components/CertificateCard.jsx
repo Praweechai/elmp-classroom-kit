@@ -8,7 +8,10 @@ import {
 import KitIcon from './KitIcon';
 
 // Roadmap or course certificate (doc 04 §5.9, F-96). Takes a CA-07 item.
-const CertificateCard = ({ certificate, onDownload, onCopied }) => {
+const CertificateCard = ({
+  certificate, onDownload, onCopied, headingLevel = 3,
+}) => {
+  const Heading = `h${headingLevel}`;
   const intl = useClassroomIntl();
   const { locale } = intl;
   const [busy, setBusy] = useState(false);
@@ -30,7 +33,7 @@ const CertificateCard = ({ certificate, onDownload, onCopied }) => {
       <span className="cls-cert__seal" aria-hidden="true"><KitIcon src={WorkspacePremium} size={22} /></span>
       <div>
         <p className="cls-cert__type">{intl.formatMessage(roadmap ? messages.certificateRoadmap : messages.certificateCourse)}</p>
-        <h3 className="cls-cert__title">{title}</h3>
+        <Heading className="cls-cert__title">{title}</Heading>
         <p className="cls-cert__date">
           {revoked
             ? intl.formatMessage(messages.certificateRevoked, { date: formatDate(certificate.revoked_at, locale) })
@@ -87,6 +90,7 @@ CertificateCard.propTypes = {
   }).isRequired,
   onDownload: PropTypes.func,
   onCopied: PropTypes.func,
+  headingLevel: PropTypes.oneOf([2, 3]),
 };
 
 export default CertificateCard;

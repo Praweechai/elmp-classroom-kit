@@ -3,7 +3,8 @@ import './styles/classroom.css';
 
 export { default as tokens } from './tokens/tokens';
 export {
-  TIME_ZONE, formatDate, formatHours, getClassroomIntl, greetingKey, kitLanguage, localized, messages, useClassroomIntl,
+  TIME_ZONE, formatDate, formatHours, getClassroomIntl, greetingKey, kitLanguage, localized, messages, timeAgo,
+  useClassroomIntl,
 } from './i18n';
 
 export { default as KitIcon } from './components/KitIcon';
@@ -18,6 +19,10 @@ export { default as CertificateCard } from './components/CertificateCard';
 export { default as HoursCard } from './components/HoursCard';
 export { default as KeyFacts } from './components/KeyFacts';
 export { default as GreetingBand } from './components/GreetingBand';
+export { default as NotificationPanel } from './components/NotificationPanel';
+export { default as HomeView, NO_ACCESS } from './views/HomeView';
+export { default as CertificatesView } from './views/CertificatesView';
+export { default as HoursView } from './views/HoursView';
 export {
   EmptyState, Notice, Skeleton, ToastProvider, useToast,
 } from './components/Feedback';
