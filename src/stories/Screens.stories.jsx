@@ -7,7 +7,7 @@ import * as fx from '../__fixtures__/portal';
 import storyLogo from './logo';
 
 import {
-  BottomTabs, CertificateCard, ClassroomHeader, ContinueCard, CourseCard, CourseHero, CourseOutline, GreetingBand,
+  BottomTabs, CertificateCard, CertificatePreview, ClassroomHeader, ContinueCard, CourseCard, CourseHero, CourseOutline, GreetingBand,
   HoursCard, Notice, RequiredGroup, Skeleton, localized, messages, useClassroomIntl,
 } from '../index';
 
@@ -94,6 +94,7 @@ const CourseHome = ({ locale }) => {
           progress={{
             percent: 62, done: 5, total: 8, href: '#', action: 'resume',
           }}
+          aside={<CertificatePreview courseTitle="Infection Control 2026" learnerName={localized(me.name, locale)} />}
         />
         <CourseOutline title={intl.formatMessage(messages.outlineTitle)} sections={fx.outline} />
       </main>

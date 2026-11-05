@@ -129,5 +129,9 @@
   "cls.outline.close": "ปิดเนื้อหาหลักสูตร",
   "cls.hero.requiredFor": "หลักสูตรบังคับของ {roadmap}",
   "cls.hero.progress": "ความคืบหน้าของคุณ",
-  "cls.hero.unitsDone": "เรียนแล้ว {done} จาก {total}"
+  "cls.hero.unitsDone": "เรียนแล้ว {done} จาก {total}",
+  "cls.certPreview.title": "ใบประกาศของคุณ",
+  "cls.certPreview.kind": "ใบประกาศนียบัตรการผ่านหลักสูตร",
+  "cls.certPreview.badge": "ตัวอย่าง",
+  "cls.certPreview.note": "เรียนผ่านหลักสูตรเพื่อรับใบประกาศที่มีชื่อของคุณ"
 }

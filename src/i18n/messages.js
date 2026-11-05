@@ -162,6 +162,10 @@ const messages = defineMessages({
   requiredFor: { id: 'cls.hero.requiredFor', defaultMessage: 'Required for {roadmap}' },
   yourProgress: { id: 'cls.hero.progress', defaultMessage: 'Your progress' },
   unitsDone: { id: 'cls.hero.unitsDone', defaultMessage: '{done} of {total} done' },
+  certPreviewTitle: { id: 'cls.certPreview.title', defaultMessage: 'Your certificate' },
+  certPreviewKind: { id: 'cls.certPreview.kind', defaultMessage: 'Certificate of completion' },
+  certPreviewBadge: { id: 'cls.certPreview.badge', defaultMessage: 'Preview' },
+  certPreviewNote: { id: 'cls.certPreview.note', defaultMessage: 'Pass the course to get it with your name.' },
 });
 
 export default messages;

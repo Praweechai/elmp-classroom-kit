@@ -530,6 +530,22 @@ const messages = (0, _reactIntl.defineMessages)({
   unitsDone: {
     id: 'cls.hero.unitsDone',
     defaultMessage: '{done} of {total} done'
+  },
+  certPreviewTitle: {
+    id: 'cls.certPreview.title',
+    defaultMessage: 'Your certificate'
+  },
+  certPreviewKind: {
+    id: 'cls.certPreview.kind',
+    defaultMessage: 'Certificate of completion'
+  },
+  certPreviewBadge: {
+    id: 'cls.certPreview.badge',
+    defaultMessage: 'Preview'
+  },
+  certPreviewNote: {
+    id: 'cls.certPreview.note',
+    defaultMessage: 'Pass the course to get it with your name.'
   }
 });
 var _default = exports.default = messages;

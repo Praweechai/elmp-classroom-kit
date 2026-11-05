@@ -45,13 +45,13 @@ RequiredBanner.propTypes = {
 // S-75 top of the course home (doc 04 §6.5): back link, code chip, title, description, key facts,
 // required banner(s) and the progress block with the main action.
 const CourseHero = ({
-  title, code, description, backHref, facts = [], requiredBy = [], progress,
+  title, code, description, backHref, facts = [], requiredBy = [], progress, aside,
 }) => {
   const intl = useClassroomIntl();
   const Link = useLinkComponent();
   const open = requiredBy.filter((item) => item.status !== 'completed');
   return (
-    <section className="cls-hero" aria-labelledby="cls-hero-title">
+    <section className={`cls-hero${aside ? ' cls-hero--aside' : ''}`} aria-labelledby="cls-hero-title">
       {backHref && (
         <Link className="cls-hero__back" href={backHref}>
           <KitIcon src={ArrowBack} size={18} />
@@ -79,6 +79,15 @@ const CourseHero = ({
           )}
         </div>
       )}
+      {aside && <div className="cls-hero__aside">{aside}</div>}
+      {progress?.href && (
+        // Phones: the main action stays reachable at the bottom of the screen (doc 04 §6.5).
+        <div className="cls-hero__sticky">
+          <Link className="cls-btn cls-btn--primary cls-btn--lg" href={progress.href} tabIndex={-1} aria-hidden="true">
+            {intl.formatMessage(ACTION[progress.action] || messages.resume)}
+          </Link>
+        </div>
+      )}
     </section>
   );
 };
@@ -97,6 +106,7 @@ CourseHero.propTypes = {
     href: PropTypes.string,
     action: PropTypes.oneOf(['start', 'resume', 'review']),
   }),
+  aside: PropTypes.node,
 };
 
 export default CourseHero;

@@ -73,13 +73,14 @@ const CourseHero = ({
   backHref,
   facts = [],
   requiredBy = [],
-  progress
+  progress,
+  aside
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
   const Link = (0, _LinkContext.useLinkComponent)();
   const open = requiredBy.filter(item => item.status !== 'completed');
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("section", {
-    className: "cls-hero",
+    className: `cls-hero${aside ? ' cls-hero--aside' : ''}`,
     "aria-labelledby": "cls-hero-title",
     children: [backHref && /*#__PURE__*/(0, _jsxRuntime.jsxs)(Link, {
       className: "cls-hero__back",
@@ -123,6 +124,21 @@ const CourseHero = ({
         href: progress.href,
         children: intl.formatMessage(ACTION[progress.action] || _i18n.messages.resume)
       })]
+    }), aside && /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
+      className: "cls-hero__aside",
+      children: aside
+    }), progress?.href &&
+    /*#__PURE__*/
+    // Phones: the main action stays reachable at the bottom of the screen (doc 04 §6.5).
+    (0, _jsxRuntime.jsx)("div", {
+      className: "cls-hero__sticky",
+      children: /*#__PURE__*/(0, _jsxRuntime.jsx)(Link, {
+        className: "cls-btn cls-btn--primary cls-btn--lg",
+        href: progress.href,
+        tabIndex: -1,
+        "aria-hidden": "true",
+        children: intl.formatMessage(ACTION[progress.action] || _i18n.messages.resume)
+      })
     })]
   });
 };
@@ -139,6 +155,7 @@ CourseHero.propTypes = {
     total: _propTypes.default.number,
     href: _propTypes.default.string,
     action: _propTypes.default.oneOf(['start', 'resume', 'review'])
-  })
+  }),
+  aside: _propTypes.default.node
 };
 var _default = exports.default = CourseHero;

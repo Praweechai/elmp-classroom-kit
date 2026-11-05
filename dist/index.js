@@ -45,6 +45,12 @@ Object.defineProperty(exports, "CertificateCard", {
     return _CertificateCard.default;
   }
 });
+Object.defineProperty(exports, "CertificatePreview", {
+  enumerable: true,
+  get: function () {
+    return _CertificatePreview.default;
+  }
+});
 Object.defineProperty(exports, "CertificatesView", {
   enumerable: true,
   get: function () {
@@ -355,6 +361,7 @@ var _CertificateCard = _interopRequireDefault(require("./components/CertificateC
 var _HoursCard = _interopRequireDefault(require("./components/HoursCard"));
 var _KeyFacts = _interopRequireDefault(require("./components/KeyFacts"));
 var _CourseHero = _interopRequireDefault(require("./components/CourseHero"));
+var _CertificatePreview = _interopRequireDefault(require("./components/CertificatePreview"));
 var _GreetingBand = _interopRequireDefault(require("./components/GreetingBand"));
 var _Player = require("./components/Player");
 var _CourseOutline = _interopRequireWildcard(require("./components/CourseOutline"));

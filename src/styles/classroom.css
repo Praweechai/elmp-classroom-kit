@@ -439,3 +439,30 @@ a.cls-outline__row:hover { background: var(--cls-sunken); color: var(--cls-text)
   .cls-hero__progress { flex-direction: row; align-items: center; }
   .cls-hero__progress .cls-btn { width: auto; min-width: 160px; }
 }
+.cls-hero__sticky { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: var(--cls-surface); border-top: 1px solid var(--cls-border); box-shadow: 0 -4px 12px rgba(20, 25, 22, .06); }
+.cls-hero__sticky .cls-btn { width: 100%; height: 44px; }
+body:has(.cls-hero__sticky) { padding-bottom: 72px; }
+@media (min-width: 768px) {
+  .cls-hero__sticky { display: none; }
+  body:has(.cls-hero__sticky) { padding-bottom: 0; }
+}
+@media (min-width: 1024px) {
+  .cls-hero--aside { grid-template-columns: minmax(0, 1fr) 280px; column-gap: 32px; }
+  .cls-hero--aside > * { grid-column: 1; }
+  .cls-hero--aside > .cls-hero__aside { grid-column: 2; grid-row: 1 / span 8; align-self: start; }
+}
+
+/* CertificatePreview (S-75) */
+.cls-certprev { display: grid; gap: 12px; justify-items: start; }
+.cls-certprev__title { margin: 0; font-size: 16px; font-weight: 700; }
+.cls-certprev__paper { position: relative; overflow: hidden; width: 100%; display: grid; justify-items: center; gap: 4px; padding: 20px 16px 18px;
+  text-align: center; background: var(--cls-gold-tint); border: 1px solid var(--cls-gold-border); border-radius: 12px; outline: 1px solid var(--cls-gold-border); outline-offset: -6px; }
+.cls-certprev__ribbon { position: absolute; top: 14px; right: -34px; width: 120px; transform: rotate(35deg); padding: 2px 0;
+  background: var(--cls-gold); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.cls-certprev__seal { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--cls-gold); color: #fff; margin-bottom: 4px; }
+.cls-certprev__kind { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--cls-gold-text); }
+.cls-certprev__kind:lang(th) { letter-spacing: 0; text-transform: none; font-size: 12px; }
+.cls-certprev__name { font-size: 18px; font-weight: 700; color: var(--cls-text); line-height: 1.3; }
+.cls-certprev__course { font-size: 13px; color: var(--cls-text-2); line-height: 1.4; }
+.cls-certprev__note { margin: 0; font-size: 13px; color: var(--cls-text-2); }
