@@ -104,6 +104,7 @@ jobs:
               assert name in blocks, name + " missing (should be built in)"
           print("entry points ok")
           PY
+            test -s /openedx/staticfiles/xblock/resources/h5pxblock/public/js/h5pcustom.js && echo "h5p static ok"
             ls lms/envs/tutor/
             for mod in lms.envs.tutor.assets lms.envs.tutor.production; do
               DJANGO_SETTINGS_MODULE=$mod python -c "

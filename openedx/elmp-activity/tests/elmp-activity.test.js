@@ -63,12 +63,16 @@ test('ignores pause requests from another origin or of another type', () => {
   expect(pause).not.toHaveBeenCalled();
 });
 
-test('forwards H5P xAPI verbs', async () => {
+test('forwards H5P xAPI verbs, hooking each dispatcher once', async () => {
   const log = collect();
   const win = lessonFrame();
   const handlers = [];
   win.H5P = { externalDispatcher: { on: (name, fn) => handlers.push(fn) } };
   await new Promise((resolve) => { setTimeout(resolve, 2100); }); // next scan
+  win.document.body.innerHTML += '<iframe></iframe>';
+  win.document.querySelector('iframe').contentWindow.H5P = win.H5P; // same dispatcher seen twice
+  await new Promise((resolve) => { setTimeout(resolve, 2100); });
+  expect(handlers).toHaveLength(1);
   handlers.forEach((fn) => fn({ getVerb: () => 'completed' }));
   await tick();
   log.stop();

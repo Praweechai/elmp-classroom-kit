@@ -73,9 +73,11 @@
 
   function hookH5P(win) {
     try {
-      if (!win || win.__elmpH5P || !win.H5P || !win.H5P.externalDispatcher) { return; }
-      win.__elmpH5P = true;
-      win.H5P.externalDispatcher.on('xAPI', function (event) {
+      var dispatcher = win && win.H5P && win.H5P.externalDispatcher;
+      // the H5P frame and the page can share one dispatcher: hook each dispatcher once
+      if (!dispatcher || dispatcher.__elmpHooked) { return; }
+      dispatcher.__elmpHooked = true;
+      dispatcher.on('xAPI', function (event) {
         var verb = '';
         try { verb = event.getVerb ? event.getVerb() : ''; } catch (e) { verb = ''; }
         send('h5p', { verb: verb });
