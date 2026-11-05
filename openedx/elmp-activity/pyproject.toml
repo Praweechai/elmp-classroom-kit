@@ -1,0 +1,23 @@
+# ELMP activity bridge — small Open edX (LMS) plugin app (Plan 4 · F-117 · F-121 · doc 02 §7).
+# Installed into the Open edX image by .github/workflows/build-openedx.yml. No core code changes (C-1):
+# it registers through the standard "lms.djangoapp" plugin entry point.
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "elmp-activity"
+version = "0.1.0"
+description = "Adds the ELMP activity script to Open edX lesson pages (inactivity timer, pause)."
+license = { text = "AGPL-3.0" }
+requires-python = ">=3.11"
+dependencies = []  # Django comes with Open edX
+
+[project.entry-points."lms.djangoapp"]
+elmp_activity = "elmp_activity.apps:ElmpActivityConfig"
+
+[tool.setuptools]
+packages = ["elmp_activity", "elmp_activity.settings"]
+
+[tool.setuptools.package-data]
+elmp_activity = ["static/*.js"]

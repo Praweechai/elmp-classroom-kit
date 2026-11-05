@@ -1,0 +1,146 @@
+# Builds the ELMP Open edX image off the laptop (Plan 4 · F-121 · D-69 · C-2).
+# Output: ghcr.io/<owner>/elmp-openedx:<image_tag>  (the laptop only pulls it: scripts/openedx-pull.sh).
+name: build-openedx
+
+on:
+  push:
+    branches: [main]
+    paths: ["openedx/**", ".github/workflows/build-openedx.yml"]
+  pull_request:
+    paths: ["openedx/**", ".github/workflows/build-openedx.yml"]
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Image tag, e.g. verawood-1"
+        required: true
+      base_image:
+        description: "Base image = what the laptop runs today (tutor config printvalue DOCKER_IMAGE_OPENEDX)"
+        required: true
+        default: "docker.io/overhangio/openedx:22.0.3-indigo"
+      push:
+        description: "Push the image to GHCR after the smoke test"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: build-openedx-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Activity middleware tests
+        run: |
+          pip install --quiet "django>=5.2,<6"
+          python -m unittest discover -s openedx/elmp-activity/tests -v
+
+  build:
+    needs: test
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Image name
+        id: cfg
+        env:
+          OWNER: ${{ github.repository_owner }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
+          BASE_IMAGE: ${{ inputs.base_image }}
+        run: |
+          [[ "$IMAGE_TAG" =~ ^[a-z0-9][a-z0-9._-]{0,63}$ ]] || { echo "bad image_tag"; exit 1; }
+          [[ "$BASE_IMAGE" =~ ^[a-z0-9./_-]+:[A-Za-z0-9._-]+$ ]] || { echo "bad base_image"; exit 1; }
+          owner="$(echo "$OWNER" | tr '[:upper:]' '[:lower:]')"
+          echo "image=ghcr.io/${owner}/elmp-openedx:${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Build (measured)
+        env:
+          BASE_IMAGE: ${{ inputs.base_image }}
+          IMAGE: ${{ steps.cfg.outputs.image }}
+        run: |
+          ( while true; do echo "$(date +%s) $(free -m | awk '/^Mem:/{print $3}')" >> mem.log; sleep 5; done ) &
+          sampler=$!
+          start=$(date +%s)
+          docker pull --quiet "$BASE_IMAGE"
+          pulled=$(date +%s)
+          docker build -f openedx/Dockerfile --build-arg BASE_IMAGE="$BASE_IMAGE" -t "$IMAGE" .
+          end=$(date +%s)
+          kill "$sampler"
+          base_mb=$(( $(docker image inspect "$BASE_IMAGE" --format '{{ .Size }}') / 1048576 ))
+          size_mb=$(( $(docker image inspect "$IMAGE" --format '{{ .Size }}') / 1048576 ))
+          {
+            echo "base_pull_seconds=$((pulled - start))"
+            echo "build_seconds=$((end - pulled))"
+            echo "peak_used_mb=$(sort -k2 -n mem.log | tail -1 | cut -d' ' -f2)"
+            echo "base_size_mb=${base_mb}"
+            echo "image_size_mb=${size_mb}"
+            echo "added_layer_mb=$((size_mb - base_mb))"
+          } | tee build-stats.txt
+
+      - name: Smoke test (packages, plugin entry points, Django settings)
+        env:
+          IMAGE: ${{ steps.cfg.outputs.image }}
+        run: |
+          docker run --rm --entrypoint sh "$IMAGE" -c '
+            set -e
+            python - <<"PY"
+          from importlib.metadata import entry_points, version
+          print("h5p-xblock", version("h5p-xblock"), "| elmp-activity", version("elmp-activity"))
+          blocks = {e.name for e in entry_points(group="xblock.v1")}
+          apps = {e.name for e in entry_points(group="lms.djangoapp")}
+          assert "h5pxblock" in blocks, "h5pxblock XBlock entry point missing"
+          assert "elmp_activity" in apps, "elmp_activity plugin entry point missing"
+          for name in ("drag-and-drop-v2", "poll"):
+              assert name in blocks, name + " missing (should be built in)"
+          print("entry points ok")
+          PY
+            ls lms/envs/tutor/
+            for mod in lms.envs.tutor.assets lms.envs.tutor.production; do
+              DJANGO_SETTINGS_MODULE=$mod python -c "
+          import django; django.setup()
+          from django.conf import settings
+          assert \"elmp_activity.middleware.ActivityScriptMiddleware\" in settings.MIDDLEWARE
+          import h5pxblock.h5pxblock
+          print(\"$mod: middleware + h5pxblock ok\")
+          " && exit 0 || echo "($mod not loadable here, trying next)"
+            done
+            echo "no settings module could load"; exit 1'
+
+      - name: Push to GHCR
+        if: ${{ inputs.push }}
+        env:
+          IMAGE: ${{ steps.cfg.outputs.image }}
+        run: |
+          echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u '${{ github.actor }}' --password-stdin
+          docker push "$IMAGE"
+          docker image inspect "$IMAGE" --format 'digest={{ index .RepoDigests 0 }}' | tee -a build-stats.txt
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Open edX image \`${{ steps.cfg.outputs.image }}\`"
+            echo "base: \`${{ inputs.base_image }}\`"
+            echo '```'
+            cat build-stats.txt 2>/dev/null || echo "no stats (build failed early)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: openedx-build-stats-${{ inputs.image_tag }}
+          path: |
+            mem.log
+            build-stats.txt
+          if-no-files-found: ignore
