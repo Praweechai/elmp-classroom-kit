@@ -13,7 +13,7 @@ COPY --chown=app:app openedx/elmp-activity /openedx/elmp-activity
 # h5pxblock's into place so local_resource_url (/static/xblock/resources/h5pxblock/...) works.
 RUN pip install --no-cache-dir --no-deps "h5p-xblock==${H5P_XBLOCK_VERSION}" /openedx/elmp-activity \
     && rm -rf /openedx/elmp-activity \
-    && pkg="$(python -c 'import h5pxblock, os; print(os.path.dirname(h5pxblock.__file__))')" \
+    && pkg="$(python -c 'import importlib.util as u, os; print(os.path.dirname(u.find_spec("h5pxblock").origin))')" \
     && mkdir -p /openedx/staticfiles/xblock/resources/h5pxblock \
     && cp -r "$pkg/public" /openedx/staticfiles/xblock/resources/h5pxblock/public
 
