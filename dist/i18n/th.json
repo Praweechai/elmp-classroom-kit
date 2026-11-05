@@ -133,5 +133,16 @@
   "cls.certPreview.title": "ใบประกาศของคุณ",
   "cls.certPreview.kind": "ใบประกาศนียบัตรการผ่านหลักสูตร",
   "cls.certPreview.badge": "ตัวอย่าง",
-  "cls.certPreview.note": "เรียนผ่านหลักสูตรเพื่อรับใบประกาศที่มีชื่อของคุณ"
+  "cls.certPreview.note": "เรียนผ่านหลักสูตรเพื่อรับใบประกาศที่มีชื่อของคุณ",
+  "cls.finished.lead": "คุณเรียนจบแล้ว",
+  "cls.finished.grade": "คะแนน",
+  "cls.finished.hours": "ชั่วโมง CE ที่ได้รับ",
+  "cls.finished.date": "เรียนจบเมื่อ",
+  "cls.finished.certReady": "ใบประกาศของคุณพร้อมแล้ว",
+  "cls.finished.upNext": "หลักสูตรถัดไป",
+  "cls.finished.due": "ครบกำหนด {date}",
+  "cls.finished.back": "กลับไปที่การเรียนของฉัน",
+  "cls.finished.updating": "กำลังอัปเดตประวัติการอบรมของคุณ…",
+  "cls.finished.updated": "ประวัติการอบรมของคุณเป็นปัจจุบันแล้ว",
+  "cls.finished.later": "ประวัติการอบรมของคุณจะอัปเดตภายในไม่กี่นาที"
 }

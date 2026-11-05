@@ -20,6 +20,7 @@ export { default as HoursCard } from './components/HoursCard';
 export { default as KeyFacts } from './components/KeyFacts';
 export { default as CourseHero } from './components/CourseHero';
 export { default as CertificatePreview } from './components/CertificatePreview';
+export { default as CourseFinished, nextRequiredCourse } from './components/CourseFinished';
 export { default as GreetingBand } from './components/GreetingBand';
 export { PlayerTopBar, UnitTitle } from './components/Player';
 export { default as CourseOutline, OutlineDrawer } from './components/CourseOutline';

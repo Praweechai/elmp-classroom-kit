@@ -543,6 +543,50 @@ const messages = (0, _reactIntl.defineMessages)({
     id: 'cls.certPreview.badge',
     defaultMessage: 'Preview'
   },
+  finishedLead: {
+    id: 'cls.finished.lead',
+    defaultMessage: 'You finished'
+  },
+  statGrade: {
+    id: 'cls.finished.grade',
+    defaultMessage: 'Grade'
+  },
+  statHours: {
+    id: 'cls.finished.hours',
+    defaultMessage: 'CE hours earned'
+  },
+  statDate: {
+    id: 'cls.finished.date',
+    defaultMessage: 'Finished on'
+  },
+  certificateReady: {
+    id: 'cls.finished.certReady',
+    defaultMessage: 'Your certificate is ready.'
+  },
+  upNext: {
+    id: 'cls.finished.upNext',
+    defaultMessage: 'Up next'
+  },
+  dueShort: {
+    id: 'cls.finished.due',
+    defaultMessage: 'due {date}'
+  },
+  backToLearning: {
+    id: 'cls.finished.back',
+    defaultMessage: 'Back to My learning'
+  },
+  recordUpdating: {
+    id: 'cls.finished.updating',
+    defaultMessage: 'Updating your training record…'
+  },
+  recordUpdated: {
+    id: 'cls.finished.updated',
+    defaultMessage: 'Your training record is up to date.'
+  },
+  recordLater: {
+    id: 'cls.finished.later',
+    defaultMessage: 'Your training record will update in a few minutes.'
+  },
   certPreviewNote: {
     id: 'cls.certPreview.note',
     defaultMessage: 'Pass the course to get it with your name.'

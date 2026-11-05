@@ -7,8 +7,8 @@ import * as fx from '../__fixtures__/portal';
 import storyLogo from './logo';
 
 import {
-  BottomTabs, CertificateCard, CertificatePreview, ClassroomHeader, ContinueCard, CourseCard, CourseHero, CourseOutline, GreetingBand,
-  HoursCard, Notice, RequiredGroup, Skeleton, localized, messages, useClassroomIntl,
+  BottomTabs, CertificateCard, CertificatePreview, ClassroomHeader, CourseFinished, ContinueCard, CourseCard, CourseHero, CourseOutline, GreetingBand,
+  HoursCard, Notice, RequiredGroup, Skeleton, localized, messages, nextRequiredCourse, useClassroomIntl,
 } from '../index';
 
 // Whole screens built from kit parts with fake data, to compare with doc 04-design/index.html (S-70, S-79).
@@ -105,3 +105,29 @@ const CourseHome = ({ locale }) => {
 CourseHome.propTypes = { locale: PropTypes.string };
 
 export const S75CourseHome = { render: (_, { globals }) => <CourseHome locale={globals.locale} /> };
+
+const Finished = ({ locale }) => {
+  const me = fx.me.data;
+  const upNext = { ...nextRequiredCourse(fx.training.data, 'course-v1:MHB+INF101+2026'), href: '#' };
+  return (
+    <>
+      <ClassroomHeader current="home" links={links} user={{ name: localized(me.name, locale) }} unread={3} locale={locale} logoUrl={storyLogo} />
+      <main className="cls-page">
+        <CourseFinished
+          courseTitle="Isolation Precautions"
+          grade={92}
+          ceHours={3}
+          finishedAt="2026-11-03T09:10:00+07:00"
+          certificateHref="#"
+          upNext={upNext}
+          backHref="#home"
+          record="updated"
+        />
+      </main>
+    </>
+  );
+};
+
+Finished.propTypes = { locale: PropTypes.string };
+
+export const S77CourseFinished = { render: (_, { globals }) => <Finished locale={globals.locale} /> };

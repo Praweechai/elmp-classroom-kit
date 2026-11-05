@@ -81,6 +81,12 @@ Object.defineProperty(exports, "CourseCover", {
     return _CourseCover.default;
   }
 });
+Object.defineProperty(exports, "CourseFinished", {
+  enumerable: true,
+  get: function () {
+    return _CourseFinished.default;
+  }
+});
 Object.defineProperty(exports, "CourseHero", {
   enumerable: true,
   get: function () {
@@ -297,6 +303,12 @@ Object.defineProperty(exports, "messages", {
     return _i18n.messages;
   }
 });
+Object.defineProperty(exports, "nextRequiredCourse", {
+  enumerable: true,
+  get: function () {
+    return _CourseFinished.nextRequiredCourse;
+  }
+});
 Object.defineProperty(exports, "resetPortalClient", {
   enumerable: true,
   get: function () {
@@ -362,6 +374,7 @@ var _HoursCard = _interopRequireDefault(require("./components/HoursCard"));
 var _KeyFacts = _interopRequireDefault(require("./components/KeyFacts"));
 var _CourseHero = _interopRequireDefault(require("./components/CourseHero"));
 var _CertificatePreview = _interopRequireDefault(require("./components/CertificatePreview"));
+var _CourseFinished = _interopRequireWildcard(require("./components/CourseFinished"));
 var _GreetingBand = _interopRequireDefault(require("./components/GreetingBand"));
 var _Player = require("./components/Player");
 var _CourseOutline = _interopRequireWildcard(require("./components/CourseOutline"));
