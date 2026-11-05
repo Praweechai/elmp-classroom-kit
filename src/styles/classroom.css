@@ -226,7 +226,7 @@ a.cls-row:hover { background: var(--elmp-gray-25); color: var(--cls-text); text-
 .cls-fact { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .cls-fact__tile { width: 40px; height: 40px; flex: none; border-radius: 12px; background: var(--cls-action-tint); color: var(--cls-action); display: grid; place-items: center; }
 .cls-fact b { display: block; font-size: 15px; font-weight: 650; line-height: 1.3; }
-.cls-fact span { display: block; font-size: 12px; color: var(--cls-text-3); line-height: 1.3; }
+.cls-fact span:not(.cls-fact__tile) { display: block; font-size: 12px; color: var(--cls-text-3); line-height: 1.3; }
 .cls-fact--overdue .cls-fact__tile { background: var(--cls-late-bg); color: var(--cls-late-text); }
 .cls-fact--overdue b { color: var(--cls-late-text); }
 @media (min-width: 768px) { .cls-facts { display: flex; flex-wrap: wrap; gap: 12px 28px; } }
