@@ -12,9 +12,14 @@ stories.forEach((story) => {
     ['en', 'th'].forEach((locale) => {
       test(`${story.id} ${locale} ${width}`, async ({ page }) => {
         await page.setViewportSize({ width, height: 900 });
-        await page.goto(`/iframe.html?id=${story.id}&viewMode=story&globals=locale:${locale}`);
+        await page.goto(`/iframe.html?id=${story.id}&viewMode=story&globals=locale:${locale}`, { waitUntil: 'networkidle' });
         await page.locator('#storybook-root > *').first().waitFor();
-        await page.evaluate(() => document.fonts.ready);
+        // Load every web-font weight before the shot; fonts.ready alone can resolve early (flaky text widths).
+        await page.evaluate(async () => {
+          const faces = ['Inter', 'IBM Plex Sans Thai'].flatMap((f) => [400, 500, 600, 700].map((w) => `${w} 16px "${f}"`));
+          await Promise.all(faces.map((f) => document.fonts.load(f, 'Aa ก')));
+          await document.fonts.ready;
+        });
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
         expect(overflow, 'no horizontal scroll (NFR-C5)').toBeLessThanOrEqual(0);
         await expect(page).toHaveScreenshot(`${story.id}--${locale}-${width}.png`, { fullPage: true });
