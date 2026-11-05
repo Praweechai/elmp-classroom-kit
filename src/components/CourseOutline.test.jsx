@@ -1,7 +1,9 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { axe } from 'jest-axe';
 
+import { IntlProvider } from 'react-intl';
 import { outline } from '../__fixtures__/portal';
+
 import { renderKit } from '../testUtils';
 import CourseOutline, { OutlineDrawer } from './CourseOutline';
 
@@ -56,5 +58,33 @@ describe('OutlineDrawer (S-76)', () => {
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(onClose).toHaveBeenCalledTimes(2);
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe('Outline motion and focus (doc 04 §8, §10)', () => {
+  it('marks only items that become complete while shown', () => {
+    const { rerender, container } = renderKit(<CourseOutline sections={outline} />);
+    expect(container.querySelector('.is-just-done')).toBeNull();
+    const next = outline.map((s) => ({ ...s, items: s.items.map((i) => (i.id === 'q4' ? { ...i, complete: true } : i)) }));
+    rerender(
+      <IntlProvider locale="en" messages={{}}>
+        <div className="cls-root" lang="en"><CourseOutline sections={next} /></div>
+      </IntlProvider>,
+    );
+    expect(container.querySelectorAll('.is-just-done')).toHaveLength(1);
+  });
+
+  it('moves focus into the sheet, keeps Tab inside and gives focus back on close', () => {
+    const opener = document.createElement('button');
+    document.body.appendChild(opener);
+    opener.focus();
+    const { unmount } = renderKit(<OutlineDrawer sections={outline} onClose={() => {}} overlay />);
+    const close = screen.getByRole('button', { name: 'Close course outline' });
+    expect(close).toHaveFocus();
+    fireEvent.keyDown(document, { key: 'Tab', shiftKey: true });
+    expect(close).not.toHaveFocus();
+    unmount();
+    expect(opener).toHaveFocus();
+    opener.remove();
   });
 });

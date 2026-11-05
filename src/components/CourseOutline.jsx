@@ -1,4 +1,6 @@
-import { useEffect, useId, useState } from 'react';
+import {
+  useEffect, useId, useRef, useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import {
   CheckCircle, Close, ExpandMore, Lock, RadioButtonUnchecked,
@@ -21,6 +23,10 @@ const OutlineSection = ({
   const intl = useClassroomIntl();
   const Link = useLinkComponent();
   const panelId = useId();
+  const seenDone = useRef(new Set(section.items.filter((item) => item.complete).map((item) => item.id)));
+  useEffect(() => {
+    section.items.forEach((item) => { if (item.complete) { seenDone.current.add(item.id); } });
+  });
   const done = section.items.filter((item) => item.complete).length;
   const total = section.items.length;
   return (
@@ -41,7 +47,12 @@ const OutlineSection = ({
           }[state]);
           const body = (
             <>
-              <KitIcon src={icon} size={20} className={`cls-outline__state cls-outline__state--${state}`} />
+              <KitIcon
+                src={icon}
+                size={20}
+                className={`cls-outline__state cls-outline__state--${state}${
+                  state === 'complete' && !seenDone.current.has(item.id) ? ' is-just-done' : ''}`}
+              />
               <span className="cls-outline__label">
                 {item.title}
                 <span className="cls-sr">
@@ -166,14 +177,31 @@ export const OutlineDrawer = ({
 }) => {
   const intl = useClassroomIntl();
   const titleId = useId();
+  const ref = useRef(null);
   useEffect(() => {
-    if (!overlay || !onClose) { return undefined; }
-    const onKey = (event) => { if (event.key === 'Escape') { onClose(); } };
+    if (!overlay) { return undefined; }
+    const back = document.activeElement;
+    const focusables = () => [...ref.current.querySelectorAll('a[href], button:not([disabled])')]
+      .filter((el) => !el.closest('[hidden]'));
+    focusables()[0]?.focus();
+    const onKey = (event) => {
+      if (event.key === 'Escape' && onClose) { onClose(); return; }
+      if (event.key !== 'Tab') { return; }
+      const list = focusables();
+      if (!list.length) { return; }
+      const first = list[0];
+      const last = list[list.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
     document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      if (back && document.contains(back)) { back.focus(); }
+    };
   }, [overlay, onClose]);
   return (
-    <nav className={`cls-drawer${overlay ? ' cls-drawer--overlay' : ''}`} aria-labelledby={titleId}>
+    <nav ref={ref} className={`cls-drawer${overlay ? ' cls-drawer--overlay' : ''}`} aria-labelledby={titleId}>
       <div className="cls-drawer__top">
         <h2 id={titleId} className="cls-drawer__title">{intl.formatMessage(messages.outlineTitle)}</h2>
         {onClose && (

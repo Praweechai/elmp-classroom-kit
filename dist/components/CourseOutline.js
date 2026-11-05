@@ -36,6 +36,14 @@ const OutlineSection = ({
   const intl = (0, _i18n.useClassroomIntl)();
   const Link = (0, _LinkContext.useLinkComponent)();
   const panelId = (0, _react.useId)();
+  const seenDone = (0, _react.useRef)(new Set(section.items.filter(item => item.complete).map(item => item.id)));
+  (0, _react.useEffect)(() => {
+    section.items.forEach(item => {
+      if (item.complete) {
+        seenDone.current.add(item.id);
+      }
+    });
+  });
   const done = section.items.filter(item => item.complete).length;
   const total = section.items.length;
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("li", {
@@ -82,7 +90,7 @@ const OutlineSection = ({
           children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
             src: icon,
             size: 20,
-            className: `cls-outline__state cls-outline__state--${state}`
+            className: `cls-outline__state cls-outline__state--${state}${state === 'complete' && !seenDone.current.has(item.id) ? ' is-just-done' : ''}`
           }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
             className: "cls-outline__label",
             children: [item.title, /*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
@@ -207,19 +215,47 @@ const OutlineDrawer = ({
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
   const titleId = (0, _react.useId)();
+  const ref = (0, _react.useRef)(null);
   (0, _react.useEffect)(() => {
-    if (!overlay || !onClose) {
+    if (!overlay) {
       return undefined;
     }
+    const back = document.activeElement;
+    const focusables = () => [...ref.current.querySelectorAll('a[href], button:not([disabled])')].filter(el => !el.closest('[hidden]'));
+    focusables()[0]?.focus();
     const onKey = event => {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && onClose) {
         onClose();
+        return;
+      }
+      if (event.key !== 'Tab') {
+        return;
+      }
+      const list = focusables();
+      if (!list.length) {
+        return;
+      }
+      const first = list[0];
+      const last = list[list.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      }
+      if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     };
     document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      if (back && document.contains(back)) {
+        back.focus();
+      }
+    };
   }, [overlay, onClose]);
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("nav", {
+    ref: ref,
     className: `cls-drawer${overlay ? ' cls-drawer--overlay' : ''}`,
     "aria-labelledby": titleId,
     children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
