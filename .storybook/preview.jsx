@@ -1,5 +1,18 @@
 import { IntlProvider } from 'react-intl';
 
+// Fonts bundled with Storybook (not Google Fonts) so screenshots are identical on every CI run.
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
+import '@fontsource/inter/800.css';
+import '@fontsource/ibm-plex-sans-thai/400.css';
+import '@fontsource/ibm-plex-sans-thai/500.css';
+import '@fontsource/ibm-plex-sans-thai/600.css';
+import '@fontsource/ibm-plex-sans-thai/700.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+
 import '../src/tokens/tokens.css';
 import '../src/styles/classroom.css';
 
