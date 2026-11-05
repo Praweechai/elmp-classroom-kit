@@ -17,6 +17,8 @@ const CertificateCard = ({
   const [busy, setBusy] = useState(false);
   const revoked = Boolean(certificate.revoked_at);
   const roadmap = certificate.kind === 'roadmap';
+  // Plan 4 F-113: course certificates with a Portal code are our own PDFs too (CA-08), like roadmap ones.
+  const ownPdf = Boolean(certificate.code) || roadmap;
   const title = localized(certificate.title, locale);
 
   const download = async () => {
@@ -40,7 +42,7 @@ const CertificateCard = ({
             : intl.formatMessage(messages.certificateIssued, { date: formatDate(certificate.issued_at, locale) })}
         </p>
       </div>
-      {roadmap && certificate.code && (
+      {ownPdf && certificate.code && (
         <p className="cls-cert__code">
           <span className="cls-sr">{intl.formatMessage(messages.certificateCode)}: </span>
           {revoked ? <s>{certificate.code}</s> : certificate.code}
@@ -58,7 +60,7 @@ const CertificateCard = ({
       )}
       {!revoked && (
         <div className="cls-cert__acts">
-          {roadmap ? (
+          {ownPdf ? (
             <button
               type="button"
               className="cls-btn cls-btn--primary cls-btn--sm"

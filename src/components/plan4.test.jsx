@@ -3,6 +3,7 @@ import { axe } from 'jest-axe';
 
 import * as fx from '../__fixtures__/portal';
 import { renderKit } from '../testUtils';
+import CertificateCard from './CertificateCard';
 import CourseCard from './CourseCard';
 import { BottomTabs, ClassroomHeader } from './Header';
 import RequiredGroup from './RequiredGroup';
@@ -77,5 +78,25 @@ describe('Header without CE hours (F-112)', () => {
     expect(screen.queryByRole('link', { name: /CE hours/ })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /^Hours$/ })).not.toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: 'Certificates' })).toHaveLength(2);
+  });
+});
+
+describe('CertificateCard — Portal course certificate (F-113)', () => {
+  it('a course certificate with a code downloads our PDF and shows the code', async () => {
+    const onDownload = jest.fn();
+    renderKit(<CertificateCard
+      certificate={{
+        kind: 'course', code: 'ELMP-2026-DDDD-4444', title: { en: 'Course INF101', th: 'Course INF101' }, issued_at: '2026-11-06T10:00:00+07:00',
+      }}
+      onDownload={onDownload}
+    />);
+    expect(screen.getByText('ELMP-2026-DDDD-4444')).toBeInTheDocument();
+    screen.getByRole('button', { name: 'Download PDF' }).click();
+    expect(onDownload).toHaveBeenCalled();
+  });
+
+  it('an old Open edX course link (no code) still opens the link', () => {
+    renderKit(<CertificateCard certificate={{ kind: 'course', title: 'Course A', url: 'https://x/cert' }} />);
+    expect(screen.getByRole('link')).toHaveAttribute('href', 'https://x/cert');
   });
 });

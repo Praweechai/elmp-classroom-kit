@@ -26,6 +26,8 @@ const CertificateCard = ({
   const [busy, setBusy] = (0, _react.useState)(false);
   const revoked = Boolean(certificate.revoked_at);
   const roadmap = certificate.kind === 'roadmap';
+  // Plan 4 F-113: course certificates with a Portal code are our own PDFs too (CA-08), like roadmap ones.
+  const ownPdf = Boolean(certificate.code) || roadmap;
   const title = (0, _i18n.localized)(certificate.title, locale);
   const download = async () => {
     setBusy(true);
@@ -64,7 +66,7 @@ const CertificateCard = ({
           date: (0, _i18n.formatDate)(certificate.issued_at, locale)
         })
       })]
-    }), roadmap && certificate.code && /*#__PURE__*/(0, _jsxRuntime.jsxs)("p", {
+    }), ownPdf && certificate.code && /*#__PURE__*/(0, _jsxRuntime.jsxs)("p", {
       className: "cls-cert__code",
       children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
         className: "cls-sr",
@@ -85,7 +87,7 @@ const CertificateCard = ({
       })]
     }), !revoked && /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
       className: "cls-cert__acts",
-      children: roadmap ? /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
+      children: ownPdf ? /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
         type: "button",
         className: "cls-btn cls-btn--primary cls-btn--sm",
         onClick: download,
