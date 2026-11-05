@@ -511,6 +511,10 @@ const messages = (0, _reactIntl.defineMessages)({
     id: 'cls.outline.here',
     defaultMessage: 'you are here'
   },
+  outlineClose: {
+    id: 'cls.outline.close',
+    defaultMessage: 'Close course outline'
+  },
   minutes: {
     id: 'cls.minutes',
     defaultMessage: '{n} min'

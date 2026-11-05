@@ -1,4 +1,4 @@
-import { CourseOutline, PlayerTopBar, UnitTitle } from '../index';
+import { OutlineDrawer, PlayerTopBar, UnitTitle } from '../index';
 import { outline } from '../__fixtures__/portal';
 
 export default { title: 'Player', parameters: { layout: 'fullscreen' } };
@@ -25,11 +25,11 @@ export const TopBarLongTitle = {
   ),
 };
 
-export const OutlineDrawer = {
+export const OutlineSidebar = {
   render: () => (
     <Frame>
-      <div style={{ maxWidth: 320, borderRight: '1px solid #E0E5E2', minHeight: 360 }}>
-        <CourseOutline sections={outline} variant="drawer" showExpandAll={false} />
+      <div style={{ display: 'flex', minHeight: 520 }}>
+        <OutlineDrawer sections={outline} onClose={() => {}} />
       </div>
     </Frame>
   ),

@@ -156,6 +156,7 @@ const messages = defineMessages({
   outlineNotDone: { id: 'cls.outline.notDone', defaultMessage: 'not done yet' },
   outlineLocked: { id: 'cls.outline.locked', defaultMessage: 'locked' },
   outlineHere: { id: 'cls.outline.here', defaultMessage: 'you are here' },
+  outlineClose: { id: 'cls.outline.close', defaultMessage: 'Close course outline' },
   minutes: { id: 'cls.minutes', defaultMessage: '{n} min' },
 });
 

@@ -1,7 +1,7 @@
 import { useEffect, useId, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  CheckCircle, ExpandMore, Lock, RadioButtonUnchecked,
+  CheckCircle, Close, ExpandMore, Lock, RadioButtonUnchecked,
 } from '@openedx/paragon/icons';
 
 import { messages, useClassroomIntl } from '../i18n';
@@ -62,7 +62,7 @@ const OutlineSection = ({
                   className={cls}
                   href={item.href}
                   aria-current={item.current ? 'location' : undefined}
-                  onClick={onNavigate}
+                  onClick={onNavigate ? (event) => onNavigate(item, event) : undefined}
                 >
                   {body}
                 </Link>
@@ -157,6 +157,41 @@ CourseOutline.propTypes = {
   showExpandAll: PropTypes.bool,
   onNavigate: PropTypes.func,
   variant: PropTypes.oneOf(['page', 'drawer']),
+};
+
+// S-76 drawer (doc 04 §6.6): a 320 px column next to the unit on wide screens; a full-screen sheet on
+// small ones (`overlay`). Esc closes the sheet.
+export const OutlineDrawer = ({
+  sections, onClose, onNavigate, overlay = false,
+}) => {
+  const intl = useClassroomIntl();
+  const titleId = useId();
+  useEffect(() => {
+    if (!overlay || !onClose) { return undefined; }
+    const onKey = (event) => { if (event.key === 'Escape') { onClose(); } };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [overlay, onClose]);
+  return (
+    <nav className={`cls-drawer${overlay ? ' cls-drawer--overlay' : ''}`} aria-labelledby={titleId}>
+      <div className="cls-drawer__top">
+        <h2 id={titleId} className="cls-drawer__title">{intl.formatMessage(messages.outlineTitle)}</h2>
+        {onClose && (
+          <button type="button" className="cls-icon-btn" aria-label={intl.formatMessage(messages.outlineClose)} onClick={onClose}>
+            <KitIcon src={Close} />
+          </button>
+        )}
+      </div>
+      <CourseOutline sections={sections} variant="drawer" showExpandAll={false} headingLevel={2} onNavigate={onNavigate} />
+    </nav>
+  );
+};
+
+OutlineDrawer.propTypes = {
+  sections: CourseOutline.propTypes.sections,
+  onClose: PropTypes.func,
+  onNavigate: PropTypes.func,
+  overlay: PropTypes.bool,
 };
 
 export default CourseOutline;

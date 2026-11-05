@@ -3,7 +3,7 @@ import { axe } from 'jest-axe';
 
 import { outline } from '../__fixtures__/portal';
 import { renderKit } from '../testUtils';
-import CourseOutline from './CourseOutline';
+import CourseOutline, { OutlineDrawer } from './CourseOutline';
 
 describe('CourseOutline (doc 04 §5.11)', () => {
   it('opens the section with the current item and marks where the learner is', async () => {
@@ -42,7 +42,19 @@ describe('CourseOutline (doc 04 §5.11)', () => {
     expect(screen.getByText('7 นาที')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'เปิดทั้งหมด' })).toBeNull();
     fireEvent.click(screen.getByRole('link', { name: /Contact precautions/ }));
-    expect(onNavigate).toHaveBeenCalled();
+    expect(onNavigate).toHaveBeenCalledWith(expect.objectContaining({ id: 'q4' }), expect.anything());
+    expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe('OutlineDrawer (S-76)', () => {
+  it('has a titled navigation landmark, closes with the button and with Esc as a sheet', async () => {
+    const onClose = jest.fn();
+    const { container } = renderKit(<OutlineDrawer sections={outline} onClose={onClose} overlay />);
+    expect(screen.getByRole('navigation', { name: 'Course outline' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Close course outline' }));
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(onClose).toHaveBeenCalledTimes(2);
     expect(await axe(container)).toHaveNoViolations();
   });
 });

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports.default = exports.OutlineDrawer = void 0;
 var _react = require("react");
 var _propTypes = _interopRequireDefault(require("prop-types"));
 var _icons = require("@openedx/paragon/icons");
@@ -102,7 +102,7 @@ const OutlineSection = ({
             className: cls,
             href: item.href,
             "aria-current": item.current ? 'location' : undefined,
-            onClick: onNavigate,
+            onClick: onNavigate ? event => onNavigate(item, event) : undefined,
             children: body
           }) : /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
             className: cls,
@@ -195,5 +195,62 @@ CourseOutline.propTypes = {
   showExpandAll: _propTypes.default.bool,
   onNavigate: _propTypes.default.func,
   variant: _propTypes.default.oneOf(['page', 'drawer'])
+};
+
+// S-76 drawer (doc 04 §6.6): a 320 px column next to the unit on wide screens; a full-screen sheet on
+// small ones (`overlay`). Esc closes the sheet.
+const OutlineDrawer = ({
+  sections,
+  onClose,
+  onNavigate,
+  overlay = false
+}) => {
+  const intl = (0, _i18n.useClassroomIntl)();
+  const titleId = (0, _react.useId)();
+  (0, _react.useEffect)(() => {
+    if (!overlay || !onClose) {
+      return undefined;
+    }
+    const onKey = event => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [overlay, onClose]);
+  return /*#__PURE__*/(0, _jsxRuntime.jsxs)("nav", {
+    className: `cls-drawer${overlay ? ' cls-drawer--overlay' : ''}`,
+    "aria-labelledby": titleId,
+    children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
+      className: "cls-drawer__top",
+      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("h2", {
+        id: titleId,
+        className: "cls-drawer__title",
+        children: intl.formatMessage(_i18n.messages.outlineTitle)
+      }), onClose && /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
+        type: "button",
+        className: "cls-icon-btn",
+        "aria-label": intl.formatMessage(_i18n.messages.outlineClose),
+        onClick: onClose,
+        children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
+          src: _icons.Close
+        })
+      })]
+    }), /*#__PURE__*/(0, _jsxRuntime.jsx)(CourseOutline, {
+      sections: sections,
+      variant: "drawer",
+      showExpandAll: false,
+      headingLevel: 2,
+      onNavigate: onNavigate
+    })]
+  });
+};
+exports.OutlineDrawer = OutlineDrawer;
+OutlineDrawer.propTypes = {
+  sections: CourseOutline.propTypes.sections,
+  onClose: _propTypes.default.func,
+  onNavigate: _propTypes.default.func,
+  overlay: _propTypes.default.bool
 };
 var _default = exports.default = CourseOutline;

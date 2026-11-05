@@ -399,3 +399,13 @@ a.cls-outline__row:hover { background: var(--cls-sunken); color: var(--cls-text)
 .cls-outline--drawer .cls-outline__toggle { min-height: 52px; }
 .cls-outline--drawer .cls-outline__title { font-size: 15px; }
 @media (prefers-reduced-motion: reduce) { .cls-outline__chevron { transition: none; } }
+
+/* OutlineDrawer (S-76) */
+.cls-drawer { width: 320px; flex-shrink: 0; align-self: flex-start; position: sticky; top: 59px; max-height: calc(100vh - 59px); overflow-y: auto;
+  background: var(--cls-surface); border-right: 1px solid var(--cls-border); }
+.cls-drawer__top { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  min-height: 52px; padding: 4px 8px 4px 16px; background: var(--cls-surface); border-bottom: 1px solid var(--cls-border); }
+.cls-drawer__title { margin: 0; font-size: 16px; font-weight: 700; }
+.cls-drawer .cls-outline__heading { font-size: inherit; }
+.cls-drawer--overlay { position: fixed; inset: 0; z-index: 60; width: auto; max-height: none; border: 0; box-shadow: var(--cls-shadow-lg); }
+@media (min-width: 600px) { .cls-drawer--overlay { right: auto; width: 360px; } }

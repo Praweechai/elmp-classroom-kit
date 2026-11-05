@@ -125,5 +125,6 @@
   "cls.outline.notDone": "ยังไม่ได้เรียน",
   "cls.outline.locked": "ยังไม่เปิดให้เรียน",
   "cls.outline.here": "ตำแหน่งปัจจุบัน",
-  "cls.minutes": "{n} นาที"
+  "cls.minutes": "{n} นาที",
+  "cls.outline.close": "ปิดเนื้อหาหลักสูตร"
 }
