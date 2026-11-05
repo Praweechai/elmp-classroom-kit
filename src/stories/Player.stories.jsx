@@ -1,4 +1,5 @@
-import { PlayerTopBar, UnitTitle } from '../index';
+import { CourseOutline, PlayerTopBar, UnitTitle } from '../index';
+import { outline } from '../__fixtures__/portal';
 
 export default { title: 'Player', parameters: { layout: 'fullscreen' } };
 
@@ -20,6 +21,16 @@ export const TopBarLongTitle = {
   render: () => (
     <Frame>
       <PlayerTopBar courseTitle="Medical Records and PDPA — consent, access and retention for ward staff" courseHref="#" unitIndex={12} unitCount={14} progress={100} />
+    </Frame>
+  ),
+};
+
+export const OutlineDrawer = {
+  render: () => (
+    <Frame>
+      <div style={{ maxWidth: 320, borderRight: '1px solid #E0E5E2', minHeight: 360 }}>
+        <CourseOutline sections={outline} variant="drawer" showExpandAll={false} />
+      </div>
     </Frame>
   ),
 };

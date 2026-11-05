@@ -478,6 +478,42 @@ const messages = (0, _reactIntl.defineMessages)({
   playerProgress: {
     id: 'cls.player.progress',
     defaultMessage: 'Course progress'
+  },
+  outlineTitle: {
+    id: 'cls.outline.title',
+    defaultMessage: 'Course outline'
+  },
+  outlineDone: {
+    id: 'cls.outline.done',
+    defaultMessage: '{done} / {total} done'
+  },
+  outlineExpandAll: {
+    id: 'cls.outline.expandAll',
+    defaultMessage: 'Expand all'
+  },
+  outlineCollapseAll: {
+    id: 'cls.outline.collapseAll',
+    defaultMessage: 'Collapse all'
+  },
+  outlineComplete: {
+    id: 'cls.outline.complete',
+    defaultMessage: 'completed'
+  },
+  outlineNotDone: {
+    id: 'cls.outline.notDone',
+    defaultMessage: 'not done yet'
+  },
+  outlineLocked: {
+    id: 'cls.outline.locked',
+    defaultMessage: 'locked'
+  },
+  outlineHere: {
+    id: 'cls.outline.here',
+    defaultMessage: 'you are here'
+  },
+  minutes: {
+    id: 'cls.minutes',
+    defaultMessage: '{n} min'
   }
 });
 var _default = exports.default = messages;

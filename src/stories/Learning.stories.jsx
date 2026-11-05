@@ -4,7 +4,7 @@ import {
 
 import * as fx from '../__fixtures__/portal';
 import {
-  ContinueCard, CourseCard, KeyFacts, ProgressBar, ProgressRing, RequiredGroup, StatusPill,
+  ContinueCard, CourseCard, CourseOutline, KeyFacts, ProgressBar, ProgressRing, RequiredGroup, StatusPill,
 } from '../index';
 
 export default { title: 'Learning' };
@@ -74,5 +74,13 @@ export const CourseKeyFacts = {
       },
     ]}
     />
+  ),
+};
+
+export const Outline = {
+  render: () => (
+    <div style={{ maxWidth: 760 }}>
+      <CourseOutline title="Course outline" sections={fx.outline} />
+    </div>
   ),
 };

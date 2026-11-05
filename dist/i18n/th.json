@@ -116,5 +116,14 @@
   "cls.player.back": "หลักสูตร",
   "cls.player.backLabel": "กลับไปหน้าหลักสูตร",
   "cls.player.outline": "สารบัญหลักสูตร",
-  "cls.player.progress": "ความคืบหน้าของหลักสูตร"
+  "cls.player.progress": "ความคืบหน้าของหลักสูตร",
+  "cls.outline.title": "เนื้อหาหลักสูตร",
+  "cls.outline.done": "เสร็จ {done} / {total}",
+  "cls.outline.expandAll": "เปิดทั้งหมด",
+  "cls.outline.collapseAll": "ปิดทั้งหมด",
+  "cls.outline.complete": "เรียนจบแล้ว",
+  "cls.outline.notDone": "ยังไม่ได้เรียน",
+  "cls.outline.locked": "ยังไม่เปิดให้เรียน",
+  "cls.outline.here": "ตำแหน่งปัจจุบัน",
+  "cls.minutes": "{n} นาที"
 }

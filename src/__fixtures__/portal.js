@@ -118,3 +118,46 @@ export const revokedCertificate = {
 };
 
 export const certificates = { data: [roadmapCertificate, courseCertificate, revokedCertificate] };
+
+// Course outline (S-75 / S-76 drawer): sections → items, as the learning fork maps the course blocks.
+export const outline = [
+  {
+    id: 's1',
+    title: '1. Why hand hygiene matters',
+    items: [
+      {
+        id: 'q1', title: 'Video: The 5 moments', href: '#q1', complete: true, minutes: 6,
+      },
+      {
+        id: 'q2', title: 'Reading: WHO guideline summary', href: '#q2', complete: true, minutes: 8,
+      },
+    ],
+  },
+  {
+    id: 's2',
+    title: '2. Isolation precautions',
+    items: [
+      {
+        id: 'q3', title: 'Video: Standard precautions', href: '#q3', complete: true, minutes: 5,
+      },
+      {
+        id: 'q4', title: 'Video: Contact precautions', href: '#q4', current: true, minutes: 7,
+      },
+      {
+        id: 'q5', title: 'Quiz: Choose the right PPE', href: '#q5', minutes: 10,
+      },
+    ],
+  },
+  {
+    id: 's3',
+    title: '3. Cleaning and waste',
+    items: [
+      {
+        id: 'q6', title: 'Reading: Spill kit steps', href: '#q6', minutes: 6,
+      },
+      {
+        id: 'q7', title: 'Final quiz', locked: true, minutes: 12,
+      },
+    ],
+  },
+];
