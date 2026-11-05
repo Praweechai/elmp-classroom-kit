@@ -156,24 +156,28 @@ const CourseTable = ({
           return (
             <tr key={c.course_key} className={`cls-ctable__row cls-ctable__row--${c.status}`}>
               <td className="cls-ctable__course">
-                <span className={`cls-codechip cls-codechip--${c.category || 'general'}`} aria-hidden="true">{(c.code || c.titleText).slice(0, 2).toUpperCase()}</span>
-                <span>
-                  {c.href ? <Link href={c.href} className="cls-ctable__title">{c.titleText}</Link> : <b className="cls-ctable__title">{c.titleText}</b>}
-                  {meta && <small>{meta}</small>}
-                </span>
+                <div className="cls-ctable__cell">
+                  <span className={`cls-codechip cls-codechip--${c.category || 'general'}`} aria-hidden="true">{(c.code || c.titleText).slice(0, 2).toUpperCase()}</span>
+                  <span className="cls-ctable__name">
+                    {c.href ? <Link href={c.href} className="cls-ctable__title">{c.titleText}</Link> : <b className="cls-ctable__title">{c.titleText}</b>}
+                    {meta && <small>{meta}</small>}
+                  </span>
+                </div>
               </td>
               <td className="cls-ctable__progress">
-                <span
-                  className="cls-bar"
-                  role="progressbar"
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuenow={c.pct}
-                  aria-label={`${intl.formatMessage(messages.progressLabel)}: ${c.titleText}`}
-                >
-                  <i style={{ width: `${c.pct}%` }} />
-                </span>
-                <span className="cls-num">{c.pct}%</span>
+                <div className="cls-ctable__cell">
+                  <span
+                    className="cls-bar"
+                    role="progressbar"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={c.pct}
+                    aria-label={`${intl.formatMessage(messages.progressLabel)}: ${c.titleText}`}
+                  >
+                    <i style={{ width: `${c.pct}%` }} />
+                  </span>
+                  <span className="cls-num">{c.pct}%</span>
+                </div>
               </td>
               <td className="cls-ctable__score cls-num">
                 <span className="cls-ctable__label">{intl.formatMessage(messages.colScore)} </span>

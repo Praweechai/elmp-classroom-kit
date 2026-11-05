@@ -232,42 +232,49 @@ const CourseTable = ({
         }) : null, c.required ? intl.formatMessage(_i18n.messages.requiredShort) : null].filter(Boolean).join(' · ');
         return /*#__PURE__*/(0, _jsxRuntime.jsxs)("tr", {
           className: `cls-ctable__row cls-ctable__row--${c.status}`,
-          children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("td", {
+          children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("td", {
             className: "cls-ctable__course",
-            children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
-              className: `cls-codechip cls-codechip--${c.category || 'general'}`,
-              "aria-hidden": "true",
-              children: (c.code || c.titleText).slice(0, 2).toUpperCase()
-            }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
-              children: [c.href ? /*#__PURE__*/(0, _jsxRuntime.jsx)(Link, {
-                href: c.href,
-                className: "cls-ctable__title",
-                children: c.titleText
-              }) : /*#__PURE__*/(0, _jsxRuntime.jsx)("b", {
-                className: "cls-ctable__title",
-                children: c.titleText
-              }), meta && /*#__PURE__*/(0, _jsxRuntime.jsx)("small", {
-                children: meta
+            children: /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
+              className: "cls-ctable__cell",
+              children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
+                className: `cls-codechip cls-codechip--${c.category || 'general'}`,
+                "aria-hidden": "true",
+                children: (c.code || c.titleText).slice(0, 2).toUpperCase()
+              }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
+                className: "cls-ctable__name",
+                children: [c.href ? /*#__PURE__*/(0, _jsxRuntime.jsx)(Link, {
+                  href: c.href,
+                  className: "cls-ctable__title",
+                  children: c.titleText
+                }) : /*#__PURE__*/(0, _jsxRuntime.jsx)("b", {
+                  className: "cls-ctable__title",
+                  children: c.titleText
+                }), meta && /*#__PURE__*/(0, _jsxRuntime.jsx)("small", {
+                  children: meta
+                })]
               })]
-            })]
-          }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("td", {
+            })
+          }), /*#__PURE__*/(0, _jsxRuntime.jsx)("td", {
             className: "cls-ctable__progress",
-            children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
-              className: "cls-bar",
-              role: "progressbar",
-              "aria-valuemin": 0,
-              "aria-valuemax": 100,
-              "aria-valuenow": c.pct,
-              "aria-label": `${intl.formatMessage(_i18n.messages.progressLabel)}: ${c.titleText}`,
-              children: /*#__PURE__*/(0, _jsxRuntime.jsx)("i", {
-                style: {
-                  width: `${c.pct}%`
-                }
-              })
-            }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
-              className: "cls-num",
-              children: [c.pct, "%"]
-            })]
+            children: /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
+              className: "cls-ctable__cell",
+              children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
+                className: "cls-bar",
+                role: "progressbar",
+                "aria-valuemin": 0,
+                "aria-valuemax": 100,
+                "aria-valuenow": c.pct,
+                "aria-label": `${intl.formatMessage(_i18n.messages.progressLabel)}: ${c.titleText}`,
+                children: /*#__PURE__*/(0, _jsxRuntime.jsx)("i", {
+                  style: {
+                    width: `${c.pct}%`
+                  }
+                })
+              }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
+                className: "cls-num",
+                children: [c.pct, "%"]
+              })]
+            })
           }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("td", {
             className: "cls-ctable__score cls-num",
             children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {

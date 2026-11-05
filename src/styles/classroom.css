@@ -703,14 +703,16 @@ body:has(.cls-hero__sticky) { padding-bottom: 72px; }
 .cls-ctable tbody { display: flex; flex-direction: column; gap: 10px; }
 .cls-ctable__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; padding: 14px; border: 1px solid var(--cls-border); border-radius: var(--cls-radius-md); background: var(--cls-surface); }
 .cls-ctable td { padding: 0; }
-.cls-ctable__course { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; min-width: 0; }
-.cls-ctable__course > span:last-child { min-width: 0; }
-.cls-ctable__title { display: block; font-weight: 600; color: var(--cls-text); line-height: 1.35; }
-a.cls-ctable__title:hover { color: var(--cls-action); }
+.cls-ctable__course { grid-column: 1 / -1; min-width: 0; }
+.cls-ctable__cell { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.cls-ctable__name { min-width: 0; }
+.cls-ctable__title { display: block; font-weight: 600; color: var(--cls-text); line-height: 1.35; text-decoration: none; }
+a.cls-ctable__title:hover { color: var(--cls-action); text-decoration: underline; }
 a.cls-ctable__title::after { content: ""; position: absolute; inset: 0; }
 .cls-ctable__row { position: relative; }
 .cls-ctable__course small { display: block; color: var(--cls-text-3); font-size: 12px; }
-.cls-ctable__progress { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; }
+.cls-ctable__progress { grid-column: 1 / -1; }
+.cls-ctable__progress .cls-ctable__cell { gap: 10px; }
 .cls-ctable__progress .cls-bar { flex: 1; height: 6px; background: var(--cls-ring-track); }
 .cls-ctable__label { color: var(--cls-text-3); }
 .cls-ctable__go { display: none; }
@@ -731,8 +733,8 @@ a.cls-ctable__title::after { content: ""; position: absolute; inset: 0; }
   .cls-ctable th:last-child { border-radius: 0 10px 10px 0; width: 32px; }
   .cls-ctable td { display: table-cell; height: 64px; padding: 10px 12px; border-bottom: 1px solid var(--cls-border); vertical-align: middle; }
   .cls-ctable tbody tr:last-child td { border-bottom: 0; }
-  .cls-ctable__progress { min-width: 150px; }
-  .cls-ctable__progress .cls-bar { display: inline-block; width: 96px; flex: none; vertical-align: middle; margin-right: 8px; }
+  .cls-ctable__progress { min-width: 160px; }
+  .cls-ctable__progress .cls-bar { width: 96px; flex: none; }
   .cls-ctable__label { display: none; }
   .cls-ctable__go { display: table-cell; color: var(--cls-text-3); }
   .cls-ctable__row:hover td { background: var(--cls-bg); }
