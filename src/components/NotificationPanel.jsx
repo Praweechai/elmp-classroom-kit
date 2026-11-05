@@ -22,7 +22,7 @@ const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1
 // Messages panel (S-74, doc 04 §5.15, F-100). Items = CA-09 `data[]`. Dialog: focus trap, Esc closes.
 const NotificationPanel = ({
   open, onClose, items = [], loading = false, error, hasMore = false,
-  onOpenItem, onMarkAllRead, onLoadMore, onRetry,
+  onOpenItem, onMarkAllRead, onLoadMore, onRetry, now,
 }) => {
   const intl = useClassroomIntl();
   const { locale } = intl;
@@ -82,7 +82,7 @@ const NotificationPanel = ({
                       <span className="cls-nitem__text">
                         <b>{title}</b>
                         <span>{localized(n.body, locale)}</span>
-                        <time dateTime={n.created_at}>{timeAgo(n.created_at, locale)}</time>
+                        <time dateTime={n.created_at}>{timeAgo(n.created_at, locale, now)}</time>
                       </span>
                       {!n.read_at && <span className="cls-nitem__dot"><span className="cls-sr">{intl.formatMessage(messages.unreadLabel)}</span></span>}
                     </button>
@@ -120,6 +120,8 @@ NotificationPanel.propTypes = {
   onMarkAllRead: PropTypes.func,
   onLoadMore: PropTypes.func,
   onRetry: PropTypes.func,
+  // Fixed "now" for stories and screenshot tests; real use leaves it empty.
+  now: PropTypes.number,
 };
 
 export default NotificationPanel;

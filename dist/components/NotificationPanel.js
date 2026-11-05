@@ -49,7 +49,8 @@ const NotificationPanel = ({
   onOpenItem,
   onMarkAllRead,
   onLoadMore,
-  onRetry
+  onRetry,
+  now
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
   const {
@@ -167,7 +168,7 @@ const NotificationPanel = ({
                     children: (0, _i18n.localized)(n.body, locale)
                   }), /*#__PURE__*/(0, _jsxRuntime.jsx)("time", {
                     dateTime: n.created_at,
-                    children: (0, _i18n.timeAgo)(n.created_at, locale)
+                    children: (0, _i18n.timeAgo)(n.created_at, locale, now)
                   })]
                 }), !n.read_at && /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
                   className: "cls-nitem__dot",
@@ -209,6 +210,8 @@ NotificationPanel.propTypes = {
   onOpenItem: _propTypes.default.func,
   onMarkAllRead: _propTypes.default.func,
   onLoadMore: _propTypes.default.func,
-  onRetry: _propTypes.default.func
+  onRetry: _propTypes.default.func,
+  // Fixed "now" for stories and screenshot tests; real use leaves it empty.
+  now: _propTypes.default.number
 };
 var _default = exports.default = NotificationPanel;
