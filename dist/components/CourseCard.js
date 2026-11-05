@@ -13,12 +13,13 @@ var _LinkContext = require("./LinkContext");
 var _Progress = require("./Progress");
 var _jsxRuntime = require("react/jsx-runtime");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-const COURSE_STATES = exports.COURSE_STATES = ['not_started', 'in_progress', 'passed'];
+// Plan 4 F-111: "passed" = Completed (passed + every unit done); "almost" = passed, units left.
+const COURSE_STATES = exports.COURSE_STATES = ['not_started', 'in_progress', 'almost', 'passed'];
 const actionFor = (state, hasCertificate) => {
   if (state === 'passed') {
     return hasCertificate ? _i18n.messages.viewCertificate : _i18n.messages.review;
   }
-  return state === 'in_progress' ? _i18n.messages.continue : _i18n.messages.start;
+  return state === 'in_progress' || state === 'almost' ? _i18n.messages.continue : _i18n.messages.start;
 };
 
 // Course card (doc 04 §5.4, F-92). The whole card links to the course home; the button resumes.
@@ -32,6 +33,7 @@ const CourseCard = ({
   durationHours,
   ceHours,
   units,
+  unitsDone,
   progress = 0,
   state = 'not_started',
   certificateUrl,
@@ -106,8 +108,14 @@ const CourseCard = ({
           }), text]
         }, text))
       }), enrolled && state !== 'not_started' && /*#__PURE__*/(0, _jsxRuntime.jsx)(_Progress.ProgressBar, {
-        value: passed ? 100 : progress,
+        value: passed ? 100 : Math.min(progress, 99),
         label: title
+      }), enrolled && state === 'almost' && /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
+        className: "cls-almost",
+        role: "note",
+        children: units != null && unitsDone != null ? intl.formatMessage(_i18n.messages.almostLeft, {
+          n: Math.max(1, units - unitsDone)
+        }) : intl.formatMessage(_i18n.messages.statusAlmost)
       })]
     }), /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
       className: "cls-card__foot",
@@ -137,6 +145,7 @@ CourseCard.propTypes = {
   durationHours: _propTypes.default.number,
   ceHours: _propTypes.default.number,
   units: _propTypes.default.number,
+  unitsDone: _propTypes.default.number,
   progress: _propTypes.default.number,
   state: _propTypes.default.oneOf(COURSE_STATES),
   certificateUrl: _propTypes.default.string,

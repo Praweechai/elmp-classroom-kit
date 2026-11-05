@@ -62,6 +62,9 @@ const messages = defineMessages({
   statusNotStarted: { id: 'cls.status.notStarted', defaultMessage: 'Not started' },
   statusInProgress: { id: 'cls.status.inProgress', defaultMessage: 'In progress' },
   statusPassed: { id: 'cls.status.passed', defaultMessage: 'Passed' },
+  // Plan 4 F-111: passed the quiz but some units are not done yet
+  statusAlmost: { id: 'cls.status.almost', defaultMessage: 'Almost done' },
+  almostLeft: { id: 'cls.status.almostLeft', defaultMessage: 'Almost done — {n, plural, one {# unit} other {# units}} left' },
   due: {
     id: 'cls.due',
     defaultMessage: '{n, plural, =0 {Due {date} · today} one {Due {date} · # day left} other {Due {date} · # days left}}',

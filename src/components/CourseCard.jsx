@@ -9,16 +9,17 @@ import KitIcon from './KitIcon';
 import { useLinkComponent } from './LinkContext';
 import { ProgressBar } from './Progress';
 
-export const COURSE_STATES = ['not_started', 'in_progress', 'passed'];
+// Plan 4 F-111: "passed" = Completed (passed + every unit done); "almost" = passed, units left.
+export const COURSE_STATES = ['not_started', 'in_progress', 'almost', 'passed'];
 
 const actionFor = (state, hasCertificate) => {
   if (state === 'passed') { return hasCertificate ? messages.viewCertificate : messages.review; }
-  return state === 'in_progress' ? messages.continue : messages.start;
+  return state === 'in_progress' || state === 'almost' ? messages.continue : messages.start;
 };
 
 // Course card (doc 04 §5.4, F-92). The whole card links to the course home; the button resumes.
 const CourseCard = ({
-  title, code, imageUrl, category, href, resumeHref, durationHours, ceHours, units,
+  title, code, imageUrl, category, href, resumeHref, durationHours, ceHours, units, unitsDone,
   progress = 0, state = 'not_started', certificateUrl, required, completedAt, enrolled = true,
 }) => {
   const intl = useClassroomIntl();
@@ -62,7 +63,14 @@ const CourseCard = ({
         <div className="cls-meta">
           {meta.map(([icon, text]) => <div key={text}><KitIcon src={icon} size={18} />{text}</div>)}
         </div>
-        {enrolled && state !== 'not_started' && <ProgressBar value={passed ? 100 : progress} label={title} />}
+        {enrolled && state !== 'not_started' && <ProgressBar value={passed ? 100 : Math.min(progress, 99)} label={title} />}
+        {enrolled && state === 'almost' && (
+          <p className="cls-almost" role="note">
+            {units != null && unitsDone != null
+              ? intl.formatMessage(messages.almostLeft, { n: Math.max(1, units - unitsDone) })
+              : intl.formatMessage(messages.statusAlmost)}
+          </p>
+        )}
       </div>
       <div className="cls-card__foot">
         {enrolled ? (
@@ -91,6 +99,7 @@ CourseCard.propTypes = {
   durationHours: PropTypes.number,
   ceHours: PropTypes.number,
   units: PropTypes.number,
+  unitsDone: PropTypes.number,
   progress: PropTypes.number,
   state: PropTypes.oneOf(COURSE_STATES),
   certificateUrl: PropTypes.string,

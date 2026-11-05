@@ -16,6 +16,8 @@ var _jsxRuntime = require("react/jsx-runtime");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 const COURSE_STATUS = {
   passed: _i18n.messages.statusPassed,
+  completed: _i18n.messages.statusCompleted,
+  almost: _i18n.messages.statusAlmost,
   in_progress: _i18n.messages.statusInProgress,
   not_started: _i18n.messages.statusNotStarted
 };
@@ -27,15 +29,24 @@ const CourseRow = ({
   const Link = (0, _LinkContext.useLinkComponent)();
   const title = (0, _i18n.localized)(course.title, intl.locale);
   const ready = course.enrolled !== false;
-  const state = COURSE_STATUS[course.status] ? course.status : 'not_started';
+  const raw = course.learner_status || course.status; // Plan 4 F-111: one completion rule (Portal)
+  const state = COURSE_STATUS[raw] ? raw : 'not_started';
+  const look = {
+    completed: 'passed',
+    almost: 'in_progress'
+  }[state] || state;
+  const pct = course.progress_percent ?? course.grade_percent;
+  const label = state === 'almost' && course.units_left != null ? intl.formatMessage(_i18n.messages.almostLeft, {
+    n: course.units_left
+  }) : intl.formatMessage(COURSE_STATUS[state]);
   const content = /*#__PURE__*/(0, _jsxRuntime.jsxs)(_jsxRuntime.Fragment, {
     children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
-      className: `cls-st cls-st--${ready ? state : 'pending'}`,
+      className: `cls-st cls-st--${ready ? look : 'pending'}`,
       style: {
-        '--cls-st-pct': `${course.grade_percent || 50}%`
+        '--cls-st-pct': `${pct || 50}%`
       },
       "aria-hidden": "true",
-      children: state === 'passed' && /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
+      children: look === 'passed' && /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
         src: _icons.Check,
         size: 16
       })
@@ -49,7 +60,7 @@ const CourseRow = ({
       })
     }), /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
       className: "cls-row__status",
-      children: ready ? intl.formatMessage(COURSE_STATUS[state]) : intl.formatMessage(_i18n.messages.preparing)
+      children: ready ? label : intl.formatMessage(_i18n.messages.preparing)
     }), ready && href ? /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
       src: _icons.ChevronRight,
       size: 20,
@@ -75,7 +86,10 @@ CourseRow.propTypes = {
     status: _propTypes.default.string,
     enrolled: _propTypes.default.bool,
     ce_hours: _propTypes.default.number,
-    grade_percent: _propTypes.default.number
+    grade_percent: _propTypes.default.number,
+    learner_status: _propTypes.default.oneOf(['completed', 'almost', 'in_progress', 'not_started']),
+    progress_percent: _propTypes.default.number,
+    units_left: _propTypes.default.number
   }).isRequired,
   href: _propTypes.default.string
 };

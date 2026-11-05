@@ -15,7 +15,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 const linkShape = _propTypes.default.shape({
   home: _propTypes.default.string.isRequired,
   certificates: _propTypes.default.string.isRequired,
-  hours: _propTypes.default.string.isRequired,
+  hours: _propTypes.default.string,
+  // Plan 4 F-112: no link = CE hours switched off, no tab
   account: _propTypes.default.string,
   signOut: _propTypes.default.string,
   portal: _propTypes.default.string
@@ -226,7 +227,7 @@ const ClassroomHeader = ({
     });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-  const nav = [['home', links.home, _i18n.messages.navHome], ['certificates', links.certificates, _i18n.messages.navCertificates], ['hours', links.hours, _i18n.messages.navHours]];
+  const nav = [['home', links.home, _i18n.messages.navHome], ['certificates', links.certificates, _i18n.messages.navCertificates], ['hours', links.hours, _i18n.messages.navHours]].filter(([, href]) => Boolean(href));
   return /*#__PURE__*/(0, _jsxRuntime.jsx)("header", {
     className: `cls-header cls-root${scrolled ? ' is-scrolled' : ''}`,
     children: /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
@@ -294,7 +295,7 @@ const BottomTabs = ({
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
   const Link = (0, _LinkContext.useLinkComponent)();
-  const tabs = [['home', links.home, _icons.Home, _i18n.messages.navHomeShort], ['certificates', links.certificates, _icons.WorkspacePremium, _i18n.messages.navCertificates], ['hours', links.hours, _icons.Schedule, _i18n.messages.navHoursShort]];
+  const tabs = [['home', links.home, _icons.Home, _i18n.messages.navHomeShort], ['certificates', links.certificates, _icons.WorkspacePremium, _i18n.messages.navCertificates], ['hours', links.hours, _icons.Schedule, _i18n.messages.navHoursShort]].filter(([, href]) => Boolean(href));
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("nav", {
     className: "cls-tabs cls-root",
     "aria-label": intl.formatMessage(_i18n.messages.tabsLabel),

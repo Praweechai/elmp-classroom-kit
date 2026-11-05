@@ -12,6 +12,8 @@ import StatusPill from './StatusPill';
 
 const COURSE_STATUS = {
   passed: messages.statusPassed,
+  completed: messages.statusCompleted,
+  almost: messages.statusAlmost,
   in_progress: messages.statusInProgress,
   not_started: messages.statusNotStarted,
 };
@@ -21,15 +23,21 @@ const CourseRow = ({ course, href }) => {
   const Link = useLinkComponent();
   const title = localized(course.title, intl.locale);
   const ready = course.enrolled !== false;
-  const state = COURSE_STATUS[course.status] ? course.status : 'not_started';
+  const raw = course.learner_status || course.status; // Plan 4 F-111: one completion rule (Portal)
+  const state = COURSE_STATUS[raw] ? raw : 'not_started';
+  const look = { completed: 'passed', almost: 'in_progress' }[state] || state;
+  const pct = course.progress_percent ?? course.grade_percent;
+  const label = state === 'almost' && course.units_left != null
+    ? intl.formatMessage(messages.almostLeft, { n: course.units_left })
+    : intl.formatMessage(COURSE_STATUS[state]);
   const content = (
     <>
       <span
-        className={`cls-st cls-st--${ready ? state : 'pending'}`}
-        style={{ '--cls-st-pct': `${course.grade_percent || 50}%` }}
+        className={`cls-st cls-st--${ready ? look : 'pending'}`}
+        style={{ '--cls-st-pct': `${pct || 50}%` }}
         aria-hidden="true"
       >
-        {state === 'passed' && <KitIcon src={Check} size={16} />}
+        {look === 'passed' && <KitIcon src={Check} size={16} />}
       </span>
       <span className="cls-row__title">{title}</span>
       {course.ce_hours != null && (
@@ -38,7 +46,7 @@ const CourseRow = ({ course, href }) => {
         </span>
       )}
       <span className="cls-row__status">
-        {ready ? intl.formatMessage(COURSE_STATUS[state]) : intl.formatMessage(messages.preparing)}
+        {ready ? label : intl.formatMessage(messages.preparing)}
       </span>
       {ready && href ? <KitIcon src={ChevronRight} size={20} className="cls-row__chev" /> : <span className="cls-row__chev" />}
     </>
@@ -57,6 +65,9 @@ CourseRow.propTypes = {
     enrolled: PropTypes.bool,
     ce_hours: PropTypes.number,
     grade_percent: PropTypes.number,
+    learner_status: PropTypes.oneOf(['completed', 'almost', 'in_progress', 'not_started']),
+    progress_percent: PropTypes.number,
+    units_left: PropTypes.number,
   }).isRequired,
   href: PropTypes.string,
 };

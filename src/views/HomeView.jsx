@@ -29,7 +29,7 @@ export const courseShape = PropTypes.shape({
   imageUrl: PropTypes.string,
   href: PropTypes.string,
   resumeHref: PropTypes.string,
-  state: PropTypes.oneOf(['not_started', 'in_progress', 'passed']),
+  state: PropTypes.oneOf(['not_started', 'in_progress', 'almost', 'passed']),
   progress: PropTypes.number,
   units: PropTypes.number,
   certificateUrl: PropTypes.string,
@@ -86,7 +86,8 @@ const HomeView = ({
     ? localized(assignments.find((a) => a.id === portal.continue.assignment_id)?.roadmap?.title, locale) : undefined;
   const allPassed = courses.length > 0 && courses.every((c) => c.state === 'passed') && !assignments.some((a) => a.status !== 'completed');
   const nextOpen = assignments.find((a) => a.status !== 'completed');
-  const shown = filter ? courses.filter((c) => c.state === filter) : courses;
+  const inFilter = (c) => c.state === filter || (filter === 'in_progress' && c.state === 'almost');
+  const shown = filter ? courses.filter(inFilter) : courses;
   const year = Number(new Intl.DateTimeFormat('en-GB', { year: 'numeric', timeZone: 'Asia/Bangkok' }).format(now));
   const summary = portal?.summary;
   const nothingAtAll = !coursesLoading && !courses.length && !assignments.length;

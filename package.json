@@ -1,6 +1,6 @@
 {
   "name": "@elmp/classroom-kit",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "description": "ELMP Classroom kit: tokens, components, Portal client and EN/TH messages for the Mission Hospital Learning Classroom (Open edX Verawood MFE forks).",
   "license": "AGPL-3.0",
   "repository": "github:Praweechai/elmp-classroom-kit",

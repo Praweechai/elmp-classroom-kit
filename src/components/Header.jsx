@@ -11,7 +11,7 @@ import { useLinkComponent } from './LinkContext';
 const linkShape = PropTypes.shape({
   home: PropTypes.string.isRequired,
   certificates: PropTypes.string.isRequired,
-  hours: PropTypes.string.isRequired,
+  hours: PropTypes.string, // Plan 4 F-112: no link = CE hours switched off, no tab
   account: PropTypes.string,
   signOut: PropTypes.string,
   portal: PropTypes.string,
@@ -166,7 +166,7 @@ export const ClassroomHeader = ({
     ['home', links.home, messages.navHome],
     ['certificates', links.certificates, messages.navCertificates],
     ['hours', links.hours, messages.navHours],
-  ];
+  ].filter(([, href]) => Boolean(href));
   return (
     <header className={`cls-header cls-root${scrolled ? ' is-scrolled' : ''}`}>
       <div className="cls-header__in">
@@ -211,7 +211,7 @@ export const BottomTabs = ({
     ['home', links.home, Home, messages.navHomeShort],
     ['certificates', links.certificates, WorkspacePremium, messages.navCertificates],
     ['hours', links.hours, Schedule, messages.navHoursShort],
-  ];
+  ].filter(([, href]) => Boolean(href));
   return (
     <nav className="cls-tabs cls-root" aria-label={intl.formatMessage(messages.tabsLabel)}>
       {tabs.map(([key, href, icon, label]) => (

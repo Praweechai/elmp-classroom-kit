@@ -509,3 +509,6 @@ body:has(.cls-hero__sticky) { padding-bottom: 72px; }
   .cls-outline__state.is-just-done { animation: cls-fade-in 200ms linear both; }
   .cls-drawer { animation: cls-fade-in 200ms linear both; }
 }
+
+/* Plan 4 F-111: passed but units left */
+.cls-almost { margin: 8px 0 0; font-size: 14px; font-weight: 600; color: var(--cls-gold-text); }

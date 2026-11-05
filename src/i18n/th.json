@@ -52,6 +52,8 @@
   "cls.status.notStarted": "ยังไม่เริ่ม",
   "cls.status.inProgress": "กำลังเรียน",
   "cls.status.passed": "ผ่านแล้ว",
+  "cls.status.almost": "ใกล้เสร็จ",
+  "cls.status.almostLeft": "ใกล้เสร็จ — เหลืออีก {n} บท",
   "cls.due": "{n, plural, =0 {ครบกำหนด {date} · วันนี้} other {ครบกำหนด {date} · เหลือ # วัน}}",
   "cls.late": "ครบกำหนด {date} · เลยมา {n} วัน",
   "cls.completedOn": "เสร็จเมื่อ {date}",
