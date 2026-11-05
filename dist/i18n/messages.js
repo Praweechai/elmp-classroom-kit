@@ -458,6 +458,26 @@ const messages = (0, _reactIntl.defineMessages)({
   messagesUnavailable: {
     id: 'cls.messages.unavailable',
     defaultMessage: 'Messages are not available right now.'
+  },
+  playerLabel: {
+    id: 'cls.player.label',
+    defaultMessage: 'Course player'
+  },
+  playerBack: {
+    id: 'cls.player.back',
+    defaultMessage: 'Course'
+  },
+  playerBackLabel: {
+    id: 'cls.player.backLabel',
+    defaultMessage: 'Back to the course page'
+  },
+  playerOutline: {
+    id: 'cls.player.outline',
+    defaultMessage: 'Course outline'
+  },
+  playerProgress: {
+    id: 'cls.player.progress',
+    defaultMessage: 'Course progress'
   }
 });
 var _default = exports.default = messages;

@@ -147,6 +147,12 @@ Object.defineProperty(exports, "NotificationPanel", {
     return _NotificationPanel.default;
   }
 });
+Object.defineProperty(exports, "PlayerTopBar", {
+  enumerable: true,
+  get: function () {
+    return _Player.PlayerTopBar;
+  }
+});
 Object.defineProperty(exports, "PortalError", {
   enumerable: true,
   get: function () {
@@ -205,6 +211,12 @@ Object.defineProperty(exports, "ToastProvider", {
   enumerable: true,
   get: function () {
     return _Feedback.ToastProvider;
+  }
+});
+Object.defineProperty(exports, "UnitTitle", {
+  enumerable: true,
+  get: function () {
+    return _Player.UnitTitle;
   }
 });
 Object.defineProperty(exports, "createPortalClient", {
@@ -325,6 +337,7 @@ var _CertificateCard = _interopRequireDefault(require("./components/CertificateC
 var _HoursCard = _interopRequireDefault(require("./components/HoursCard"));
 var _KeyFacts = _interopRequireDefault(require("./components/KeyFacts"));
 var _GreetingBand = _interopRequireDefault(require("./components/GreetingBand"));
+var _Player = require("./components/Player");
 var _NotificationPanel = _interopRequireDefault(require("./components/NotificationPanel"));
 var _HomeView = _interopRequireWildcard(require("./views/HomeView"));
 var _CertificatesView = _interopRequireDefault(require("./views/CertificatesView"));

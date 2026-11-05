@@ -351,3 +351,22 @@ a.cls-row:hover { background: var(--elmp-gray-25); color: var(--cls-text); text-
 }
 @keyframes cls-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes cls-slide-in { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Player top bar + unit title (doc 04 §5.12, §6.6) ---------- */
+.cls-player-bar { position: sticky; top: 0; z-index: 30; background: #fff; border-bottom: 1px solid var(--cls-border); }
+.cls-player-bar__row { display: flex; align-items: center; gap: 8px; height: 56px; padding: 0 12px; }
+.cls-player-bar__back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 8px; border-radius: 10px;
+  color: var(--cls-action); font-weight: 600; text-decoration: none; }
+.cls-player-bar__back:hover { background: var(--cls-action-tint); }
+.cls-player-bar__back-text { display: none; }
+.cls-player-bar__title { flex: 1; min-width: 0; margin: 0; font-size: 15px; font-weight: 600; color: var(--cls-text);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cls-player-bar__count { margin: 0; font-size: 13px; color: var(--cls-text-2); white-space: nowrap; }
+.cls-player-bar__progress { height: 3px; background: var(--cls-border); }
+.cls-player-bar__progress > span { display: block; height: 100%; background: var(--cls-action); }
+.cls-unit-title { margin: 0 0 16px; }
+.cls-unit-title__section { margin: 0 0 4px; font-size: 13px; font-weight: 600; color: var(--cls-text-2); }
+.cls-unit-title h1 { margin: 0; font-size: 24px; font-weight: 700; line-height: 1.25; letter-spacing: -.01em; }
+.cls-unit-title h1:lang(th) { line-height: 1.45; letter-spacing: 0; }
+@media (min-width: 480px) { .cls-player-bar__back-text { display: inline; } }
+@media (min-width: 768px) { .cls-player-bar__row { padding: 0 20px; gap: 12px; } .cls-unit-title h1 { font-size: 30px; } }

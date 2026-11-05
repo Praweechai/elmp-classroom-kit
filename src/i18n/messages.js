@@ -142,6 +142,11 @@ const messages = defineMessages({
   showMore: { id: 'cls.messages.more', defaultMessage: 'Show more' },
   unreadLabel: { id: 'cls.messages.unread', defaultMessage: 'Unread' },
   messagesUnavailable: { id: 'cls.messages.unavailable', defaultMessage: 'Messages are not available right now.' },
+  playerLabel: { id: 'cls.player.label', defaultMessage: 'Course player' },
+  playerBack: { id: 'cls.player.back', defaultMessage: 'Course' },
+  playerBackLabel: { id: 'cls.player.backLabel', defaultMessage: 'Back to the course page' },
+  playerOutline: { id: 'cls.player.outline', defaultMessage: 'Course outline' },
+  playerProgress: { id: 'cls.player.progress', defaultMessage: 'Course progress' },
 });
 
 export default messages;

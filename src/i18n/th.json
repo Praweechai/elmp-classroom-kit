@@ -17,7 +17,6 @@
   "cls.language.group": "เลือกภาษา",
   "cls.signOut": "ออกจากระบบ",
   "cls.portal": "เครื่องมือฝ่ายบุคคล",
-
   "cls.greeting.morning": "สวัสดีตอนเช้า คุณ{name}",
   "cls.greeting.afternoon": "สวัสดีตอนบ่าย คุณ{name}",
   "cls.greeting.evening": "สวัสดีตอนเย็น คุณ{name}",
@@ -25,7 +24,6 @@
   "cls.summary.dueMonth": "ครบกำหนดเดือนนี้ {n} รายการ",
   "cls.summary.hours": "ชั่วโมง CE {earned} / {target}",
   "cls.summary.allDone": "ไม่มีงานค้าง เยี่ยมมาก",
-
   "cls.continue": "เรียนต่อ",
   "cls.continue.label": "เรียนต่อ · {roadmap}",
   "cls.start": "เริ่มเรียน",
@@ -35,7 +33,6 @@
   "cls.unitOf": "บทที่ {i} จาก {n}",
   "cls.percentDone": "เรียนแล้ว {pct}%",
   "cls.progress.label": "ความคืบหน้า",
-
   "cls.required": "การอบรมภาคบังคับ",
   "cls.allCourses": "หลักสูตรทั้งหมดของฉัน",
   "cls.course": "หลักสูตร",
@@ -48,7 +45,6 @@
   "cls.showCourses": "แสดงหลักสูตร",
   "cls.hideCourses": "ซ่อนหลักสูตร",
   "cls.openCourse": "เปิด {title}",
-
   "cls.status.onTrack": "ตามกำหนด",
   "cls.status.dueSoon": "ใกล้ครบกำหนด",
   "cls.status.overdue": "เลยกำหนด",
@@ -60,12 +56,10 @@
   "cls.late": "ครบกำหนด {date} · เลยมา {n} วัน",
   "cls.completedOn": "เสร็จเมื่อ {date}",
   "cls.updatedAgo": "อัปเดต {time}",
-
   "cls.hours.title": "ชั่วโมง CE ปี {year}",
   "cls.hours.value": "{earned} จาก {target} ชั่วโมง",
   "cls.hours.toGo": "อีก {n} ชั่วโมงก่อน {date}",
   "cls.hours.reached": "ครบตามเป้าหมายแล้ว เยี่ยมมาก",
-
   "cls.cert.latest": "ใบประกาศล่าสุด",
   "cls.cert.roadmap": "ใบประกาศแผนการอบรม",
   "cls.cert.course": "ใบประกาศหลักสูตร",
@@ -77,14 +71,12 @@
   "cls.copy": "คัดลอก",
   "cls.copy.code": "คัดลอกรหัส {code}",
   "cls.copied": "คัดลอกแล้ว",
-
   "cls.fact.duration": "ระยะเวลา",
   "cls.fact.units": "จำนวนบท",
   "cls.fact.hours": "ชั่วโมง CE",
   "cls.fact.certificate": "ใบประกาศ",
   "cls.fact.certificate.yes": "มีให้",
   "cls.fact.due": "วันครบกำหนด",
-
   "cls.unavailable": "ยังไม่สามารถแสดงกำหนดส่งได้ในขณะนี้",
   "cls.tryAgain": "ลองอีกครั้ง",
   "cls.empty": "ยังไม่มีการอบรมที่ได้รับมอบหมาย ฝ่ายบุคคลจะเพิ่มหลักสูตรให้คุณ",
@@ -93,7 +85,6 @@
   "cls.loading": "กำลังโหลด",
   "cls.dismiss": "ปิด",
   "cls.close": "ปิด",
-
   "cls.home.title": "การเรียนของฉัน",
   "cls.allDone.title": "เรียนครบแล้ว",
   "cls.nextDue": "ครบกำหนดถัดไป: {title} · {date}",
@@ -103,12 +94,10 @@
   "cls.filter.course": "หลักสูตร",
   "cls.filter.none": "ไม่มีหลักสูตรในหมวดนี้",
   "cls.noAccess.title": "ไม่พบประวัติการอบรมของคุณ",
-
   "cls.certs.title": "ใบประกาศ",
   "cls.certs.intro": "ดาวน์โหลดหลักฐานการอบรมของคุณ ใบประกาศแผนการอบรมมีรหัสที่ฝ่ายบุคคลตรวจสอบได้",
   "cls.certs.empty": "เรียนจบหลักสูตรเพื่อรับใบประกาศใบแรกของคุณ",
   "cls.download.failed": "เริ่มดาวน์โหลดไม่ได้ กรุณาลองอีกครั้ง",
-
   "cls.hoursPage.title": "ชั่วโมง CE",
   "cls.hoursPage.year": "ปี",
   "cls.hoursPage.list": "หลักสูตรที่นับชั่วโมง",
@@ -117,11 +106,15 @@
   "cls.hoursPage.hours": "ชั่วโมง",
   "cls.hoursPage.none": "ยังไม่มีหลักสูตรที่ผ่านในปี {year}",
   "cls.hoursPage.note": "นับเฉพาะหลักสูตรที่ผ่านในปีนี้ สอบถามฝ่ายบุคคลเรื่องการอบรมในสถานที่",
-
   "cls.messages.title": "ข้อความ",
   "cls.messages.readAll": "อ่านทั้งหมดแล้ว",
   "cls.messages.empty": "ไม่มีข้อความใหม่",
   "cls.messages.more": "แสดงเพิ่มเติม",
   "cls.messages.unread": "ยังไม่อ่าน",
-  "cls.messages.unavailable": "ยังไม่สามารถแสดงข้อความได้ในขณะนี้"
+  "cls.messages.unavailable": "ยังไม่สามารถแสดงข้อความได้ในขณะนี้",
+  "cls.player.label": "ห้องเรียนหลักสูตร",
+  "cls.player.back": "หลักสูตร",
+  "cls.player.backLabel": "กลับไปหน้าหลักสูตร",
+  "cls.player.outline": "สารบัญหลักสูตร",
+  "cls.player.progress": "ความคืบหน้าของหลักสูตร"
 }
