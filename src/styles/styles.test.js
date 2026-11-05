@@ -7,7 +7,10 @@ describe('classroom.css', () => {
 
   it('has the rules of every kit part and balanced braces', () => {
     ['.cls-btn {', '.cls-header', '.cls-pill', '.cls-cert {', '.cls-outline__row', '.cls-drawer {', '.cls-hero {',
-      '.cls-certprev', '.cls-finished {', '.cls-player-bar {'].forEach((rule) => expect(css).toContain(rule));
+      '.cls-certprev', '.cls-finished {', '.cls-player-bar {',
+      // Plan 4 kit 1.0
+      '.cls-shell {', '.cls-side {', '.cls-topbar {', '.cls-dash {', '.cls-dcard {', '.cls-gauge {', '.cls-stat {', '.cls-banner {',
+      '.cls-deadline {', '.cls-streak__week', '.cls-ctable {', '.cls-cstatus', '.cls-quiz {', '.cls-search {'].forEach((rule) => expect(css).toContain(rule));
     expect(css.split('{').length).toBe(css.split('}').length);
   });
 });

@@ -32,8 +32,22 @@ export {
   EmptyState, Notice, Skeleton, ToastProvider, useToast,
 } from './components/Feedback';
 export {
-  AccountMenu, Avatar, BottomTabs, ClassroomHeader, LanguageToggle,
+  AccountMenu, Avatar, BottomTabs, ClassroomHeader, LanguageToggle, MessagesButton,
 } from './components/Header';
+
+// Plan 4 · kit 1.0 (P4-3): sidebar shell + home dashboard widgets + pages.
+export {
+  ClassroomShell, SidebarNav, TopBar, useSidebarState,
+} from './components/Shell';
+export {
+  BANNER_KINDS, DashCard, DeadlineList, EncouragementBanner, Gauge, NextQuizList, StatGroup, StatRing, StreakWeek,
+  TONES, bangkokDay, urgency, weekdayLabels,
+} from './components/Dashboard';
+export {
+  default as CourseTable, COURSE_FILTERS, COURSE_STATUSES, CourseFilters, CourseStatus, coursePercent,
+} from './components/CourseTable';
+export { default as DashboardView, DashboardSkeleton } from './views/DashboardView';
+export { default as MyCoursesView } from './views/MyCoursesView';
 
 export {
   CACHE_MS, PortalError, TIMEOUT_MS, createPortalClient, getPortalClient, resetPortalClient, toPortalError,

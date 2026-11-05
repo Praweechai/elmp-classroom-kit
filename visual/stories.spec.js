@@ -5,7 +5,7 @@ const { test, expect } = require('@playwright/test');
 
 const index = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'storybook-static', 'index.json'), 'utf8'));
 const stories = Object.values(index.entries).filter((e) => e.type === 'story');
-const WIDTHS = [1440, 390, 360];
+const WIDTHS = [1440, 1024, 390, 360]; // Plan 4 adds 1024 (collapsed sidebar), doc 07 definition of done
 
 stories.forEach((story) => {
   WIDTHS.forEach((width) => {

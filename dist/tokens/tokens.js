@@ -80,7 +80,25 @@ const color = {
   infoBg: '#EFF8FF',
   infoEdge: '#B2DDFF',
   ink: '#0F1F17',
-  scrim: 'rgba(20, 25, 22, .38)'
+  scrim: 'rgba(20, 25, 22, .38)',
+  // Plan 4 data visuals (doc 04-design §2): ring/gauge track and fills. Values are always shown as text too (NFR-D3).
+  ringTrack: '#E6ECE8',
+  ring1: green[600],
+  // progress
+  ring2: '#2E90FA',
+  // learning activity
+  ring3: '#B38523',
+  // achievement (gold 500 is 2.96:1 on white, a touch darker reaches 3.3:1)
+  ring4: '#7A5AF8',
+  // quizzes
+  ring5: '#EE46BC',
+  // time
+  ringLate: '#D92D20',
+  // overdue required training
+  violetTint: '#F4F3FF',
+  violetText: '#5925DC',
+  pinkTint: '#FDF2FA',
+  pinkText: '#C11574'
 };
 
 // Generated course covers by category (doc 04 §2.1).
@@ -102,14 +120,19 @@ const radius = {
   card: '12px',
   group: '14px',
   panel: '16px',
-  pill: '999px'
+  pill: '999px',
+  md: '12px',
+  lg: '16px'
 };
 const shadow = {
   xs: '0 1px 2px rgba(20, 25, 22, .06)',
   md: '0 6px 16px -4px rgba(20, 25, 22, .10), 0 2px 4px -2px rgba(20, 25, 22, .05)',
   lg: '0 14px 28px -8px rgba(20, 25, 22, .14), 0 4px 8px -4px rgba(20, 25, 22, .06)',
   xl: '0 28px 56px -16px rgba(20, 25, 22, .22)',
-  ring: `0 0 0 3px #FFFFFF, 0 0 0 5px ${green[600]}`
+  ring: `0 0 0 3px #FFFFFF, 0 0 0 5px ${green[600]}`,
+  1: '0 1px 2px rgb(16 24 20 / .06), 0 1px 3px rgb(16 24 20 / .04)',
+  // Plan 4 cards
+  2: '0 12px 32px rgb(16 24 20 / .12)' // Plan 4 menus, modal
 };
 const motion = {
   fast: '150ms',
@@ -130,11 +153,20 @@ const size = {
   tap: '44px',
   homeMax: '1200px',
   courseMax: '1120px',
-  measure: '880px'
+  measure: '880px',
+  sidebar: '248px',
+  // Plan 4 shell (F-115)
+  sidebarCollapsed: '72px',
+  dashMax: '1200px',
+  tree: '320px',
+  // Plan 4 player (F-116)
+  rail: '40px'
 };
 
 // Text/background pairs that must reach WCAG AA (doc 04 §10, checked by tokens.test.js).
-const contrastPairs = [['text', 'surface', 4.5], ['text2', 'surface', 4.5], ['text3', 'surface', 4.5], ['text3', 'bg', 4.5], ['action', 'surface', 4.5], ['action', 'actionTint', 4.5], ['okText', 'okBg', 4.5], ['soonText', 'soonBg', 4.5], ['lateText', 'lateBg', 4.5], ['doneText', 'doneBg', 4.5], ['infoTextStrong', 'infoBg', 4.5], ['goldText', 'goldTint', 4.5], ['goldText', 'surface', 4.5], ['surface', 'action', 4.5], ['borderInput', 'surface', 3]];
+const contrastPairs = [['text', 'surface', 4.5], ['text2', 'surface', 4.5], ['text3', 'surface', 4.5], ['text3', 'bg', 4.5], ['action', 'surface', 4.5], ['action', 'actionTint', 4.5], ['okText', 'okBg', 4.5], ['soonText', 'soonBg', 4.5], ['lateText', 'lateBg', 4.5], ['doneText', 'doneBg', 4.5], ['infoTextStrong', 'infoBg', 4.5], ['goldText', 'goldTint', 4.5], ['goldText', 'surface', 4.5], ['surface', 'action', 4.5], ['borderInput', 'surface', 3], ['violetText', 'violetTint', 4.5], ['pinkText', 'pinkTint', 4.5], ['infoText', 'infoBg', 4.5],
+// Plan 4: ring fills are graphics next to their text value (WCAG 1.4.11 → 3:1 on white)
+['ring1', 'surface', 3], ['ring3', 'surface', 3], ['ring4', 'surface', 3], ['ringLate', 'surface', 3]];
 module.exports = {
   palette,
   color,

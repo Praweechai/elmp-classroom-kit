@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.LanguageToggle = exports.ClassroomHeader = exports.BottomTabs = exports.Avatar = exports.AccountMenu = void 0;
+exports.MessagesButton = exports.LanguageToggle = exports.ClassroomHeader = exports.BottomTabs = exports.Avatar = exports.AccountMenu = void 0;
 var _react = require("react");
 var _propTypes = _interopRequireDefault(require("prop-types"));
 var _icons = require("@openedx/paragon/icons");
@@ -17,6 +17,9 @@ const linkShape = _propTypes.default.shape({
   certificates: _propTypes.default.string.isRequired,
   hours: _propTypes.default.string,
   // Plan 4 F-112: no link = CE hours switched off, no tab
+  courses: _propTypes.default.string,
+  // Plan 4 F-115: My courses page (S-91)
+  help: _propTypes.default.string,
   account: _propTypes.default.string,
   signOut: _propTypes.default.string,
   portal: _propTypes.default.string
@@ -76,7 +79,8 @@ const AccountMenu = ({
   user,
   links,
   locale,
-  onLocaleChange
+  onLocaleChange,
+  showName = false
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
   const [open, setOpen] = (0, _react.useState)(false);
@@ -110,10 +114,10 @@ const AccountMenu = ({
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
     className: "cls-menu-anchor",
     ref: anchor,
-    children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
+    children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("button", {
       ref: trigger,
       type: "button",
-      className: "cls-avatar-btn",
+      className: `cls-avatar-btn${showName ? ' cls-avatar-btn--named' : ''}`,
       "aria-haspopup": "menu",
       "aria-expanded": open,
       "aria-controls": open ? menuId : undefined,
@@ -121,9 +125,16 @@ const AccountMenu = ({
         name: user.name
       }),
       onClick: () => setOpen(!open),
-      children: /*#__PURE__*/(0, _jsxRuntime.jsx)(Avatar, {
+      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(Avatar, {
         user: user
-      })
+      }), showName && /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
+        className: "cls-avatar-btn__name",
+        "aria-hidden": "true",
+        children: user.name
+      }), showName && /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
+        src: _icons.KeyboardArrowDown,
+        size: 20
+      })]
     }), open && /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
       className: "cls-menu",
       id: menuId,
@@ -175,7 +186,8 @@ AccountMenu.propTypes = {
   user: userShape.isRequired,
   links: linkShape.isRequired,
   locale: _propTypes.default.string,
-  onLocaleChange: _propTypes.default.func
+  onLocaleChange: _propTypes.default.func,
+  showName: _propTypes.default.bool // Plan 4 top bar: avatar + name + chevron
 };
 const MessagesButton = ({
   unread,
@@ -200,6 +212,7 @@ const MessagesButton = ({
     })]
   });
 };
+exports.MessagesButton = MessagesButton;
 MessagesButton.propTypes = {
   unread: _propTypes.default.number,
   onClick: _propTypes.default.func,
@@ -295,7 +308,9 @@ const BottomTabs = ({
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
   const Link = (0, _LinkContext.useLinkComponent)();
-  const tabs = [['home', links.home, _icons.Home, _i18n.messages.navHomeShort], ['certificates', links.certificates, _icons.WorkspacePremium, _i18n.messages.navCertificates], ['hours', links.hours, _icons.Schedule, _i18n.messages.navHoursShort]].filter(([, href]) => Boolean(href));
+  const tabs = [['home', links.home, _icons.Home, _i18n.messages.navHomeShort], ['courses', links.courses, _icons.MenuBook, _i18n.messages.navCoursesShort],
+  // Plan 4 F-115
+  ['certificates', links.certificates, _icons.WorkspacePremium, _i18n.messages.navCertificates], ['hours', links.hours, _icons.Schedule, _i18n.messages.navHoursShort]].filter(([, href]) => Boolean(href));
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("nav", {
     className: "cls-tabs cls-root",
     "aria-label": intl.formatMessage(_i18n.messages.tabsLabel),
@@ -328,7 +343,7 @@ const BottomTabs = ({
 };
 exports.BottomTabs = BottomTabs;
 BottomTabs.propTypes = {
-  current: _propTypes.default.oneOf(['home', 'certificates', 'hours']),
+  current: _propTypes.default.oneOf(['home', 'courses', 'certificates', 'hours']),
   links: linkShape.isRequired,
   unread: _propTypes.default.number,
   onOpenMessages: _propTypes.default.func

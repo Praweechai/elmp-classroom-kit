@@ -119,8 +119,21 @@ function createPortalClient({
       });
       invalidate('/training');
       invalidate('/hours');
+      invalidate('/dashboard');
       return data;
     },
+    // Plan 4: CA-11 home dashboard (one call, cached 60 s) and CA-12 time on task (D-67).
+    dashboard: opts => cached('/dashboard', opts),
+    activity: ({
+      courseKey,
+      seconds,
+      day
+    }) => request('post', '/activity', {
+      course_key: courseKey,
+      seconds,
+      day
+    }),
+    activityUrl: () => enabled && baseUrl ? `${baseUrl.replace(/\/$/, '')}/activity` : null,
     certificateLink: code => request('post', `/certificates/${encodeURIComponent(code)}/link`),
     markRead: id => request('post', `/notifications/${encodeURIComponent(id)}/read`),
     markAllRead: () => request('post', '/notifications/read-all')

@@ -64,6 +64,17 @@
   --cls-info-edge: #B2DDFF;
   --cls-ink: #0F1F17;
   --cls-scrim: rgba(20, 25, 22, .38);
+  --cls-ring-track: #E6ECE8;
+  --cls-ring-1: #03692A;
+  --cls-ring-2: #2E90FA;
+  --cls-ring-3: #B38523;
+  --cls-ring-4: #7A5AF8;
+  --cls-ring-5: #EE46BC;
+  --cls-ring-late: #D92D20;
+  --cls-violet-tint: #F4F3FF;
+  --cls-violet-text: #5925DC;
+  --cls-pink-tint: #FDF2FA;
+  --cls-pink-text: #C11574;
   --cls-cover-clinical: linear-gradient(135deg, #025622 0%, #16844A 100%);
   --cls-cover-safety: linear-gradient(135deg, #0B4F6C 0%, #2E90FA 100%);
   --cls-cover-compliance: linear-gradient(135deg, #43209F 0%, #7A5AF8 100%);
@@ -78,6 +89,10 @@
   --cls-radius-group: 14px;
   --cls-radius-panel: 16px;
   --cls-radius-pill: 999px;
+  --cls-radius-md: 12px;
+  --cls-radius-lg: 16px;
+  --cls-shadow-1: 0 1px 2px rgb(16 24 20 / .06), 0 1px 3px rgb(16 24 20 / .04);
+  --cls-shadow-2: 0 12px 32px rgb(16 24 20 / .12);
   --cls-shadow-xs: 0 1px 2px rgba(20, 25, 22, .06);
   --cls-shadow-md: 0 6px 16px -4px rgba(20, 25, 22, .10), 0 2px 4px -2px rgba(20, 25, 22, .05);
   --cls-shadow-lg: 0 14px 28px -8px rgba(20, 25, 22, .14), 0 4px 8px -4px rgba(20, 25, 22, .06);
@@ -100,4 +115,9 @@
   --cls-size-home-max: 1200px;
   --cls-size-course-max: 1120px;
   --cls-size-measure: 880px;
+  --cls-size-sidebar: 248px;
+  --cls-size-sidebar-collapsed: 72px;
+  --cls-size-dash-max: 1200px;
+  --cls-size-tree: 320px;
+  --cls-size-rail: 40px;
 }

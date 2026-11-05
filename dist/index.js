@@ -15,6 +15,12 @@ Object.defineProperty(exports, "Avatar", {
     return _Header.Avatar;
   }
 });
+Object.defineProperty(exports, "BANNER_KINDS", {
+  enumerable: true,
+  get: function () {
+    return _Dashboard.BANNER_KINDS;
+  }
+});
 Object.defineProperty(exports, "BottomTabs", {
   enumerable: true,
   get: function () {
@@ -33,10 +39,22 @@ Object.defineProperty(exports, "CATEGORIES", {
     return _CourseCover.CATEGORIES;
   }
 });
+Object.defineProperty(exports, "COURSE_FILTERS", {
+  enumerable: true,
+  get: function () {
+    return _CourseTable.COURSE_FILTERS;
+  }
+});
 Object.defineProperty(exports, "COURSE_STATES", {
   enumerable: true,
   get: function () {
     return _CourseCard.COURSE_STATES;
+  }
+});
+Object.defineProperty(exports, "COURSE_STATUSES", {
+  enumerable: true,
+  get: function () {
+    return _CourseTable.COURSE_STATUSES;
   }
 });
 Object.defineProperty(exports, "CertificateCard", {
@@ -63,6 +81,12 @@ Object.defineProperty(exports, "ClassroomHeader", {
     return _Header.ClassroomHeader;
   }
 });
+Object.defineProperty(exports, "ClassroomShell", {
+  enumerable: true,
+  get: function () {
+    return _Shell.ClassroomShell;
+  }
+});
 Object.defineProperty(exports, "ContinueCard", {
   enumerable: true,
   get: function () {
@@ -79,6 +103,12 @@ Object.defineProperty(exports, "CourseCover", {
   enumerable: true,
   get: function () {
     return _CourseCover.default;
+  }
+});
+Object.defineProperty(exports, "CourseFilters", {
+  enumerable: true,
+  get: function () {
+    return _CourseTable.CourseFilters;
   }
 });
 Object.defineProperty(exports, "CourseFinished", {
@@ -99,10 +129,58 @@ Object.defineProperty(exports, "CourseOutline", {
     return _CourseOutline.default;
   }
 });
+Object.defineProperty(exports, "CourseStatus", {
+  enumerable: true,
+  get: function () {
+    return _CourseTable.CourseStatus;
+  }
+});
+Object.defineProperty(exports, "CourseTable", {
+  enumerable: true,
+  get: function () {
+    return _CourseTable.default;
+  }
+});
+Object.defineProperty(exports, "DashCard", {
+  enumerable: true,
+  get: function () {
+    return _Dashboard.DashCard;
+  }
+});
+Object.defineProperty(exports, "DashboardSkeleton", {
+  enumerable: true,
+  get: function () {
+    return _DashboardView.DashboardSkeleton;
+  }
+});
+Object.defineProperty(exports, "DashboardView", {
+  enumerable: true,
+  get: function () {
+    return _DashboardView.default;
+  }
+});
+Object.defineProperty(exports, "DeadlineList", {
+  enumerable: true,
+  get: function () {
+    return _Dashboard.DeadlineList;
+  }
+});
 Object.defineProperty(exports, "EmptyState", {
   enumerable: true,
   get: function () {
     return _Feedback.EmptyState;
+  }
+});
+Object.defineProperty(exports, "EncouragementBanner", {
+  enumerable: true,
+  get: function () {
+    return _Dashboard.EncouragementBanner;
+  }
+});
+Object.defineProperty(exports, "Gauge", {
+  enumerable: true,
+  get: function () {
+    return _Dashboard.Gauge;
   }
 });
 Object.defineProperty(exports, "GreetingBand", {
@@ -153,10 +231,28 @@ Object.defineProperty(exports, "LinkContext", {
     return _LinkContext.LinkContext;
   }
 });
+Object.defineProperty(exports, "MessagesButton", {
+  enumerable: true,
+  get: function () {
+    return _Header.MessagesButton;
+  }
+});
+Object.defineProperty(exports, "MyCoursesView", {
+  enumerable: true,
+  get: function () {
+    return _MyCoursesView.default;
+  }
+});
 Object.defineProperty(exports, "NO_ACCESS", {
   enumerable: true,
   get: function () {
     return _HomeView.NO_ACCESS;
+  }
+});
+Object.defineProperty(exports, "NextQuizList", {
+  enumerable: true,
+  get: function () {
+    return _Dashboard.NextQuizList;
   }
 });
 Object.defineProperty(exports, "Notice", {
@@ -213,16 +309,40 @@ Object.defineProperty(exports, "STATUSES", {
     return _StatusPill.STATUSES;
   }
 });
+Object.defineProperty(exports, "SidebarNav", {
+  enumerable: true,
+  get: function () {
+    return _Shell.SidebarNav;
+  }
+});
 Object.defineProperty(exports, "Skeleton", {
   enumerable: true,
   get: function () {
     return _Feedback.Skeleton;
   }
 });
+Object.defineProperty(exports, "StatGroup", {
+  enumerable: true,
+  get: function () {
+    return _Dashboard.StatGroup;
+  }
+});
+Object.defineProperty(exports, "StatRing", {
+  enumerable: true,
+  get: function () {
+    return _Dashboard.StatRing;
+  }
+});
 Object.defineProperty(exports, "StatusPill", {
   enumerable: true,
   get: function () {
     return _StatusPill.default;
+  }
+});
+Object.defineProperty(exports, "StreakWeek", {
+  enumerable: true,
+  get: function () {
+    return _Dashboard.StreakWeek;
   }
 });
 Object.defineProperty(exports, "TIMEOUT_MS", {
@@ -237,16 +357,40 @@ Object.defineProperty(exports, "TIME_ZONE", {
     return _i18n.TIME_ZONE;
   }
 });
+Object.defineProperty(exports, "TONES", {
+  enumerable: true,
+  get: function () {
+    return _Dashboard.TONES;
+  }
+});
 Object.defineProperty(exports, "ToastProvider", {
   enumerable: true,
   get: function () {
     return _Feedback.ToastProvider;
   }
 });
+Object.defineProperty(exports, "TopBar", {
+  enumerable: true,
+  get: function () {
+    return _Shell.TopBar;
+  }
+});
 Object.defineProperty(exports, "UnitTitle", {
   enumerable: true,
   get: function () {
     return _Player.UnitTitle;
+  }
+});
+Object.defineProperty(exports, "bangkokDay", {
+  enumerable: true,
+  get: function () {
+    return _Dashboard.bangkokDay;
+  }
+});
+Object.defineProperty(exports, "coursePercent", {
+  enumerable: true,
+  get: function () {
+    return _CourseTable.coursePercent;
   }
 });
 Object.defineProperty(exports, "createPortalClient", {
@@ -333,6 +477,12 @@ Object.defineProperty(exports, "tokens", {
     return _tokens2.default;
   }
 });
+Object.defineProperty(exports, "urgency", {
+  enumerable: true,
+  get: function () {
+    return _Dashboard.urgency;
+  }
+});
 Object.defineProperty(exports, "useClassroomIntl", {
   enumerable: true,
   get: function () {
@@ -351,10 +501,22 @@ Object.defineProperty(exports, "usePortal", {
     return _usePortal.default;
   }
 });
+Object.defineProperty(exports, "useSidebarState", {
+  enumerable: true,
+  get: function () {
+    return _Shell.useSidebarState;
+  }
+});
 Object.defineProperty(exports, "useToast", {
   enumerable: true,
   get: function () {
     return _Feedback.useToast;
+  }
+});
+Object.defineProperty(exports, "weekdayLabels", {
+  enumerable: true,
+  get: function () {
+    return _Dashboard.weekdayLabels;
   }
 });
 require("./tokens/tokens.css");
@@ -384,6 +546,11 @@ var _CertificatesView = _interopRequireDefault(require("./views/CertificatesView
 var _HoursView = _interopRequireDefault(require("./views/HoursView"));
 var _Feedback = require("./components/Feedback");
 var _Header = require("./components/Header");
+var _Shell = require("./components/Shell");
+var _Dashboard = require("./components/Dashboard");
+var _CourseTable = _interopRequireWildcard(require("./components/CourseTable"));
+var _DashboardView = _interopRequireWildcard(require("./views/DashboardView"));
+var _MyCoursesView = _interopRequireDefault(require("./views/MyCoursesView"));
 var _PortalClient = require("./portal/PortalClient");
 var _usePortal = _interopRequireDefault(require("./portal/usePortal"));
 var cache;

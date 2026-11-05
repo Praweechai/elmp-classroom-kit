@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Home, Logout, Notifications, Schedule, Settings, WorkspacePremium,
+  Home, KeyboardArrowDown, Logout, MenuBook, Notifications, Schedule, Settings, WorkspacePremium,
 } from '@openedx/paragon/icons';
 
 import { kitLanguage, messages, useClassroomIntl } from '../i18n';
@@ -12,6 +12,8 @@ const linkShape = PropTypes.shape({
   home: PropTypes.string.isRequired,
   certificates: PropTypes.string.isRequired,
   hours: PropTypes.string, // Plan 4 F-112: no link = CE hours switched off, no tab
+  courses: PropTypes.string, // Plan 4 F-115: My courses page (S-91)
+  help: PropTypes.string,
   account: PropTypes.string,
   signOut: PropTypes.string,
   portal: PropTypes.string,
@@ -59,7 +61,7 @@ LanguageToggle.propTypes = { value: PropTypes.string, onChange: PropTypes.func }
 
 // Account menu popover (doc 04 §6.8, S-78): Esc and outside click close, focus returns to the trigger.
 export const AccountMenu = ({
-  user, links, locale, onLocaleChange,
+  user, links, locale, onLocaleChange, showName = false,
 }) => {
   const intl = useClassroomIntl();
   const [open, setOpen] = useState(false);
@@ -88,7 +90,7 @@ export const AccountMenu = ({
       <button
         ref={trigger}
         type="button"
-        className="cls-avatar-btn"
+        className={`cls-avatar-btn${showName ? ' cls-avatar-btn--named' : ''}`}
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={open ? menuId : undefined}
@@ -96,6 +98,8 @@ export const AccountMenu = ({
         onClick={() => setOpen(!open)}
       >
         <Avatar user={user} />
+        {showName && <span className="cls-avatar-btn__name" aria-hidden="true">{user.name}</span>}
+        {showName && <KitIcon src={KeyboardArrowDown} size={20} />}
       </button>
       {open && (
         <div className="cls-menu" id={menuId}>
@@ -128,10 +132,14 @@ export const AccountMenu = ({
 };
 
 AccountMenu.propTypes = {
-  user: userShape.isRequired, links: linkShape.isRequired, locale: PropTypes.string, onLocaleChange: PropTypes.func,
+  user: userShape.isRequired,
+  links: linkShape.isRequired,
+  locale: PropTypes.string,
+  onLocaleChange: PropTypes.func,
+  showName: PropTypes.bool, // Plan 4 top bar: avatar + name + chevron
 };
 
-const MessagesButton = ({ unread, onClick, className = '' }) => {
+export const MessagesButton = ({ unread, onClick, className = '' }) => {
   const intl = useClassroomIntl();
   return (
     <button
@@ -209,6 +217,7 @@ export const BottomTabs = ({
   const Link = useLinkComponent();
   const tabs = [
     ['home', links.home, Home, messages.navHomeShort],
+    ['courses', links.courses, MenuBook, messages.navCoursesShort], // Plan 4 F-115
     ['certificates', links.certificates, WorkspacePremium, messages.navCertificates],
     ['hours', links.hours, Schedule, messages.navHoursShort],
   ].filter(([, href]) => Boolean(href));
@@ -230,7 +239,7 @@ export const BottomTabs = ({
 };
 
 BottomTabs.propTypes = {
-  current: PropTypes.oneOf(['home', 'certificates', 'hours']),
+  current: PropTypes.oneOf(['home', 'courses', 'certificates', 'hours']),
   links: linkShape.isRequired,
   unread: PropTypes.number,
   onOpenMessages: PropTypes.func,

@@ -50,6 +50,14 @@ describe('i18n', () => {
       time: 't',
       year: 2026,
       code: 'C',
+      course: 'K',
+      q: 8,
+      m: 15,
+      action: 'A',
+      column: 'Col',
+      done: 1,
+      total: 2,
+      status: 'S',
     };
     ['en', 'th'].forEach((lang) => {
       const intl = getClassroomIntl(lang);

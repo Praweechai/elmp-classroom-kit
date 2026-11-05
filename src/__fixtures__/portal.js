@@ -162,6 +162,74 @@ export const outline = [
   },
 ];
 
+// Plan 4 CA-11 `GET /dashboard` (doc 02 §6), as the dashboard fork passes it to DashboardView
+// (hrefs added by the fork).
+export const dashboard = {
+  data: {
+    banner: { kind: 'overdue', n: 1, course: { en: 'Patient Safety Basics', th: 'พื้นฐานความปลอดภัยของผู้ป่วย' } },
+    gauge: { required_done_on_time_pct: 50, label: 'needs_attention' },
+    required_title: { en: 'New-hire Onboarding 2026', th: 'ปฐมนิเทศพนักงานใหม่ 2569' },
+    rings: {
+      enrolled: 3, completed: 1, hours_learned: 1.4, required_done: [1, 2], quizzes_passed: [12, 20], certificates: 1,
+    },
+    deadlines: [
+      {
+        assignment_id: 6,
+        course_key: 'course-v1:MHB+PSB101+2026',
+        code: 'PSB101',
+        category: 'safety',
+        title: { en: 'Patient Safety Basics', th: 'พื้นฐานความปลอดภัยของผู้ป่วย' },
+        roadmap: { en: 'New-hire Onboarding', th: 'ปฐมนิเทศพนักงานใหม่' },
+        due_at: '2026-10-10T23:59:59+07:00',
+        days_left: -27,
+        action: 'continue',
+        href: '#psb101',
+      },
+      {
+        assignment_id: 7,
+        course_key: 'course-v1:MHB+REG101+2026',
+        code: 'REG101',
+        category: 'compliance',
+        title: { en: 'Hospital Regulations', th: 'ระเบียบโรงพยาบาล' },
+        roadmap: { en: 'ICU Annual Compliance', th: 'มาตรฐานประจำปีไอซียู' },
+        due_at: '2026-11-12T23:59:59+07:00',
+        days_left: 6,
+        action: 'start',
+        href: '#reg101',
+      },
+    ],
+    streak: {
+      days: [true, true, false, true, true, true, false], current: 3, best: 6,
+    },
+    courses: [
+      {
+        course_key: 'course-v1:MHB+INF101+2026', code: 'INF101', category: 'clinical', title: { en: 'Infection Control & Hand Hygiene', th: 'การควบคุมการติดเชื้อและสุขอนามัยของมือ' }, units_done: 5, units_total: 7, score_pct: 100, status: 'almost', required: true, href: '#inf101',
+      },
+      {
+        course_key: 'course-v1:MHB+PSB101+2026', code: 'PSB101', category: 'safety', title: { en: 'Patient Safety Basics', th: 'พื้นฐานความปลอดภัยของผู้ป่วย' }, units_done: 1, units_total: 7, score_pct: null, status: 'overdue', required: true, href: '#psb101',
+      },
+      {
+        course_key: 'course-v1:MHB+REG101+2026', code: 'REG101', category: 'compliance', title: { en: 'Hospital Regulations', th: 'ระเบียบโรงพยาบาล' }, units_done: 7, units_total: 7, score_pct: 90, status: 'completed', required: false, href: '#reg101',
+      },
+      {
+        course_key: 'course-v1:MHB+FIRE101+2026', code: 'FIRE101', category: 'general', title: { en: 'Fire Safety on the Ward', th: 'ความปลอดภัยจากอัคคีภัยในหอผู้ป่วย' }, units_done: 0, units_total: 5, score_pct: null, status: 'not_started', required: false, href: '#fire101',
+      },
+    ],
+    next_quizzes: [
+      {
+        course_key: 'course-v1:MHB+PSB101+2026', block_id: 'b1', code: 'PSB101', title: { en: 'Final quiz', th: 'แบบทดสอบท้ายบท' }, questions: 8, minutes: 15, href: '#q1',
+      },
+      {
+        course_key: 'course-v1:MHB+PSB101+2026', block_id: 'b2', code: 'PSB101', title: { en: 'Video check', th: 'คำถามระหว่างวิดีโอ' }, questions: 2, minutes: 4, href: '#q2',
+      },
+    ],
+    latest_certificate: {
+      kind: 'course', code: 'ELMP-2026-Q563-7KQ4', title: { en: 'Hospital Regulations', th: 'ระเบียบโรงพยาบาล' }, issued_at: '2026-11-03T10:00:00+07:00', revoked_at: null,
+    },
+  },
+  meta: { generated_at: '2026-11-06T08:00:00+07:00' },
+};
+
 // CA-04 course context (doc 05).
 export const courseContext = {
   course_key: 'course-v1:MHB+INF101+2026',
