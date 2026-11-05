@@ -161,3 +161,17 @@ export const outline = [
     ],
   },
 ];
+
+// CA-04 course context (doc 05).
+export const courseContext = {
+  course_key: 'course-v1:MHB+INF101+2026',
+  ce_hours: 3.0,
+  required_by: [{
+    assignment_id: 41,
+    roadmap_title: { en: 'Annual Infection Control 2026', th: 'การควบคุมการติดเชื้อประจำปี 2569' },
+    due_at: '2026-10-31T23:59:59+07:00',
+    days_left: -3,
+    status: 'overdue',
+  }],
+  category: { key: 'clinical', en: 'Clinical', th: 'คลินิก' },
+};

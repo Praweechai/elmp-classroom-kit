@@ -158,6 +158,10 @@ const messages = defineMessages({
   outlineHere: { id: 'cls.outline.here', defaultMessage: 'you are here' },
   outlineClose: { id: 'cls.outline.close', defaultMessage: 'Close course outline' },
   minutes: { id: 'cls.minutes', defaultMessage: '{n} min' },
+
+  requiredFor: { id: 'cls.hero.requiredFor', defaultMessage: 'Required for {roadmap}' },
+  yourProgress: { id: 'cls.hero.progress', defaultMessage: 'Your progress' },
+  unitsDone: { id: 'cls.hero.unitsDone', defaultMessage: '{done} of {total} done' },
 });
 
 export default messages;

@@ -75,6 +75,12 @@ Object.defineProperty(exports, "CourseCover", {
     return _CourseCover.default;
   }
 });
+Object.defineProperty(exports, "CourseHero", {
+  enumerable: true,
+  get: function () {
+    return _CourseHero.default;
+  }
+});
 Object.defineProperty(exports, "CourseOutline", {
   enumerable: true,
   get: function () {
@@ -348,6 +354,7 @@ var _RequiredGroup = _interopRequireDefault(require("./components/RequiredGroup"
 var _CertificateCard = _interopRequireDefault(require("./components/CertificateCard"));
 var _HoursCard = _interopRequireDefault(require("./components/HoursCard"));
 var _KeyFacts = _interopRequireDefault(require("./components/KeyFacts"));
+var _CourseHero = _interopRequireDefault(require("./components/CourseHero"));
 var _GreetingBand = _interopRequireDefault(require("./components/GreetingBand"));
 var _Player = require("./components/Player");
 var _CourseOutline = _interopRequireWildcard(require("./components/CourseOutline"));

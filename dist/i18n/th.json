@@ -126,5 +126,8 @@
   "cls.outline.locked": "ยังไม่เปิดให้เรียน",
   "cls.outline.here": "ตำแหน่งปัจจุบัน",
   "cls.minutes": "{n} นาที",
-  "cls.outline.close": "ปิดเนื้อหาหลักสูตร"
+  "cls.outline.close": "ปิดเนื้อหาหลักสูตร",
+  "cls.hero.requiredFor": "หลักสูตรบังคับของ {roadmap}",
+  "cls.hero.progress": "ความคืบหน้าของคุณ",
+  "cls.hero.unitsDone": "เรียนแล้ว {done} จาก {total}"
 }

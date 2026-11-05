@@ -1,10 +1,14 @@
 import PropTypes from 'prop-types';
 
+import {
+  Event, Schedule, ViewList, WorkspacePremium,
+} from '@openedx/paragon/icons';
 import * as fx from '../__fixtures__/portal';
 import storyLogo from './logo';
+
 import {
-  BottomTabs, CertificateCard, ClassroomHeader, ContinueCard, CourseCard, GreetingBand, HoursCard, Notice,
-  RequiredGroup, Skeleton, localized, messages, useClassroomIntl,
+  BottomTabs, CertificateCard, ClassroomHeader, ContinueCard, CourseCard, CourseHero, CourseOutline, GreetingBand,
+  HoursCard, Notice, RequiredGroup, Skeleton, localized, messages, useClassroomIntl,
 } from '../index';
 
 // Whole screens built from kit parts with fake data, to compare with doc 04-design/index.html (S-70, S-79).
@@ -67,3 +71,36 @@ Home.propTypes = { locale: PropTypes.string, portalDown: PropTypes.bool };
 
 export const S70ClassroomHome = { render: (_, { globals }) => <Home locale={globals.locale} /> };
 export const S79PortalUnavailable = { render: (_, { globals }) => <Home locale={globals.locale} portalDown /> };
+
+const CourseHome = ({ locale }) => {
+  const intl = useClassroomIntl();
+  const me = fx.me.data;
+  return (
+    <>
+      <ClassroomHeader current="home" links={links} user={{ name: localized(me.name, locale) }} unread={3} locale={locale} logoUrl={storyLogo} />
+      <main className="cls-page">
+        <CourseHero
+          title="Infection Control 2026"
+          code="INF101"
+          description="Protect patients and yourself with hand hygiene, PPE and safe cleaning on every shift."
+          backHref="#home"
+          facts={[
+            { icon: Schedule, value: intl.formatMessage(messages.duration, { hours: 4 }), label: intl.formatMessage(messages.factDuration) },
+            { icon: ViewList, value: '8', label: intl.formatMessage(messages.factUnits) },
+            { icon: Event, value: '3', label: intl.formatMessage(messages.factHours) },
+            { icon: WorkspacePremium, value: intl.formatMessage(messages.factCertificateYes), label: intl.formatMessage(messages.factCertificate) },
+          ]}
+          requiredBy={fx.courseContext.required_by}
+          progress={{
+            percent: 62, done: 5, total: 8, href: '#', action: 'resume',
+          }}
+        />
+        <CourseOutline title={intl.formatMessage(messages.outlineTitle)} sections={fx.outline} />
+      </main>
+    </>
+  );
+};
+
+CourseHome.propTypes = { locale: PropTypes.string };
+
+export const S75CourseHome = { render: (_, { globals }) => <CourseHome locale={globals.locale} /> };

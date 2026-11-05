@@ -518,6 +518,18 @@ const messages = (0, _reactIntl.defineMessages)({
   minutes: {
     id: 'cls.minutes',
     defaultMessage: '{n} min'
+  },
+  requiredFor: {
+    id: 'cls.hero.requiredFor',
+    defaultMessage: 'Required for {roadmap}'
+  },
+  yourProgress: {
+    id: 'cls.hero.progress',
+    defaultMessage: 'Your progress'
+  },
+  unitsDone: {
+    id: 'cls.hero.unitsDone',
+    defaultMessage: '{done} of {total} done'
   }
 });
 var _default = exports.default = messages;
