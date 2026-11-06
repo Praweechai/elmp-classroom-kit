@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.OutlineDrawer = void 0;
+exports.default = exports.OutlineRail = exports.OutlineDrawer = void 0;
 var _react = require("react");
 var _propTypes = _interopRequireDefault(require("prop-types"));
 var _icons = require("@openedx/paragon/icons");
@@ -25,13 +25,64 @@ const stateOf = item => {
   return item.complete ? 'complete' : 'open';
 };
 
-// One accordion section: header button (title + "3 / 5 done" + chevron) and its rows.
+// Module state icon (F-116): check when all done, a part-filled ring while in progress, lock when gated.
+const SectionMark = ({
+  done,
+  total,
+  locked
+}) => {
+  if (locked) {
+    return /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
+      src: _icons.Lock,
+      size: 18,
+      className: "cls-outline__mark cls-outline__mark--locked"
+    });
+  }
+  if (total > 0 && done >= total) {
+    return /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
+      src: _icons.CheckCircle,
+      size: 18,
+      className: "cls-outline__mark cls-outline__mark--complete"
+    });
+  }
+  const pct = total > 0 ? Math.round(done / total * 100) : 0;
+  return /*#__PURE__*/(0, _jsxRuntime.jsxs)("svg", {
+    className: "cls-outline__mark cls-outline__mark--ring",
+    width: "18",
+    height: "18",
+    viewBox: "0 0 20 20",
+    "aria-hidden": "true",
+    focusable: "false",
+    children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("circle", {
+      cx: "10",
+      cy: "10",
+      r: "8",
+      pathLength: "100",
+      className: "cls-outline__ring-track"
+    }), pct > 0 && /*#__PURE__*/(0, _jsxRuntime.jsx)("circle", {
+      cx: "10",
+      cy: "10",
+      r: "8",
+      pathLength: "100",
+      className: "cls-outline__ring-fill",
+      strokeDasharray: `${pct} 100`
+    })]
+  });
+};
+SectionMark.propTypes = {
+  done: _propTypes.default.number.isRequired,
+  total: _propTypes.default.number.isRequired,
+  locked: _propTypes.default.bool
+};
+
+// One accordion section: header button (number + title + "3 / 5 done" + chevron) and its rows.
 const OutlineSection = ({
   section,
   open,
   onToggle,
   HeadingTag,
-  onNavigate
+  onNavigate,
+  number
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
   const Link = (0, _LinkContext.useLinkComponent)();
@@ -45,6 +96,7 @@ const OutlineSection = ({
     });
   });
   const done = section.items.filter(item => item.complete).length;
+  const allLocked = section.items.length > 0 && section.items.every(item => item.locked);
   const total = section.items.length;
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("li", {
     className: `cls-outline__section${open ? ' is-open' : ''}`,
@@ -56,7 +108,15 @@ const OutlineSection = ({
         "aria-expanded": open,
         "aria-controls": panelId,
         onClick: onToggle,
-        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
+        children: [number != null && /*#__PURE__*/(0, _jsxRuntime.jsx)(SectionMark, {
+          done: done,
+          total: total,
+          locked: allLocked
+        }), number != null && /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
+          className: "cls-outline__num cls-num",
+          "aria-hidden": "true",
+          children: number
+        }), /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
           className: "cls-outline__title",
           children: section.title
         }), /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
@@ -74,7 +134,7 @@ const OutlineSection = ({
       id: panelId,
       className: "cls-outline__items",
       hidden: !open,
-      children: section.items.map(item => {
+      children: section.items.map((item, index) => {
         const state = stateOf(item);
         const icon = {
           locked: _icons.Lock,
@@ -91,6 +151,10 @@ const OutlineSection = ({
             src: icon,
             size: 20,
             className: `cls-outline__state cls-outline__state--${state}${state === 'complete' && !seenDone.current.has(item.id) ? ' is-just-done' : ''}`
+          }), number != null && /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
+            className: "cls-outline__num cls-num",
+            "aria-hidden": "true",
+            children: `${number}.${index + 1}`
           }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
             className: "cls-outline__label",
             children: [item.title, /*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
@@ -130,18 +194,21 @@ OutlineSection.propTypes = {
   open: _propTypes.default.bool.isRequired,
   onToggle: _propTypes.default.func.isRequired,
   HeadingTag: _propTypes.default.elementType.isRequired,
-  onNavigate: _propTypes.default.func
+  onNavigate: _propTypes.default.func,
+  number: _propTypes.default.number
 };
 
 // Course outline for S-75 (course home) and the S-76 drawer (doc 04 §5.11).
 // Sections open by default when they hold the current item (or `open: true`); "Expand all" toggles every one.
+// `numbered` (player tree, F-116): modules 1, 2, 3 and topics 1.1, 1.2…
 const CourseOutline = ({
   sections,
   title,
   headingLevel = 2,
   showExpandAll = true,
   onNavigate,
-  variant = 'page'
+  variant = 'page',
+  numbered = false
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
   const initial = () => Object.fromEntries(sections.map(s => [s.id, Boolean(s.open || hasCurrent(s))]));
@@ -171,7 +238,8 @@ const CourseOutline = ({
       })]
     }), /*#__PURE__*/(0, _jsxRuntime.jsx)("ol", {
       className: "cls-outline__list",
-      children: sections.map(section => /*#__PURE__*/(0, _jsxRuntime.jsx)(OutlineSection, {
+      children: sections.map((section, index) => /*#__PURE__*/(0, _jsxRuntime.jsx)(OutlineSection, {
+        number: numbered ? index + 1 : undefined,
         section: section,
         open: Boolean(openIds[section.id]),
         onToggle: () => setOpenIds(prev => _objectSpread(_objectSpread({}, prev), {}, {
@@ -202,7 +270,8 @@ CourseOutline.propTypes = {
   headingLevel: _propTypes.default.number,
   showExpandAll: _propTypes.default.bool,
   onNavigate: _propTypes.default.func,
-  variant: _propTypes.default.oneOf(['page', 'drawer'])
+  variant: _propTypes.default.oneOf(['page', 'drawer']),
+  numbered: _propTypes.default.bool
 };
 
 // S-76 drawer (doc 04 §6.6): a 320 px column next to the unit on wide screens; a full-screen sheet on
@@ -211,7 +280,8 @@ const OutlineDrawer = ({
   sections,
   onClose,
   onNavigate,
-  overlay = false
+  overlay = false,
+  numbered = true
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
   const titleId = (0, _react.useId)();
@@ -278,7 +348,8 @@ const OutlineDrawer = ({
       variant: "drawer",
       showExpandAll: false,
       headingLevel: 2,
-      onNavigate: onNavigate
+      onNavigate: onNavigate,
+      numbered: numbered
     })]
   });
 };
@@ -287,6 +358,31 @@ OutlineDrawer.propTypes = {
   sections: CourseOutline.propTypes.sections,
   onClose: _propTypes.default.func,
   onNavigate: _propTypes.default.func,
-  overlay: _propTypes.default.bool
+  overlay: _propTypes.default.bool,
+  numbered: _propTypes.default.bool
+};
+
+// F-116: when the tree is hidden a slim 40 px rail with a ☰ handle stays, so it is always easy to bring back.
+const OutlineRail = ({
+  onOpen
+}) => {
+  const intl = (0, _i18n.useClassroomIntl)();
+  return /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
+    className: "cls-rail",
+    children: /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
+      type: "button",
+      className: "cls-icon-btn cls-rail__btn",
+      "aria-label": intl.formatMessage(_i18n.messages.outlineShow),
+      "aria-expanded": "false",
+      onClick: onOpen,
+      children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
+        src: _icons.MenuIcon
+      })
+    })
+  });
+};
+exports.OutlineRail = OutlineRail;
+OutlineRail.propTypes = {
+  onOpen: _propTypes.default.func.isRequired
 };
 var _default = exports.default = CourseOutline;

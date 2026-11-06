@@ -25,18 +25,20 @@ export const PlayerTopBar = ({
         {onToggleOutline && (
           <button
             type="button"
-            className="cls-icon-btn cls-player-bar__outline"
+            className="cls-btn cls-btn--ghost cls-btn--sm cls-player-bar__outline"
             aria-label={intl.formatMessage(messages.playerOutline)}
             aria-expanded={Boolean(outlineOpen)}
             onClick={onToggleOutline}
           >
             <KitIcon src={MenuBook} />
+            <span className="cls-player-bar__outline-text" aria-hidden="true">{intl.formatMessage(messages.outlineButton)}</span>
           </button>
         )}
         <p className="cls-player-bar__title" title={courseTitle}>{courseTitle}</p>
         {unitCount > 0 && unitIndex > 0 && (
           <p className="cls-player-bar__count cls-num">{intl.formatMessage(messages.unitOf, { i: unitIndex, n: unitCount })}</p>
         )}
+        {pct != null && <p className="cls-player-bar__pct cls-num" aria-hidden="true">{`${pct}%`}</p>}
       </div>
       {pct != null && (
         <div

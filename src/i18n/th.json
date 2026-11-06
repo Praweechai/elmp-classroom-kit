@@ -203,5 +203,13 @@
   "cls.quiz.meta": "{q, plural, other {# ข้อ}} · {m} นาที",
   "cls.quiz.empty": "ไม่มีแบบทดสอบค้างอยู่ เยี่ยมมาก",
   "cls.notAvailable": "ยังไม่พร้อมใช้งานในขณะนี้",
-  "cls.coursesPage.intro": "ทุกหลักสูตรที่คุณลงทะเบียน พร้อมความคืบหน้าและคะแนน"
+  "cls.coursesPage.intro": "ทุกหลักสูตรที่คุณลงทะเบียน พร้อมความคืบหน้าและคะแนน",
+  "cls.outline.button": "สารบัญ",
+  "cls.outline.show": "แสดงสารบัญหลักสูตร",
+  "cls.idle.title": "คุณยังอยู่ไหม?",
+  "cls.idle.body": "บทเรียนจะหยุดชั่วคราวใน {n} วินาที",
+  "cls.idle.here": "ฉันยังอยู่",
+  "cls.idle.pausedTitle": "หยุดชั่วคราว — เรียนต่อเมื่อพร้อม",
+  "cls.idle.pausedBody": "วิดีโอหยุดแล้ว และไม่นับเวลาเรียนระหว่างที่คุณไม่อยู่",
+  "cls.idle.continue": "เรียนต่อ"
 }

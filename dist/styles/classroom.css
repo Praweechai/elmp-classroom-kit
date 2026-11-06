@@ -754,3 +754,28 @@ a.cls-ctable__title::after { content: ""; position: absolute; inset: 0; }
 .cls-search { display: flex; align-items: center; gap: 8px; flex: 1 1 240px; max-width: 360px; height: 44px; padding: 0 12px; border: 1px solid var(--cls-border-input); border-radius: var(--cls-radius-md); background: var(--cls-surface); color: var(--cls-text-3); }
 .cls-search:focus-within { box-shadow: var(--cls-shadow-ring); }
 .cls-search input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font: inherit; font-size: 15px; color: var(--cls-text); }
+
+/* ===== Plan 4 · kit 1.1 (P4-6): player tree numbering, rail, idle dialog (F-116, F-117) ===== */
+.cls-outline__num { flex-shrink: 0; min-width: 24px; font-size: 13px; font-weight: 700; color: var(--cls-text-2); }
+.cls-outline__row .cls-outline__num { min-width: 30px; font-weight: 600; color: var(--cls-text-3); }
+.cls-outline__mark { flex-shrink: 0; }
+.cls-outline__mark--complete { color: var(--cls-done-text, #0B6E4F); }
+.cls-outline__mark--locked { color: var(--cls-text-3); }
+.cls-outline__ring-track { fill: none; stroke: var(--cls-border); stroke-width: 3; }
+.cls-outline__ring-fill { fill: none; stroke: var(--cls-action); stroke-width: 3; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; }
+.cls-player-bar__outline { gap: 6px; }
+.cls-player-bar__outline-text { display: none; }
+.cls-player-bar__pct { margin: 0; font-size: 13px; font-weight: 700; color: var(--cls-text); white-space: nowrap; }
+@media (min-width: 600px) { .cls-player-bar__outline-text { display: inline; } }
+.cls-rail { display: none; }
+@media (min-width: 992px) {
+  .cls-rail { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 40px; padding-top: 8px;
+    align-self: stretch; border-right: 1px solid var(--cls-border); background: var(--cls-bg); }
+  .cls-rail__btn { position: sticky; top: 68px; }
+}
+.cls-idle { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 16px; background: rgba(16, 24, 40, .55); }
+.cls-idle__box { width: min(420px, 100%); padding: 28px 24px 24px; border-radius: 16px; background: #fff; text-align: center; box-shadow: var(--cls-shadow-lg); }
+.cls-idle__icon { color: var(--cls-action); margin-bottom: 8px; }
+.cls-idle__title { margin: 0 0 8px; font-size: 20px; font-weight: 700; color: var(--cls-text); }
+.cls-idle__body { margin: 0 0 20px; color: var(--cls-text-2); }
+.cls-idle__box .cls-btn { width: 100%; justify-content: center; }

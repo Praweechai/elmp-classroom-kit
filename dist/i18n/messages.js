@@ -829,6 +829,39 @@ const messages = (0, _reactIntl.defineMessages)({
   coursesPageIntro: {
     id: 'cls.coursesPage.intro',
     defaultMessage: 'Every course you are enrolled in, with your progress and score.'
+  },
+  // Plan 4 · kit 1.1 (P4-6): player tree, rail, inactivity (F-116, F-117)
+  outlineButton: {
+    id: 'cls.outline.button',
+    defaultMessage: 'Outline'
+  },
+  outlineShow: {
+    id: 'cls.outline.show',
+    defaultMessage: 'Show course outline'
+  },
+  idleTitle: {
+    id: 'cls.idle.title',
+    defaultMessage: 'Are you still there?'
+  },
+  idleBody: {
+    id: 'cls.idle.body',
+    defaultMessage: 'Your lesson will pause in {n, plural, one {# second} other {# seconds}}.'
+  },
+  idleHere: {
+    id: 'cls.idle.here',
+    defaultMessage: "I'm here"
+  },
+  pausedTitle: {
+    id: 'cls.idle.pausedTitle',
+    defaultMessage: 'Paused — continue when ready'
+  },
+  pausedBody: {
+    id: 'cls.idle.pausedBody',
+    defaultMessage: 'Your video is paused and learning time is not counted while you are away.'
+  },
+  pausedContinue: {
+    id: 'cls.idle.continue',
+    defaultMessage: 'Continue learning'
   }
 });
 var _default = exports.default = messages;

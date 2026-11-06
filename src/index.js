@@ -23,7 +23,7 @@ export { default as CertificatePreview } from './components/CertificatePreview';
 export { default as CourseFinished, nextRequiredCourse } from './components/CourseFinished';
 export { default as GreetingBand } from './components/GreetingBand';
 export { PlayerTopBar, UnitTitle } from './components/Player';
-export { default as CourseOutline, OutlineDrawer } from './components/CourseOutline';
+export { default as CourseOutline, OutlineDrawer, OutlineRail } from './components/CourseOutline';
 export { default as NotificationPanel } from './components/NotificationPanel';
 export { default as HomeView, NO_ACCESS } from './views/HomeView';
 export { default as CertificatesView } from './views/CertificatesView';
@@ -48,6 +48,13 @@ export {
 } from './components/CourseTable';
 export { default as DashboardView, DashboardSkeleton } from './views/DashboardView';
 export { default as MyCoursesView } from './views/MyCoursesView';
+
+// Plan 4 · kit 1.1 (P4-6): player inactivity + time on task (F-117).
+export { default as IdleDialog } from './components/IdleDialog';
+export { default as useIdleTimer, PAGE_EVENTS, isBridgeMessage } from './player/useIdleTimer';
+export {
+  default as useActivitySender, MAX_PER_CALL, SEND_EVERY_MS, beacon, chunks,
+} from './player/useActivitySender';
 
 export {
   CACHE_MS, PortalError, TIMEOUT_MS, createPortalClient, getPortalClient, resetPortalClient, toPortalError,

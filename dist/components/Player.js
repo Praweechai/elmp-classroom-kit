@@ -42,15 +42,19 @@ const PlayerTopBar = ({
           className: "cls-player-bar__back-text",
           children: intl.formatMessage(_i18n.messages.playerBack)
         })]
-      }), onToggleOutline && /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
+      }), onToggleOutline && /*#__PURE__*/(0, _jsxRuntime.jsxs)("button", {
         type: "button",
-        className: "cls-icon-btn cls-player-bar__outline",
+        className: "cls-btn cls-btn--ghost cls-btn--sm cls-player-bar__outline",
         "aria-label": intl.formatMessage(_i18n.messages.playerOutline),
         "aria-expanded": Boolean(outlineOpen),
         onClick: onToggleOutline,
-        children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
+        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
           src: _icons.MenuBook
-        })
+        }), /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
+          className: "cls-player-bar__outline-text",
+          "aria-hidden": "true",
+          children: intl.formatMessage(_i18n.messages.outlineButton)
+        })]
       }), /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
         className: "cls-player-bar__title",
         title: courseTitle,
@@ -61,6 +65,10 @@ const PlayerTopBar = ({
           i: unitIndex,
           n: unitCount
         })
+      }), pct != null && /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
+        className: "cls-player-bar__pct cls-num",
+        "aria-hidden": "true",
+        children: `${pct}%`
       })]
     }), pct != null && /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
       className: "cls-player-bar__progress",

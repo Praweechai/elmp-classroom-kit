@@ -3,7 +3,7 @@ import {
 } from 'react';
 import PropTypes from 'prop-types';
 import {
-  CheckCircle, Close, ExpandMore, Lock, RadioButtonUnchecked,
+  CheckCircle, Close, ExpandMore, Lock, MenuIcon, RadioButtonUnchecked,
 } from '@openedx/paragon/icons';
 
 import { messages, useClassroomIntl } from '../i18n';
@@ -16,9 +16,26 @@ const stateOf = (item) => {
   return item.complete ? 'complete' : 'open';
 };
 
-// One accordion section: header button (title + "3 / 5 done" + chevron) and its rows.
+// Module state icon (F-116): check when all done, a part-filled ring while in progress, lock when gated.
+const SectionMark = ({ done, total, locked }) => {
+  if (locked) { return <KitIcon src={Lock} size={18} className="cls-outline__mark cls-outline__mark--locked" />; }
+  if (total > 0 && done >= total) { return <KitIcon src={CheckCircle} size={18} className="cls-outline__mark cls-outline__mark--complete" />; }
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  return (
+    <svg className="cls-outline__mark cls-outline__mark--ring" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <circle cx="10" cy="10" r="8" pathLength="100" className="cls-outline__ring-track" />
+      {pct > 0 && <circle cx="10" cy="10" r="8" pathLength="100" className="cls-outline__ring-fill" strokeDasharray={`${pct} 100`} />}
+    </svg>
+  );
+};
+
+SectionMark.propTypes = {
+  done: PropTypes.number.isRequired, total: PropTypes.number.isRequired, locked: PropTypes.bool,
+};
+
+// One accordion section: header button (number + title + "3 / 5 done" + chevron) and its rows.
 const OutlineSection = ({
-  section, open, onToggle, HeadingTag, onNavigate,
+  section, open, onToggle, HeadingTag, onNavigate, number,
 }) => {
   const intl = useClassroomIntl();
   const Link = useLinkComponent();
@@ -28,18 +45,21 @@ const OutlineSection = ({
     section.items.forEach((item) => { if (item.complete) { seenDone.current.add(item.id); } });
   });
   const done = section.items.filter((item) => item.complete).length;
+  const allLocked = section.items.length > 0 && section.items.every((item) => item.locked);
   const total = section.items.length;
   return (
     <li className={`cls-outline__section${open ? ' is-open' : ''}`}>
       <HeadingTag className="cls-outline__heading">
         <button type="button" className="cls-outline__toggle" aria-expanded={open} aria-controls={panelId} onClick={onToggle}>
+          {number != null && <SectionMark done={done} total={total} locked={allLocked} />}
+          {number != null && <span className="cls-outline__num cls-num" aria-hidden="true">{number}</span>}
           <span className="cls-outline__title">{section.title}</span>
           <span className="cls-outline__count cls-num">{intl.formatMessage(messages.outlineDone, { done, total })}</span>
           <KitIcon src={ExpandMore} className="cls-outline__chevron" />
         </button>
       </HeadingTag>
       <ol id={panelId} className="cls-outline__items" hidden={!open}>
-        {section.items.map((item) => {
+        {section.items.map((item, index) => {
           const state = stateOf(item);
           const icon = { locked: Lock, complete: CheckCircle, open: RadioButtonUnchecked }[state];
           const statusText = intl.formatMessage({
@@ -53,6 +73,7 @@ const OutlineSection = ({
                 className={`cls-outline__state cls-outline__state--${state}${
                   state === 'complete' && !seenDone.current.has(item.id) ? ' is-just-done' : ''}`}
               />
+              {number != null && <span className="cls-outline__num cls-num" aria-hidden="true">{`${number}.${index + 1}`}</span>}
               <span className="cls-outline__label">
                 {item.title}
                 <span className="cls-sr">
@@ -96,12 +117,14 @@ OutlineSection.propTypes = {
   onToggle: PropTypes.func.isRequired,
   HeadingTag: PropTypes.elementType.isRequired,
   onNavigate: PropTypes.func,
+  number: PropTypes.number,
 };
 
 // Course outline for S-75 (course home) and the S-76 drawer (doc 04 §5.11).
 // Sections open by default when they hold the current item (or `open: true`); "Expand all" toggles every one.
+// `numbered` (player tree, F-116): modules 1, 2, 3 and topics 1.1, 1.2…
 const CourseOutline = ({
-  sections, title, headingLevel = 2, showExpandAll = true, onNavigate, variant = 'page',
+  sections, title, headingLevel = 2, showExpandAll = true, onNavigate, variant = 'page', numbered = false,
 }) => {
   const intl = useClassroomIntl();
   const initial = () => Object.fromEntries(sections.map((s) => [s.id, Boolean(s.open || hasCurrent(s))]));
@@ -133,9 +156,10 @@ const CourseOutline = ({
         </div>
       )}
       <ol className="cls-outline__list">
-        {sections.map((section) => (
+        {sections.map((section, index) => (
           <OutlineSection
             key={section.id}
+            number={numbered ? index + 1 : undefined}
             section={section}
             open={Boolean(openIds[section.id])}
             onToggle={() => setOpenIds((prev) => ({ ...prev, [section.id]: !prev[section.id] }))}
@@ -168,12 +192,13 @@ CourseOutline.propTypes = {
   showExpandAll: PropTypes.bool,
   onNavigate: PropTypes.func,
   variant: PropTypes.oneOf(['page', 'drawer']),
+  numbered: PropTypes.bool,
 };
 
 // S-76 drawer (doc 04 §6.6): a 320 px column next to the unit on wide screens; a full-screen sheet on
 // small ones (`overlay`). Esc closes the sheet.
 export const OutlineDrawer = ({
-  sections, onClose, onNavigate, overlay = false,
+  sections, onClose, onNavigate, overlay = false, numbered = true,
 }) => {
   const intl = useClassroomIntl();
   const titleId = useId();
@@ -210,7 +235,7 @@ export const OutlineDrawer = ({
           </button>
         )}
       </div>
-      <CourseOutline sections={sections} variant="drawer" showExpandAll={false} headingLevel={2} onNavigate={onNavigate} />
+      <CourseOutline sections={sections} variant="drawer" showExpandAll={false} headingLevel={2} onNavigate={onNavigate} numbered={numbered} />
     </nav>
   );
 };
@@ -220,6 +245,21 @@ OutlineDrawer.propTypes = {
   onClose: PropTypes.func,
   onNavigate: PropTypes.func,
   overlay: PropTypes.bool,
+  numbered: PropTypes.bool,
 };
+
+// F-116: when the tree is hidden a slim 40 px rail with a ☰ handle stays, so it is always easy to bring back.
+export const OutlineRail = ({ onOpen }) => {
+  const intl = useClassroomIntl();
+  return (
+    <div className="cls-rail">
+      <button type="button" className="cls-icon-btn cls-rail__btn" aria-label={intl.formatMessage(messages.outlineShow)} aria-expanded="false" onClick={onOpen}>
+        <KitIcon src={MenuIcon} />
+      </button>
+    </div>
+  );
+};
+
+OutlineRail.propTypes = { onOpen: PropTypes.func.isRequired };
 
 export default CourseOutline;

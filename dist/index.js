@@ -207,6 +207,12 @@ Object.defineProperty(exports, "HoursView", {
     return _HoursView.default;
   }
 });
+Object.defineProperty(exports, "IdleDialog", {
+  enumerable: true,
+  get: function () {
+    return _IdleDialog.default;
+  }
+});
 Object.defineProperty(exports, "KeyFacts", {
   enumerable: true,
   get: function () {
@@ -229,6 +235,12 @@ Object.defineProperty(exports, "LinkContext", {
   enumerable: true,
   get: function () {
     return _LinkContext.LinkContext;
+  }
+});
+Object.defineProperty(exports, "MAX_PER_CALL", {
+  enumerable: true,
+  get: function () {
+    return _useActivitySender.MAX_PER_CALL;
   }
 });
 Object.defineProperty(exports, "MessagesButton", {
@@ -273,6 +285,18 @@ Object.defineProperty(exports, "OutlineDrawer", {
     return _CourseOutline.OutlineDrawer;
   }
 });
+Object.defineProperty(exports, "OutlineRail", {
+  enumerable: true,
+  get: function () {
+    return _CourseOutline.OutlineRail;
+  }
+});
+Object.defineProperty(exports, "PAGE_EVENTS", {
+  enumerable: true,
+  get: function () {
+    return _useIdleTimer.PAGE_EVENTS;
+  }
+});
 Object.defineProperty(exports, "PlayerTopBar", {
   enumerable: true,
   get: function () {
@@ -301,6 +325,12 @@ Object.defineProperty(exports, "RequiredGroup", {
   enumerable: true,
   get: function () {
     return _RequiredGroup.default;
+  }
+});
+Object.defineProperty(exports, "SEND_EVERY_MS", {
+  enumerable: true,
+  get: function () {
+    return _useActivitySender.SEND_EVERY_MS;
   }
 });
 Object.defineProperty(exports, "STATUSES", {
@@ -387,6 +417,18 @@ Object.defineProperty(exports, "bangkokDay", {
     return _Dashboard.bangkokDay;
   }
 });
+Object.defineProperty(exports, "beacon", {
+  enumerable: true,
+  get: function () {
+    return _useActivitySender.beacon;
+  }
+});
+Object.defineProperty(exports, "chunks", {
+  enumerable: true,
+  get: function () {
+    return _useActivitySender.chunks;
+  }
+});
 Object.defineProperty(exports, "coursePercent", {
   enumerable: true,
   get: function () {
@@ -427,6 +469,12 @@ Object.defineProperty(exports, "greetingKey", {
   enumerable: true,
   get: function () {
     return _i18n.greetingKey;
+  }
+});
+Object.defineProperty(exports, "isBridgeMessage", {
+  enumerable: true,
+  get: function () {
+    return _useIdleTimer.isBridgeMessage;
   }
 });
 Object.defineProperty(exports, "kitLanguage", {
@@ -483,10 +531,22 @@ Object.defineProperty(exports, "urgency", {
     return _Dashboard.urgency;
   }
 });
+Object.defineProperty(exports, "useActivitySender", {
+  enumerable: true,
+  get: function () {
+    return _useActivitySender.default;
+  }
+});
 Object.defineProperty(exports, "useClassroomIntl", {
   enumerable: true,
   get: function () {
     return _i18n.useClassroomIntl;
+  }
+});
+Object.defineProperty(exports, "useIdleTimer", {
+  enumerable: true,
+  get: function () {
+    return _useIdleTimer.default;
   }
 });
 Object.defineProperty(exports, "useLinkComponent", {
@@ -551,6 +611,9 @@ var _Dashboard = require("./components/Dashboard");
 var _CourseTable = _interopRequireWildcard(require("./components/CourseTable"));
 var _DashboardView = _interopRequireWildcard(require("./views/DashboardView"));
 var _MyCoursesView = _interopRequireDefault(require("./views/MyCoursesView"));
+var _IdleDialog = _interopRequireDefault(require("./components/IdleDialog"));
+var _useIdleTimer = _interopRequireWildcard(require("./player/useIdleTimer"));
+var _useActivitySender = _interopRequireWildcard(require("./player/useActivitySender"));
 var _PortalClient = require("./portal/PortalClient");
 var _usePortal = _interopRequireDefault(require("./portal/usePortal"));
 var cache;
