@@ -214,6 +214,15 @@ describe('SidebarNav + TopBar (F-115)', () => {
     expect(screen.getByRole('navigation', { name: 'Main menu' })).toHaveAttribute('data-state', 'collapsed');
   });
 
+  it('shell: pageAs="div" leaves the main landmark to the app', () => {
+    const { container, unmount } = renderKit(<ClassroomShell current="home" title="Home" links={links} pageAs="div"><p>x</p></ClassroomShell>);
+    expect(container.querySelector('main')).toBeNull();
+    expect(container.querySelector('.cls-shell__page')).toHaveTextContent('x');
+    unmount();
+    renderKit(<ClassroomShell current="home" title="Home" links={links}><p>y</p></ClassroomShell>);
+    expect(screen.getByRole('main')).toHaveAttribute('id', 'main');
+  });
+
   it('top bar: page title as heading, account menu with the name', () => {
     renderKit(<TopBar title="Home" links={links} user={{ name: 'Boonmee Sukjai' }} unread={1} locale="en" />);
     expect(screen.getByRole('heading', { level: 1, name: 'Home' })).toBeInTheDocument();

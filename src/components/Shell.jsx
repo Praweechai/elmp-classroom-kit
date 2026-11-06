@@ -163,10 +163,12 @@ TopBar.propTypes = {
 };
 
 // The whole frame: sidebar + top bar + page + phone tabs. Apps put a view inside.
+// pageAs="div" when the app already wraps the shell in its own <main> (one main landmark only).
 export const ClassroomShell = ({
-  current, title, links, user, unread = 0, locale, onLocaleChange, onOpenMessages, logoUrl, children,
+  current, title, links, user, unread = 0, locale, onLocaleChange, onOpenMessages, logoUrl, pageAs = 'main', children,
 }) => {
   const [state, toggle] = useSidebarState();
+  const Page = pageAs === 'div' ? 'div' : 'main';
   return (
     <div className="cls-shell cls-root" data-sidebar={state} lang={locale}>
       <SidebarNav
@@ -188,7 +190,7 @@ export const ClassroomShell = ({
           onLocaleChange={onLocaleChange}
           onOpenMessages={onOpenMessages}
         />
-        <main className="cls-shell__page" id="main">{children}</main>
+        <Page className="cls-shell__page" id={Page === 'main' ? 'main' : undefined}>{children}</Page>
       </div>
       <BottomTabs current={['home', 'courses', 'certificates', 'hours'].includes(current) ? current : undefined} links={links} unread={unread} onOpenMessages={onOpenMessages} />
     </div>
@@ -205,5 +207,6 @@ ClassroomShell.propTypes = {
   onLocaleChange: PropTypes.func,
   onOpenMessages: PropTypes.func,
   logoUrl: PropTypes.string,
+  pageAs: PropTypes.oneOf(['main', 'div']),
   children: PropTypes.node,
 };
