@@ -31,5 +31,5 @@ jobs:
           git diff --exit-code --stat dist || { echo "::error::dist/ is stale: run npm run build and commit"; exit 1; }
           [ -z "$(git status --porcelain dist)" ] || { echo "::error::untracked files in dist/"; exit 1; }
       - name: Bundle budget (NFR-C3 + NFR-D2, ≤ 100 kB gzip)
-        # Plan 4 NFR-D2: kit additions up to 80 kB per app; the whole kit is held at 100 kB gzip.
+        # Plan 4 NFR-D2: kit additions up to 80 kB per app; the whole kit is held at 100 kB gzip (minified, P5-2.03).
         run: node scripts/size-check.js 100
