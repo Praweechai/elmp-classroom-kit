@@ -72,3 +72,10 @@ export {
 export {
   default as MyLearningView, AchievementList, MyLearningSkeleton, toCard,
 } from './views/MyLearningView';
+
+// Plan 5 · kit 2.0 (P5-2.03): Courses, Grades, Progress, Certificates (S-101…S-104) + page strip.
+export { default as PageStrip } from './components/PageStrip';
+export { default as CoursesView, entryToCard, statusGroup } from './views/CoursesView';
+export { default as GradesView } from './views/GradesView';
+export { default as ProgressView, Donut, WeekBars } from './views/ProgressView';
+export { default as CertificatesView2, CertificateDialog } from './views/CertificatesView2';

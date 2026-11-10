@@ -87,6 +87,12 @@ Object.defineProperty(exports, "CertificateCard", {
     return _CertificateCard.default;
   }
 });
+Object.defineProperty(exports, "CertificateDialog", {
+  enumerable: true,
+  get: function () {
+    return _CertificatesView2.CertificateDialog;
+  }
+});
 Object.defineProperty(exports, "CertificatePreview", {
   enumerable: true,
   get: function () {
@@ -97,6 +103,12 @@ Object.defineProperty(exports, "CertificatesView", {
   enumerable: true,
   get: function () {
     return _CertificatesView.default;
+  }
+});
+Object.defineProperty(exports, "CertificatesView2", {
+  enumerable: true,
+  get: function () {
+    return _CertificatesView2.default;
   }
 });
 Object.defineProperty(exports, "ClassroomHeader", {
@@ -177,6 +189,12 @@ Object.defineProperty(exports, "CourseTable", {
     return _CourseTable.default;
   }
 });
+Object.defineProperty(exports, "CoursesView", {
+  enumerable: true,
+  get: function () {
+    return _CoursesView.default;
+  }
+});
 Object.defineProperty(exports, "DashCard", {
   enumerable: true,
   get: function () {
@@ -201,6 +219,12 @@ Object.defineProperty(exports, "DeadlineList", {
     return _Dashboard.DeadlineList;
   }
 });
+Object.defineProperty(exports, "Donut", {
+  enumerable: true,
+  get: function () {
+    return _ProgressView.Donut;
+  }
+});
 Object.defineProperty(exports, "EmptyState", {
   enumerable: true,
   get: function () {
@@ -217,6 +241,12 @@ Object.defineProperty(exports, "Gauge", {
   enumerable: true,
   get: function () {
     return _Dashboard.Gauge;
+  }
+});
+Object.defineProperty(exports, "GradesView", {
+  enumerable: true,
+  get: function () {
+    return _GradesView.default;
   }
 });
 Object.defineProperty(exports, "GreetingBand", {
@@ -345,6 +375,12 @@ Object.defineProperty(exports, "PAGE_EVENTS", {
     return _useIdleTimer.PAGE_EVENTS;
   }
 });
+Object.defineProperty(exports, "PageStrip", {
+  enumerable: true,
+  get: function () {
+    return _PageStrip.default;
+  }
+});
 Object.defineProperty(exports, "PlayerTopBar", {
   enumerable: true,
   get: function () {
@@ -367,6 +403,12 @@ Object.defineProperty(exports, "ProgressRing", {
   enumerable: true,
   get: function () {
     return _Progress.ProgressRing;
+  }
+});
+Object.defineProperty(exports, "ProgressView", {
+  enumerable: true,
+  get: function () {
+    return _ProgressView.default;
   }
 });
 Object.defineProperty(exports, "RequiredGroup", {
@@ -483,6 +525,12 @@ Object.defineProperty(exports, "UnitTitle", {
     return _Player.UnitTitle;
   }
 });
+Object.defineProperty(exports, "WeekBars", {
+  enumerable: true,
+  get: function () {
+    return _ProgressView.WeekBars;
+  }
+});
 Object.defineProperty(exports, "bangkokDay", {
   enumerable: true,
   get: function () {
@@ -517,6 +565,12 @@ Object.defineProperty(exports, "createPortalClient", {
   enumerable: true,
   get: function () {
     return _PortalClient.createPortalClient;
+  }
+});
+Object.defineProperty(exports, "entryToCard", {
+  enumerable: true,
+  get: function () {
+    return _CoursesView.entryToCard;
   }
 });
 Object.defineProperty(exports, "formatDate", {
@@ -583,6 +637,12 @@ Object.defineProperty(exports, "resetPortalClient", {
   enumerable: true,
   get: function () {
     return _PortalClient.resetPortalClient;
+  }
+});
+Object.defineProperty(exports, "statusGroup", {
+  enumerable: true,
+  get: function () {
+    return _CoursesView.statusGroup;
   }
 });
 Object.defineProperty(exports, "timeAgo", {
@@ -716,6 +776,11 @@ var _usePortal = _interopRequireDefault(require("./portal/usePortal"));
 var _Shell2 = require("./components/Shell3");
 var _CourseCard2 = _interopRequireWildcard(require("./components/CourseCard2"));
 var _MyLearningView = _interopRequireWildcard(require("./views/MyLearningView"));
+var _PageStrip = _interopRequireDefault(require("./components/PageStrip"));
+var _CoursesView = _interopRequireWildcard(require("./views/CoursesView"));
+var _GradesView = _interopRequireDefault(require("./views/GradesView"));
+var _ProgressView = _interopRequireWildcard(require("./views/ProgressView"));
+var _CertificatesView2 = _interopRequireWildcard(require("./views/CertificatesView2"));
 var cache;
 function _interopRequireWildcard(e, t) { if (!t && e && e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c && {}.hasOwnProperty.call(e, c) && ((r = a && Object.getOwnPropertyDescriptor(e, c)) && (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
