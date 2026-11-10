@@ -120,8 +120,16 @@ export const catalogue = {
 };
 
 // CA-16 GET /classroom/api/v1/grades — Grades + Progress pages (S-102, S-103).
-const part = (block_id, name, kind, score, max, extra = {}) => ({
-  block_id, name, kind, score, max, attempts: score === null ? 0 : 1, passed: score === null ? null : score / max >= 0.6, submitted_at: null, ...extra,
+const part = (blockId, name, kind, score, max, extra = {}) => ({
+  block_id: blockId,
+  name,
+  kind,
+  score,
+  max,
+  attempts: score === null ? 0 : 1,
+  passed: score === null ? null : score / max >= 0.6,
+  submitted_at: null,
+  ...extra,
 });
 export const grades = {
   data: {

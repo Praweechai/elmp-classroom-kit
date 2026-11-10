@@ -84,6 +84,10 @@ const color = {
   violetText: '#5925DC',
   pinkTint: '#FDF2FA',
   pinkText: '#C11574',
+  // Plan 5 (kit 2.0): green HR banner (CA-14) and the urgent variant.
+  banner: green[700],
+  bannerText: '#FFFFFF',
+  bannerUrgent: '#B42318',
 };
 
 // Generated course covers by category (doc 04 §2.1).
@@ -140,6 +144,8 @@ const size = {
   dashMax: '1200px',
   tree: '320px', // Plan 4 player (F-116)
   rail: '40px',
+  topbar: '60px', // Plan 5 thin top bar (Shell 3)
+  pageMax: '1280px',
 };
 
 // Text/background pairs that must reach WCAG AA (doc 04 §10, checked by tokens.test.js).
@@ -151,6 +157,7 @@ const contrastPairs = [
   ['surface', 'action', 4.5], ['borderInput', 'surface', 3],
   ['violetText', 'violetTint', 4.5], ['pinkText', 'pinkTint', 4.5], ['infoText', 'infoBg', 4.5],
   // Plan 4: ring fills are graphics next to their text value (WCAG 1.4.11 → 3:1 on white)
+  ['bannerText', 'banner', 4.5], ['bannerText', 'bannerUrgent', 4.5],
   ['ring1', 'surface', 3], ['ring3', 'surface', 3], ['ring4', 'surface', 3], ['ringLate', 'surface', 3],
 ];
 

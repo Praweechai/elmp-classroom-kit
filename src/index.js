@@ -1,5 +1,6 @@
 import './tokens/tokens.css';
 import './styles/classroom.css';
+import './styles/shell3.css';
 
 export { default as tokens } from './tokens/tokens';
 export {
@@ -60,3 +61,8 @@ export {
   CACHE_MS, PortalError, TIMEOUT_MS, createPortalClient, getPortalClient, resetPortalClient, toPortalError,
 } from './portal/PortalClient';
 export { default as usePortal } from './portal/usePortal';
+
+// Plan 5 · kit 2.0 (P5-2.01): Shell 3 — NetAcad arrangement, sidebar, thin top bar, HR banner, phone tabs.
+export {
+  AnnouncementBanner, BottomTabs3, ClassroomShell3, SearchBox, SidebarNav3, TopBar3, useDropdown, useSidebar3,
+} from './components/Shell3';

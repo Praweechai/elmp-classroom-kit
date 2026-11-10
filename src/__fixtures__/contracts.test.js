@@ -57,7 +57,7 @@ describe('Plan 5 contracts', () => {
         expect(isText(p.name)).toBe(true);
         expect(['quiz', 'activity', 'exam']).toContain(p.kind);
         expect(p.max).toBeGreaterThan(0);
-        if (p.score === null) expect(p.passed).toBeNull();
+        if (p.score === null) { expect(p.passed).toBeNull(); }
       });
     });
   });

@@ -265,6 +265,29 @@ const messages = defineMessages({
   pausedTitle: { id: 'cls.idle.pausedTitle', defaultMessage: 'Paused — continue when ready' },
   pausedBody: { id: 'cls.idle.pausedBody', defaultMessage: 'Your video is paused and learning time is not counted while you are away.' },
   pausedContinue: { id: 'cls.idle.continue', defaultMessage: 'Continue learning' },
+
+  // Plan 5 · P5-2.01 — Shell 3 (sidebar + thin top bar + banner + phone tabs)
+  shell3MyLearning: { id: 'cls.s3.myLearning', defaultMessage: 'My Learning' },
+  shell3Courses: { id: 'cls.s3.courses', defaultMessage: 'Courses' },
+  shell3Grades: { id: 'cls.s3.grades', defaultMessage: 'Grades' },
+  shell3Progress: { id: 'cls.s3.progress', defaultMessage: 'Progress' },
+  shell3Certificates: { id: 'cls.s3.certificates', defaultMessage: 'Certificates' },
+  shell3CertsShort: { id: 'cls.s3.certsShort', defaultMessage: 'Certs' },
+  shell3Group: { id: 'cls.s3.group', defaultMessage: 'Learning' },
+  shell3Explore: { id: 'cls.s3.explore', defaultMessage: 'Explore' },
+  shell3ExploreAll: { id: 'cls.s3.exploreAll', defaultMessage: 'All courses' },
+  shell3Search: { id: 'cls.s3.search', defaultMessage: 'Search courses and help' },
+  shell3Suggestions: { id: 'cls.s3.suggestions', defaultMessage: 'Suggestions' },
+  shell3NoSuggestions: { id: 'cls.s3.noSuggestions', defaultMessage: 'No suggestions' },
+  shell3Help: { id: 'cls.s3.help', defaultMessage: 'Help' },
+  shell3Profile: { id: 'cls.s3.profile', defaultMessage: 'My profile' },
+  shell3Collapse: { id: 'cls.s3.collapse', defaultMessage: 'Collapse menu' },
+  shell3Expand: { id: 'cls.s3.expand', defaultMessage: 'Expand menu' },
+  shell3Dismiss: { id: 'cls.s3.dismiss', defaultMessage: 'Dismiss announcement' },
+  shell3Announcement: { id: 'cls.s3.announcement', defaultMessage: 'Announcement' },
+  shell3Footer: { id: 'cls.s3.footer', defaultMessage: '© {year} Mission Hospital' },
+  shell3Privacy: { id: 'cls.s3.privacy', defaultMessage: 'Privacy (PDPA)' },
+  shell3Accessibility: { id: 'cls.s3.accessibility', defaultMessage: 'Accessibility' },
 });
 
 export default messages;
