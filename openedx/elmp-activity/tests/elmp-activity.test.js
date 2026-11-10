@@ -84,3 +84,22 @@ test('does nothing outside an iframe or without a parent origin', () => {
   window.eval(SCRIPT);
   expect(window.__elmpActivity).toBeUndefined();
 });
+
+test('applies display settings from the player only (Plan 5 · P5-3.02)', () => {
+  const win = lessonFrame('http://apps.local.openedx.io');
+  const html = win.document.documentElement;
+  playerSays(win, {
+    type: 'elmp.display', theme: 'dark', textScale: 999, contrast: true, spacing: false, reduceMotion: true,
+  }, 'http://apps.local.openedx.io');
+  expect(html.getAttribute('data-elmp-theme')).toBe('dark');
+  expect(html.getAttribute('data-elmp-contrast')).toBe('on');
+  expect(html.hasAttribute('data-elmp-spacing')).toBe(false);
+  expect(html.getAttribute('data-elmp-motion')).toBe('on');
+  expect(html.style.getPropertyValue('--elmp-text-scale')).toBe('1.6');
+  playerSays(win, { type: 'elmp.display', theme: '<x>', textScale: 'big' }, 'http://apps.local.openedx.io');
+  expect(html.getAttribute('data-elmp-theme')).toBe('light');
+  expect(html.hasAttribute('data-elmp-contrast')).toBe(false);
+  expect(html.style.getPropertyValue('--elmp-text-scale')).toBe('1');
+  playerSays(win, { type: 'elmp.display', theme: 'dark' }, 'http://evil.example');
+  expect(html.getAttribute('data-elmp-theme')).toBe('light');
+});

@@ -87,5 +87,5 @@ export {
 } from './components/Player3';
 export {
   default as useDisplaySettings, DEFAULT_DISPLAY, DISPLAY_KEY, DISPLAY_MESSAGE, TEXT_SCALE, displayAttributes,
-  displayMessage, isDefaultDisplay, postDisplay, sanitizeDisplay,
+  displayMessage, isDefaultDisplay, postDisplay, sanitizeDisplay, useLessonDisplay,
 } from './player/useDisplaySettings';

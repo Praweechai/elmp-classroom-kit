@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.TEXT_SCALE = exports.DISPLAY_MESSAGE = exports.DISPLAY_KEY = exports.DEFAULT_DISPLAY = void 0;
 exports.default = useDisplaySettings;
 exports.sanitizeDisplay = exports.postDisplay = exports.isDefaultDisplay = exports.displayMessage = exports.displayAttributes = void 0;
+exports.useLessonDisplay = useLessonDisplay;
 var _react = require("react");
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -89,4 +90,28 @@ function useDisplaySettings(initial) {
     update,
     reset
   };
+}
+
+// Keeps the lesson iframe in step: posts the settings when they change and again whenever a new lesson page
+// says it is ready (the Plan 4 activity script sends {type: 'elmp.activity', kind: 'ready'} on every load).
+function useLessonDisplay(frameRef, settings, lessonOrigin) {
+  (0, _react.useEffect)(() => {
+    postDisplay(frameRef.current?.contentWindow, settings, lessonOrigin || '*');
+  }, [frameRef, settings, lessonOrigin]);
+  (0, _react.useEffect)(() => {
+    const onMessage = e => {
+      if (lessonOrigin && e.origin !== lessonOrigin) {
+        return;
+      }
+      if (e.data?.type !== 'elmp.activity' || e.data.kind !== 'ready') {
+        return;
+      }
+      if (frameRef.current && e.source !== frameRef.current.contentWindow) {
+        return;
+      }
+      postDisplay(frameRef.current?.contentWindow, settings, lessonOrigin || '*');
+    };
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, [frameRef, settings, lessonOrigin]);
 }

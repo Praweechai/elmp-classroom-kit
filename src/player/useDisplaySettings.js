@@ -58,3 +58,21 @@ export default function useDisplaySettings(initial) {
   const reset = useCallback(() => setSettings({ ...DEFAULT_DISPLAY }), []);
   return { settings, update, reset };
 }
+
+// Keeps the lesson iframe in step: posts the settings when they change and again whenever a new lesson page
+// says it is ready (the Plan 4 activity script sends {type: 'elmp.activity', kind: 'ready'} on every load).
+export function useLessonDisplay(frameRef, settings, lessonOrigin) {
+  useEffect(() => {
+    postDisplay(frameRef.current?.contentWindow, settings, lessonOrigin || '*');
+  }, [frameRef, settings, lessonOrigin]);
+  useEffect(() => {
+    const onMessage = (e) => {
+      if (lessonOrigin && e.origin !== lessonOrigin) { return; }
+      if (e.data?.type !== 'elmp.activity' || e.data.kind !== 'ready') { return; }
+      if (frameRef.current && e.source !== frameRef.current.contentWindow) { return; }
+      postDisplay(frameRef.current?.contentWindow, settings, lessonOrigin || '*');
+    };
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, [frameRef, settings, lessonOrigin]);
+}

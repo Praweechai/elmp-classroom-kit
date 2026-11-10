@@ -795,6 +795,12 @@ Object.defineProperty(exports, "useIdleTimer", {
     return _useIdleTimer.default;
   }
 });
+Object.defineProperty(exports, "useLessonDisplay", {
+  enumerable: true,
+  get: function () {
+    return _useDisplaySettings.useLessonDisplay;
+  }
+});
 Object.defineProperty(exports, "useLinkComponent", {
   enumerable: true,
   get: function () {

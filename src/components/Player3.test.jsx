@@ -1,11 +1,14 @@
-import { fireEvent, screen, within } from '@testing-library/react';
+import { useRef } from 'react';
+import {
+  fireEvent, render, screen, within,
+} from '@testing-library/react';
 import { axe } from 'jest-axe';
 
 import { outline } from '../__fixtures__/portal';
 import { BANNED_WORDS, renderKit, visibleWords } from '../testUtils';
 import PlayerLayout3, { flattenOutline } from './Player3';
 import {
-  DEFAULT_DISPLAY, DISPLAY_KEY, displayMessage, postDisplay, sanitizeDisplay,
+  DEFAULT_DISPLAY, DISPLAY_KEY, displayMessage, postDisplay, sanitizeDisplay, useLessonDisplay,
 } from '../player/useDisplaySettings';
 
 // Plan 5 P5-3.01 — S-105 course player 3.
@@ -161,5 +164,30 @@ describe('display settings', () => {
     const units = flattenOutline(outline);
     expect(units).toHaveLength(7);
     expect(units[3]).toMatchObject({ id: 'q4', number: '2.2', sectionTitle: '2. Isolation precautions' });
+  });
+});
+
+describe('useLessonDisplay', () => {
+  const LESSON = 'http://local.openedx.io';
+  const Frame = ({ settings }) => { // eslint-disable-line react/prop-types
+    const ref = useRef(null);
+    useLessonDisplay(ref, settings, LESSON);
+    return <iframe ref={ref} title="lesson" />;
+  };
+
+  it('posts on mount, on change, and when the lesson says ready (from its own frame and origin only)', () => {
+    const settings = { ...DEFAULT_DISPLAY, theme: 'dark' };
+    const { rerender } = render(<Frame settings={settings} />);
+    const win = document.querySelector('iframe').contentWindow;
+    const post = jest.spyOn(win, 'postMessage');
+    rerender(<Frame settings={{ ...settings, spacing: true }} />);
+    expect(post).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'elmp.display', spacing: true }), LESSON);
+    post.mockClear();
+    const ready = { type: 'elmp.activity', kind: 'ready' };
+    window.dispatchEvent(new MessageEvent('message', { data: ready, origin: 'http://evil.example', source: win }));
+    window.dispatchEvent(new MessageEvent('message', { data: { ...ready, kind: 'input' }, origin: LESSON, source: win }));
+    expect(post).not.toHaveBeenCalled();
+    window.dispatchEvent(new MessageEvent('message', { data: ready, origin: LESSON, source: win }));
+    expect(post).toHaveBeenCalledWith(expect.objectContaining({ theme: 'dark', spacing: true }), LESSON);
   });
 });

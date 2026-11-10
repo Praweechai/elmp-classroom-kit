@@ -2,7 +2,8 @@
  * ELMP activity bridge (Plan 4 · F-117 · doc 02 §7). Runs inside Open edX lesson pages
  * (LMS /xblock/<unit>) shown in the Classroom player's iframe.
  * Tells the player when the learner is active and when a video plays, and pauses every
- * video when the player asks ({type: 'elmp.pause'}).
+ * video when the player asks ({type: 'elmp.pause'}). Applies the player's display settings
+ * ({type: 'elmp.display'}, Plan 5) as data- attributes on <html>.
  * Sends only: kind, unit id, H5P verb. No personal data (NFR-D5).
  */
 (function () {
@@ -105,8 +106,24 @@
     }
   }
 
+  // Plan 5 · P5-3.02 (F-136, D-81): player display settings → data- attributes on the lesson <html>.
+  // Only elmp-lesson.css and the content kit read them; H5P and the video player keep their own look.
+  function applyDisplay(d) {
+    var root = document.documentElement;
+    var scale = Math.round(Number(d.textScale) / 10) * 10;
+    scale = isFinite(scale) ? Math.min(160, Math.max(80, scale)) : 100;
+    root.setAttribute('data-elmp-theme', d.theme === 'dark' ? 'dark' : 'light');
+    ['contrast', 'spacing', 'reduceMotion'].forEach(function (k) {
+      var attr = 'data-elmp-' + (k === 'reduceMotion' ? 'motion' : k);
+      if (d[k] === true) { root.setAttribute(attr, 'on'); } else { root.removeAttribute(attr); }
+    });
+    root.style.setProperty('--elmp-text-scale', String(scale / 100));
+  }
+
   window.addEventListener('message', function (event) {
-    if (event.origin !== parentOrigin || !event.data || event.data.type !== 'elmp.pause') { return; }
+    if (event.origin !== parentOrigin || !event.data) { return; }
+    if (event.data.type === 'elmp.display') { applyDisplay(event.data); return; }
+    if (event.data.type !== 'elmp.pause') { return; }
     media().forEach(function (m) { try { m.pause(); } catch (e) { /* ignore */ } });
     stopBeat();
   });
