@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.TopBar3 = exports.SidebarNav3 = exports.SearchBox = exports.ClassroomShell3 = exports.BottomTabs3 = exports.AnnouncementBanner = void 0;
+exports.TopBar3 = exports.SidebarNav3 = exports.SearchBox = exports.LanguageMenu = exports.ClassroomShell3 = exports.BottomTabs3 = exports.AnnouncementBanner = void 0;
 exports.useDropdown = useDropdown;
 exports.useSidebar3 = useSidebar3;
 var _react = require("react");
@@ -409,6 +409,7 @@ const LanguageMenu = ({
     })]
   });
 };
+exports.LanguageMenu = LanguageMenu;
 LanguageMenu.propTypes = {
   dd: _propTypes.default.shape({
     open: _propTypes.default.string,

@@ -1,6 +1,7 @@
 import './tokens/tokens.css';
 import './styles/classroom.css';
 import './styles/shell3.css';
+import './styles/player3.css';
 
 export { default as tokens } from './tokens/tokens';
 export {
@@ -79,3 +80,12 @@ export { default as CoursesView, entryToCard, statusGroup } from './views/Course
 export { default as GradesView } from './views/GradesView';
 export { default as ProgressView, Donut, WeekBars } from './views/ProgressView';
 export { default as CertificatesView2, CertificateDialog } from './views/CertificatesView2';
+
+// Plan 5 · kit 2.0 (P5-3.01): course player 3 (S-105) — top bar + five tools, outline panel, pager, display settings.
+export {
+  default as PlayerLayout3, OutlinePanel, PlayerToolbar, UnitPager, flattenOutline, useArrowKeys,
+} from './components/Player3';
+export {
+  default as useDisplaySettings, DEFAULT_DISPLAY, DISPLAY_KEY, DISPLAY_MESSAGE, TEXT_SCALE, displayAttributes,
+  displayMessage, isDefaultDisplay, postDisplay, sanitizeDisplay,
+} from './player/useDisplaySettings';

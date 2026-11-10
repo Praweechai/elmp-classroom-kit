@@ -252,7 +252,7 @@ LinkMenu.propTypes = {
   footer: PropTypes.node,
 };
 
-const LanguageMenu = ({ dd, locale, onLocaleChange }) => {
+export const LanguageMenu = ({ dd, locale, onLocaleChange }) => {
   const intl = useClassroomIntl();
   const lang = kitLanguage(locale);
   const open = dd.open === 'lang';

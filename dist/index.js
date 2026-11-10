@@ -195,6 +195,24 @@ Object.defineProperty(exports, "CoursesView", {
     return _CoursesView.default;
   }
 });
+Object.defineProperty(exports, "DEFAULT_DISPLAY", {
+  enumerable: true,
+  get: function () {
+    return _useDisplaySettings.DEFAULT_DISPLAY;
+  }
+});
+Object.defineProperty(exports, "DISPLAY_KEY", {
+  enumerable: true,
+  get: function () {
+    return _useDisplaySettings.DISPLAY_KEY;
+  }
+});
+Object.defineProperty(exports, "DISPLAY_MESSAGE", {
+  enumerable: true,
+  get: function () {
+    return _useDisplaySettings.DISPLAY_MESSAGE;
+  }
+});
 Object.defineProperty(exports, "DashCard", {
   enumerable: true,
   get: function () {
@@ -363,6 +381,12 @@ Object.defineProperty(exports, "OutlineDrawer", {
     return _CourseOutline.OutlineDrawer;
   }
 });
+Object.defineProperty(exports, "OutlinePanel", {
+  enumerable: true,
+  get: function () {
+    return _Player2.OutlinePanel;
+  }
+});
 Object.defineProperty(exports, "OutlineRail", {
   enumerable: true,
   get: function () {
@@ -379,6 +403,18 @@ Object.defineProperty(exports, "PageStrip", {
   enumerable: true,
   get: function () {
     return _PageStrip.default;
+  }
+});
+Object.defineProperty(exports, "PlayerLayout3", {
+  enumerable: true,
+  get: function () {
+    return _Player2.default;
+  }
+});
+Object.defineProperty(exports, "PlayerToolbar", {
+  enumerable: true,
+  get: function () {
+    return _Player2.PlayerToolbar;
   }
 });
 Object.defineProperty(exports, "PlayerTopBar", {
@@ -483,6 +519,12 @@ Object.defineProperty(exports, "StreakWeek", {
     return _Dashboard.StreakWeek;
   }
 });
+Object.defineProperty(exports, "TEXT_SCALE", {
+  enumerable: true,
+  get: function () {
+    return _useDisplaySettings.TEXT_SCALE;
+  }
+});
 Object.defineProperty(exports, "TIMEOUT_MS", {
   enumerable: true,
   get: function () {
@@ -517,6 +559,12 @@ Object.defineProperty(exports, "TopBar3", {
   enumerable: true,
   get: function () {
     return _Shell2.TopBar3;
+  }
+});
+Object.defineProperty(exports, "UnitPager", {
+  enumerable: true,
+  get: function () {
+    return _Player2.UnitPager;
   }
 });
 Object.defineProperty(exports, "UnitTitle", {
@@ -567,10 +615,28 @@ Object.defineProperty(exports, "createPortalClient", {
     return _PortalClient.createPortalClient;
   }
 });
+Object.defineProperty(exports, "displayAttributes", {
+  enumerable: true,
+  get: function () {
+    return _useDisplaySettings.displayAttributes;
+  }
+});
+Object.defineProperty(exports, "displayMessage", {
+  enumerable: true,
+  get: function () {
+    return _useDisplaySettings.displayMessage;
+  }
+});
 Object.defineProperty(exports, "entryToCard", {
   enumerable: true,
   get: function () {
     return _CoursesView.entryToCard;
+  }
+});
+Object.defineProperty(exports, "flattenOutline", {
+  enumerable: true,
+  get: function () {
+    return _Player2.flattenOutline;
   }
 });
 Object.defineProperty(exports, "formatDate", {
@@ -609,6 +675,12 @@ Object.defineProperty(exports, "isBridgeMessage", {
     return _useIdleTimer.isBridgeMessage;
   }
 });
+Object.defineProperty(exports, "isDefaultDisplay", {
+  enumerable: true,
+  get: function () {
+    return _useDisplaySettings.isDefaultDisplay;
+  }
+});
 Object.defineProperty(exports, "kitLanguage", {
   enumerable: true,
   get: function () {
@@ -633,10 +705,22 @@ Object.defineProperty(exports, "nextRequiredCourse", {
     return _CourseFinished.nextRequiredCourse;
   }
 });
+Object.defineProperty(exports, "postDisplay", {
+  enumerable: true,
+  get: function () {
+    return _useDisplaySettings.postDisplay;
+  }
+});
 Object.defineProperty(exports, "resetPortalClient", {
   enumerable: true,
   get: function () {
     return _PortalClient.resetPortalClient;
+  }
+});
+Object.defineProperty(exports, "sanitizeDisplay", {
+  enumerable: true,
+  get: function () {
+    return _useDisplaySettings.sanitizeDisplay;
   }
 });
 Object.defineProperty(exports, "statusGroup", {
@@ -681,10 +765,22 @@ Object.defineProperty(exports, "useActivitySender", {
     return _useActivitySender.default;
   }
 });
+Object.defineProperty(exports, "useArrowKeys", {
+  enumerable: true,
+  get: function () {
+    return _Player2.useArrowKeys;
+  }
+});
 Object.defineProperty(exports, "useClassroomIntl", {
   enumerable: true,
   get: function () {
     return _i18n.useClassroomIntl;
+  }
+});
+Object.defineProperty(exports, "useDisplaySettings", {
+  enumerable: true,
+  get: function () {
+    return _useDisplaySettings.default;
   }
 });
 Object.defineProperty(exports, "useDropdown", {
@@ -738,6 +834,7 @@ Object.defineProperty(exports, "weekdayLabels", {
 require("./tokens/tokens.css");
 require("./styles/classroom.css");
 require("./styles/shell3.css");
+require("./styles/player3.css");
 var _tokens2 = _interopRequireDefault(require("./tokens/tokens"));
 var _i18n = require("./i18n");
 var _KitIcon = _interopRequireDefault(require("./components/KitIcon"));
@@ -781,6 +878,8 @@ var _CoursesView = _interopRequireWildcard(require("./views/CoursesView"));
 var _GradesView = _interopRequireDefault(require("./views/GradesView"));
 var _ProgressView = _interopRequireWildcard(require("./views/ProgressView"));
 var _CertificatesView2 = _interopRequireWildcard(require("./views/CertificatesView2"));
+var _Player2 = _interopRequireWildcard(require("./components/Player3"));
+var _useDisplaySettings = _interopRequireWildcard(require("./player/useDisplaySettings"));
 var cache;
 function _interopRequireWildcard(e, t) { if (!t && e && e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c && {}.hasOwnProperty.call(e, c) && ((r = a && Object.getOwnPropertyDescriptor(e, c)) && (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
