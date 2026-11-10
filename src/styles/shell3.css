@@ -181,6 +181,9 @@
   .cls3-side-col { display: flex; }
   .cls3-stats { gap: 10px; }
   .cls3-stats > * { padding: 12px; }
+  .cls3-stats .cls-stat { flex-direction: column-reverse; gap: 8px; text-align: center; }
+  .cls3-stats .cls-tile { display: none; }
+  .cls3-stats .cls-stat__text b { font-size: 14px; }
   .cls3-course--list { flex-direction: column; border-left-width: 1px; }
   .cls3-course--list .cls3-course__cover { width: auto; }
   .cls3-course--list .cls3-course__cover .cls-cover { height: 110px; min-height: 0; }
