@@ -9,6 +9,12 @@ Object.defineProperty(exports, "AccountMenu", {
     return _Header.AccountMenu;
   }
 });
+Object.defineProperty(exports, "AnnouncementBanner", {
+  enumerable: true,
+  get: function () {
+    return _Shell2.AnnouncementBanner;
+  }
+});
 Object.defineProperty(exports, "Avatar", {
   enumerable: true,
   get: function () {
@@ -25,6 +31,12 @@ Object.defineProperty(exports, "BottomTabs", {
   enumerable: true,
   get: function () {
     return _Header.BottomTabs;
+  }
+});
+Object.defineProperty(exports, "BottomTabs3", {
+  enumerable: true,
+  get: function () {
+    return _Shell2.BottomTabs3;
   }
 });
 Object.defineProperty(exports, "CACHE_MS", {
@@ -85,6 +97,12 @@ Object.defineProperty(exports, "ClassroomShell", {
   enumerable: true,
   get: function () {
     return _Shell.ClassroomShell;
+  }
+});
+Object.defineProperty(exports, "ClassroomShell3", {
+  enumerable: true,
+  get: function () {
+    return _Shell2.ClassroomShell3;
   }
 });
 Object.defineProperty(exports, "ContinueCard", {
@@ -339,10 +357,22 @@ Object.defineProperty(exports, "STATUSES", {
     return _StatusPill.STATUSES;
   }
 });
+Object.defineProperty(exports, "SearchBox", {
+  enumerable: true,
+  get: function () {
+    return _Shell2.SearchBox;
+  }
+});
 Object.defineProperty(exports, "SidebarNav", {
   enumerable: true,
   get: function () {
     return _Shell.SidebarNav;
+  }
+});
+Object.defineProperty(exports, "SidebarNav3", {
+  enumerable: true,
+  get: function () {
+    return _Shell2.SidebarNav3;
   }
 });
 Object.defineProperty(exports, "Skeleton", {
@@ -403,6 +433,12 @@ Object.defineProperty(exports, "TopBar", {
   enumerable: true,
   get: function () {
     return _Shell.TopBar;
+  }
+});
+Object.defineProperty(exports, "TopBar3", {
+  enumerable: true,
+  get: function () {
+    return _Shell2.TopBar3;
   }
 });
 Object.defineProperty(exports, "UnitTitle", {
@@ -543,6 +579,12 @@ Object.defineProperty(exports, "useClassroomIntl", {
     return _i18n.useClassroomIntl;
   }
 });
+Object.defineProperty(exports, "useDropdown", {
+  enumerable: true,
+  get: function () {
+    return _Shell2.useDropdown;
+  }
+});
 Object.defineProperty(exports, "useIdleTimer", {
   enumerable: true,
   get: function () {
@@ -559,6 +601,12 @@ Object.defineProperty(exports, "usePortal", {
   enumerable: true,
   get: function () {
     return _usePortal.default;
+  }
+});
+Object.defineProperty(exports, "useSidebar3", {
+  enumerable: true,
+  get: function () {
+    return _Shell2.useSidebar3;
   }
 });
 Object.defineProperty(exports, "useSidebarState", {
@@ -581,6 +629,7 @@ Object.defineProperty(exports, "weekdayLabels", {
 });
 require("./tokens/tokens.css");
 require("./styles/classroom.css");
+require("./styles/shell3.css");
 var _tokens2 = _interopRequireDefault(require("./tokens/tokens"));
 var _i18n = require("./i18n");
 var _KitIcon = _interopRequireDefault(require("./components/KitIcon"));
@@ -616,6 +665,7 @@ var _useIdleTimer = _interopRequireWildcard(require("./player/useIdleTimer"));
 var _useActivitySender = _interopRequireWildcard(require("./player/useActivitySender"));
 var _PortalClient = require("./portal/PortalClient");
 var _usePortal = _interopRequireDefault(require("./portal/usePortal"));
+var _Shell2 = require("./components/Shell3");
 var cache;
 function _interopRequireWildcard(e, t) { if (!t && e && e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c && {}.hasOwnProperty.call(e, c) && ((r = a && Object.getOwnPropertyDescriptor(e, c)) && (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }

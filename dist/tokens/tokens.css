@@ -75,6 +75,9 @@
   --cls-violet-text: #5925DC;
   --cls-pink-tint: #FDF2FA;
   --cls-pink-text: #C11574;
+  --cls-banner: #025622;
+  --cls-banner-text: #FFFFFF;
+  --cls-banner-urgent: #B42318;
   --cls-cover-clinical: linear-gradient(135deg, #025622 0%, #16844A 100%);
   --cls-cover-safety: linear-gradient(135deg, #0B4F6C 0%, #2E90FA 100%);
   --cls-cover-compliance: linear-gradient(135deg, #43209F 0%, #7A5AF8 100%);
@@ -120,4 +123,6 @@
   --cls-size-dash-max: 1200px;
   --cls-size-tree: 320px;
   --cls-size-rail: 40px;
+  --cls-size-topbar: 60px;
+  --cls-size-page-max: 1280px;
 }
