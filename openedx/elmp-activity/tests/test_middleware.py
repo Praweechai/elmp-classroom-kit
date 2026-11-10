@@ -77,6 +77,39 @@ class InjectTests(unittest.TestCase):
         self.assertEqual(run().content, PAGE)
 
 
+HEAD_PAGE = b"<html><head><title>u</title></head><body><div>lesson</div></body></html>"
+CSS = "http://portal.local.openedx.io/brand/openedx/elmp-lesson.css?v=1"
+
+
+class LessonCssTests(unittest.TestCase):
+    def test_no_setting_no_link(self):
+        self.assertNotIn(b"lesson-css", run(body=HEAD_PAGE).content)
+
+    @override_settings(ELMP_LESSON_CSS_URL=CSS)
+    def test_link_in_head_and_script_kept(self):
+        out = run(body=HEAD_PAGE).content
+        self.assertIn(b'<link rel="stylesheet" href="' + CSS.encode() + b'"', out)
+        self.assertLess(out.index(b"lesson-css"), out.index(b"</head>"))
+        self.assertIn(b'content="light"', out)
+        self.assertIn(b'data-elmp-activity="bridge"', out)
+
+    @override_settings(ELMP_LESSON_CSS_URL=CSS, LEARNING_MICROFRONTEND_URL="")
+    def test_link_without_origin(self):
+        out = run(body=HEAD_PAGE).content
+        self.assertIn(b"lesson-css", out)
+        self.assertNotIn(b'data-elmp-activity="bridge"', out)
+
+    @override_settings(ELMP_LESSON_CSS_URL='javascript:alert(1)"')
+    def test_bad_url_ignored(self):
+        self.assertNotIn(b"lesson-css", run(body=HEAD_PAGE).content)
+
+    @override_settings(ELMP_LESSON_CSS_URL=CSS)
+    def test_once_and_other_pages(self):
+        once = run(body=HEAD_PAGE).content
+        self.assertEqual(run(body=once).content, once)
+        self.assertEqual(run(path="/dashboard", body=HEAD_PAGE).content, HEAD_PAGE)
+
+
 class SettingsTests(unittest.TestCase):
     def test_plugin_settings_adds_middleware_once(self):
         class S:

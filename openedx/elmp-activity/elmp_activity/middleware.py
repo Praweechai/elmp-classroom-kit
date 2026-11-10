@@ -61,12 +61,35 @@ class ActivityScriptMiddleware:
         response = self.get_response(request)
         if not should_inject(request, response):
             return response
-        origin = parent_origin()
         content = response.content
-        end = content.rfind(b"</body>")
-        if not origin or end == -1 or MARKER in content:
+        if MARKER in content:
             return response
-        response.content = content[:end] + script_tags(origin) + content[end:]
+        changed = False
+        # Plan 5 (F-137): our lesson look. One <link> in <head>; empty setting = default Open edX look.
+        css = lesson_css_tags()
+        head_end = content.find(b"</head>")
+        if css and head_end != -1:
+            content = content[:head_end] + css + content[head_end:]
+            changed = True
+        origin = parent_origin()
+        end = content.rfind(b"</body>")
+        if origin and end != -1:
+            content = content[:end] + script_tags(origin) + content[end:]
+            changed = True
+        if not changed:
+            return response
+        response.content = content
         if response.has_header("Content-Length"):
             response["Content-Length"] = str(len(response.content))
         return response
+
+
+def lesson_css_tags():
+    """<link> to the ELMP lesson stylesheet (served by the Portal) + light colour scheme, or b''."""
+    url = (getattr(settings, "ELMP_LESSON_CSS_URL", "") or "").strip()
+    if not url or not re.match(r"^https?://[^\s\"'<>]+$", url):
+        return b""
+    return (
+        '<meta name="color-scheme" content="light" data-elmp-activity="scheme">'
+        f'<link rel="stylesheet" href="{url}" data-elmp-activity="lesson-css">'
+    ).encode("utf-8")
