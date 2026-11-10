@@ -15,6 +15,7 @@ import '@fontsource/ibm-plex-mono/500.css';
 
 import '../src/tokens/tokens.css';
 import '../src/styles/classroom.css';
+import '../src/styles/shell3.css';
 
 const preview = {
   globalTypes: {
