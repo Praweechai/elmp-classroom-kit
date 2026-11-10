@@ -185,3 +185,10 @@
   .cls3-course--list .cls3-course__cover { width: auto; }
   .cls3-course--list .cls3-course__cover .cls-cover { height: 110px; min-height: 0; }
 }
+
+/* Deadlines in the 320 px side column: stacked rows (the wide Plan 4 row layout is for the old dashboard). */
+.cls3-side-col .cls-deadline { grid-template-columns: 56px minmax(0, 1fr); gap: 6px 12px; align-items: start; }
+.cls3-side-col .cls-deadline__thumb { width: 56px; height: 44px; grid-row: span 4; }
+.cls3-side-col .cls-deadline > .cls-datechip,
+.cls3-side-col .cls-deadline > .cls-left,
+.cls3-side-col .cls-deadline > .cls-btn { grid-column: 2; justify-self: start; }
