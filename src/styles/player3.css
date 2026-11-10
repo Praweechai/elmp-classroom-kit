@@ -9,21 +9,23 @@
 .cls3-player :focus-visible { outline: 3px solid var(--cls-action); outline-offset: 2px; }
 
 /* Dark mode: shell colours only (the lesson gets its own dark look from elmp-lesson.css, D-81). */
-.cls3-player[data-theme="dark"] {
+.cls3-player[data-theme="dark"], .cls3-player-page[data-theme="dark"] {
   --cls-bg: #101512; --cls-surface: #182019; --cls-sunken: #202a23; --cls-border: #2f3a33; --cls-border-strong: #45524a;
   --cls-border-input: #7d8781; --cls-text: #eef2ef; --cls-text-2: #c3ccc6; --cls-text-3: #9aa49e;
   --cls-action: #4cc47a; --cls-action-hover: #67d290; --cls-action-tint: #1d3526; --cls-ring-track: #2f3a33;
   --cls-scrim: rgba(0, 0, 0, .6);
   color-scheme: dark;
 }
-.cls3-player[data-theme="dark"] .cls-btn--primary { color: #0b1a10; }
+.cls3-player[data-theme="dark"] .cls-btn--primary, .cls3-player-page[data-theme="dark"] .cls-btn--primary { color: #0b1a10; }
 /* High contrast: darkest text, solid borders, underlined links. */
-.cls3-player[data-contrast="high"] { --cls-text-2: var(--cls-text); --cls-text-3: var(--cls-text); --cls-border: var(--cls-border-input); }
-.cls3-player[data-contrast="high"] a { text-decoration: underline; }
+.cls3-player[data-contrast="high"], .cls3-player-page[data-contrast="high"] { --cls-text-2: var(--cls-text); --cls-text-3: var(--cls-text); --cls-border: var(--cls-border-input); }
+.cls3-player[data-contrast="high"] a, .cls3-player-page[data-contrast="high"] a { text-decoration: underline; }
 /* Wider text spacing (WCAG 1.4.12 values). */
-.cls3-player[data-spacing="wide"] { letter-spacing: .12em; word-spacing: .16em; line-height: 1.6; }
-.cls3-player[data-spacing="wide"] :lang(th) { letter-spacing: .05em; }
-.cls3-player[data-motion="reduce"] *, .cls3-player[data-motion="reduce"] *::before, .cls3-player[data-motion="reduce"] *::after {
+.cls3-player[data-spacing="wide"], .cls3-player-page[data-spacing="wide"] { letter-spacing: .12em; word-spacing: .16em; line-height: 1.6; }
+.cls3-player[data-spacing="wide"] :lang(th), .cls3-player-page[data-spacing="wide"] :lang(th) { letter-spacing: .05em; }
+.cls3-player[data-motion="reduce"] *, .cls3-player[data-motion="reduce"] *::before, .cls3-player[data-motion="reduce"] *::after,
+.cls3-player-page[data-motion="reduce"] *, .cls3-player-page[data-motion="reduce"] *::before,
+.cls3-player-page[data-motion="reduce"] *::after {
   transition: none !important; animation: none !important;
 }
 
@@ -121,6 +123,12 @@ a.cls3-arrow:hover { background: var(--cls-action); border-color: var(--cls-acti
 .cls3-pager .cls-btn { display: inline-flex; align-items: center; gap: 4px; }
 .cls3-pager .cls-btn:disabled { opacity: .45; cursor: not-allowed; }
 .cls3-pager__count { color: var(--cls-text-3); font-size: 14px; }
+
+/* Learning app (P5-4.02): the settings sit on <body class="cls3-player-page">; page colours follow them. */
+.cls3-player-page { background: var(--cls-bg); color: var(--cls-text); }
+.cls3-player-page .cls3-ptop { position: sticky; top: 0; }
+.cls3-outline--overlay { position: fixed; inset: 0 auto 0 0; z-index: 1040; width: min(340px, 88vw); box-shadow: var(--cls-shadow-xl); }
+.cls3-outline--overlay .cls3-outline__close { display: grid; }
 
 /* Below 1024 px: outline slides in over the lesson with a scrim. */
 @media (max-width: 1023px) {

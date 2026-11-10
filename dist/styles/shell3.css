@@ -219,7 +219,7 @@
 .cls3-table-card__head h2 { font-size: 18px; font-weight: 600; }
 .cls3-table-card__result { display: flex; align-items: center; gap: 10px; font-size: 14px; }
 .cls3-code { display: inline-block; margin-right: 8px; padding: 1px 8px; border-radius: var(--cls-radius-xs); background: var(--cls-sunken); color: var(--cls-text-2); font-family: var(--cls-font-mono); font-size: 12px; font-weight: 500; vertical-align: 2px; }
-.cls3-table-wrap { overflow-x: auto; }
+.cls3-table-wrap { position: relative; overflow-x: auto; } /* relative: hidden screen-reader text stays inside the scroll box */
 .cls3-table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .cls3-table th, .cls3-table td { padding: 11px 12px; border-bottom: 1px solid var(--cls-border); text-align: left; vertical-align: middle; }
 .cls3-table thead th { color: var(--cls-text-3); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; background: var(--cls-sunken); }

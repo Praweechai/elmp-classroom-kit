@@ -83,7 +83,8 @@ export { default as CertificatesView2, CertificateDialog } from './views/Certifi
 
 // Plan 5 · kit 2.0 (P5-3.01): course player 3 (S-105) — top bar + five tools, outline panel, pager, display settings.
 export {
-  default as PlayerLayout3, OutlinePanel, PlayerToolbar, UnitPager, flattenOutline, useArrowKeys,
+  default as PlayerLayout3, OutlinePanel, PlayerToolbar, PlayerTopBar3, UnitPager, flattenOutline, useArrowKeys,
+  useFullscreen,
 } from './components/Player3';
 export {
   default as useDisplaySettings, DEFAULT_DISPLAY, DISPLAY_KEY, DISPLAY_MESSAGE, TEXT_SCALE, displayAttributes,

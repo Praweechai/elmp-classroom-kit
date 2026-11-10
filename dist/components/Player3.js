@@ -3,8 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.flattenOutline = exports.default = exports.UnitPager = exports.PlayerToolbar = exports.OutlinePanel = void 0;
+exports.flattenOutline = exports.default = exports.UnitPager = exports.PlayerTopBar3 = exports.PlayerToolbar = exports.OutlinePanel = void 0;
 exports.useArrowKeys = useArrowKeys;
+exports.useFullscreen = useFullscreen;
 var _react = require("react");
 var _propTypes = _interopRequireDefault(require("prop-types"));
 var _icons = require("@openedx/paragon/icons");
@@ -353,7 +354,8 @@ const OutlinePanel = ({
   progress,
   onNavigate,
   id,
-  onClose
+  onClose,
+  overlay = false
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
   const t = (m, v) => intl.formatMessage(m, v);
@@ -381,7 +383,7 @@ const OutlinePanel = ({
     document.getElementById(`${tabIds[next]}-tab`)?.focus();
   };
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("aside", {
-    className: "cls3-outline",
+    className: `cls-root cls3-outline${overlay ? ' cls3-outline--overlay' : ''}`,
     id: id,
     "aria-label": t(_i18n.messages.pl3Nav),
     children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
@@ -541,7 +543,8 @@ OutlinePanel.propTypes = {
   progress: _propTypes.default.number,
   onNavigate: _propTypes.default.func,
   id: _propTypes.default.string,
-  onClose: _propTypes.default.func
+  onClose: _propTypes.default.func,
+  overlay: _propTypes.default.bool // learning app on phones: fixed over the lesson
 };
 
 // ---- Pager: big side arrows + footer "‹ Previous · n / N · Next ›" ----
@@ -669,6 +672,115 @@ const wide = () => {
   }
 };
 
+// Full screen on one element (the player, or the whole page in the learning app). `getTarget` → element.
+function useFullscreen(getTarget) {
+  const [on, setOn] = (0, _react.useState)(false);
+  (0, _react.useEffect)(() => {
+    const onChange = () => setOn(Boolean(document.fullscreenElement));
+    document.addEventListener('fullscreenchange', onChange);
+    return () => document.removeEventListener('fullscreenchange', onChange);
+  }, []);
+  const supported = typeof document !== 'undefined' && Boolean(document.fullscreenEnabled);
+  const toggle = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen?.();
+      return;
+    }
+    getTarget()?.requestFullscreen?.()?.catch?.(() => {});
+  };
+  return {
+    on,
+    toggle: supported ? toggle : undefined
+  };
+}
+
+// ---- Player top bar on its own (the learning app puts it in its header slot) ----
+const PlayerTopBar3 = ({
+  courseTitle,
+  backHref,
+  logoUrl,
+  outlineOpen,
+  outlineId,
+  onToggleOutline,
+  display,
+  units,
+  onSelectUnit,
+  locale,
+  onLocaleChange,
+  fullscreen,
+  onToggleFullscreen
+}) => {
+  const intl = (0, _i18n.useClassroomIntl)();
+  const Link = (0, _LinkContext.useLinkComponent)();
+  const t = (m, v) => intl.formatMessage(m, v);
+  return /*#__PURE__*/(0, _jsxRuntime.jsxs)("header", {
+    className: "cls3-ptop",
+    "aria-label": t(_i18n.messages.playerLabel),
+    children: [onToggleOutline && /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
+      type: "button",
+      className: "cls3-ptool cls3-ptop__toggle",
+      "aria-expanded": Boolean(outlineOpen),
+      "aria-controls": outlineOpen ? outlineId : undefined,
+      "aria-label": t(_i18n.messages.playerOutline),
+      onClick: onToggleOutline,
+      children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
+        src: _icons.MenuOpen,
+        size: 22
+      })
+    }), /*#__PURE__*/(0, _jsxRuntime.jsxs)(Link, {
+      className: "cls3-ptop__back",
+      href: backHref,
+      "aria-label": t(_i18n.messages.pl3BackLabel),
+      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
+        src: _icons.ArrowBackIos,
+        size: 16
+      }), /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
+        children: t(_i18n.messages.shell3MyLearning)
+      })]
+    }), logoUrl && /*#__PURE__*/(0, _jsxRuntime.jsx)("img", {
+      className: "cls3-ptop__logo",
+      src: logoUrl,
+      alt: t(_i18n.messages.brand)
+    }), /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
+      className: "cls3-ptop__title",
+      title: courseTitle,
+      children: courseTitle
+    }), /*#__PURE__*/(0, _jsxRuntime.jsx)(PlayerToolbar, {
+      settings: display.settings,
+      onChange: display.update,
+      onReset: display.reset,
+      units: units,
+      onSelectUnit: onSelectUnit,
+      locale: locale,
+      onLocaleChange: onLocaleChange,
+      fullscreen: fullscreen,
+      onToggleFullscreen: onToggleFullscreen
+    })]
+  });
+};
+exports.PlayerTopBar3 = PlayerTopBar3;
+PlayerTopBar3.propTypes = {
+  courseTitle: _propTypes.default.string.isRequired,
+  backHref: _propTypes.default.string.isRequired,
+  logoUrl: _propTypes.default.string,
+  outlineOpen: _propTypes.default.bool,
+  outlineId: _propTypes.default.string,
+  onToggleOutline: _propTypes.default.func,
+  display: _propTypes.default.shape({
+    settings: _propTypes.default.shape({}).isRequired,
+    update: _propTypes.default.func.isRequired,
+    reset: _propTypes.default.func.isRequired
+  }).isRequired,
+  units: _propTypes.default.arrayOf(_propTypes.default.shape({
+    id: _propTypes.default.string
+  })),
+  onSelectUnit: _propTypes.default.func,
+  locale: _propTypes.default.string,
+  onLocaleChange: _propTypes.default.func,
+  fullscreen: _propTypes.default.bool,
+  onToggleFullscreen: _propTypes.default.func
+};
+
 // ---- The whole player ----
 const PlayerLayout3 = ({
   courseTitle,
@@ -686,17 +798,15 @@ const PlayerLayout3 = ({
   children
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
-  const Link = (0, _LinkContext.useLinkComponent)();
   const t = (m, v) => intl.formatMessage(m, v);
   const root = (0, _react.useRef)(null);
   const outlineId = (0, _react.useId)();
+  const display = (0, _useDisplaySettings.default)(initialDisplay);
   const {
-    settings,
-    update,
-    reset
-  } = (0, _useDisplaySettings.default)(initialDisplay);
+    settings
+  } = display;
   const [outlineOpen, setOutlineOpen] = (0, _react.useState)(wide);
-  const [fullscreen, setFullscreen] = (0, _react.useState)(false);
+  const full = useFullscreen(() => root.current);
   const units = (0, _react.useMemo)(() => flattenOutline(sections), [sections]);
   const at = units.findIndex(u => u.current);
   const current = at >= 0 ? units[at] : null;
@@ -705,11 +815,6 @@ const PlayerLayout3 = ({
   (0, _react.useEffect)(() => {
     onDisplayChange?.(settings);
   }, [settings, onDisplayChange]);
-  (0, _react.useEffect)(() => {
-    const onChange = () => setFullscreen(Boolean(document.fullscreenElement));
-    document.addEventListener('fullscreenchange', onChange);
-    return () => document.removeEventListener('fullscreenchange', onChange);
-  }, []);
 
   // ← / → press the side arrow links, so keys and clicks take the same (router-aware) path.
   const press = dir => root.current?.querySelector(`a.cls3-arrow--${dir}`)?.click();
@@ -720,62 +825,25 @@ const PlayerLayout3 = ({
     }
     onNavigate?.(unit);
   };
-  const toggleFullscreen = () => {
-    if (document.fullscreenElement) {
-      document.exitFullscreen?.();
-      return;
-    }
-    root.current?.requestFullscreen?.()?.catch?.(() => {});
-  };
-  const attrs = (0, _useDisplaySettings.displayAttributes)(settings);
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", _objectSpread(_objectSpread({
     className: `cls-root cls3-player${outlineOpen ? ' is-outline-open' : ''}`,
     ref: root,
     lang: locale
-  }, attrs), {}, {
-    children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("header", {
-      className: "cls3-ptop",
-      "aria-label": t(_i18n.messages.playerLabel),
-      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
-        type: "button",
-        className: "cls3-ptool cls3-ptop__toggle",
-        "aria-expanded": outlineOpen,
-        "aria-controls": outlineId,
-        "aria-label": t(_i18n.messages.playerOutline),
-        onClick: () => setOutlineOpen(o => !o),
-        children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
-          src: _icons.MenuOpen,
-          size: 22
-        })
-      }), /*#__PURE__*/(0, _jsxRuntime.jsxs)(Link, {
-        className: "cls3-ptop__back",
-        href: backHref,
-        "aria-label": t(_i18n.messages.pl3BackLabel),
-        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
-          src: _icons.ArrowBackIos,
-          size: 16
-        }), /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
-          children: t(_i18n.messages.shell3MyLearning)
-        })]
-      }), logoUrl && /*#__PURE__*/(0, _jsxRuntime.jsx)("img", {
-        className: "cls3-ptop__logo",
-        src: logoUrl,
-        alt: t(_i18n.messages.brand)
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-        className: "cls3-ptop__title",
-        title: courseTitle,
-        children: courseTitle
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)(PlayerToolbar, {
-        settings: settings,
-        onChange: update,
-        onReset: reset,
-        units: units,
-        onSelectUnit: navigated,
-        locale: locale,
-        onLocaleChange: onLocaleChange,
-        fullscreen: fullscreen,
-        onToggleFullscreen: typeof document !== 'undefined' && document.fullscreenEnabled ? toggleFullscreen : undefined
-      })]
+  }, (0, _useDisplaySettings.displayAttributes)(settings)), {}, {
+    children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(PlayerTopBar3, {
+      courseTitle: courseTitle,
+      backHref: backHref,
+      logoUrl: logoUrl,
+      outlineOpen: outlineOpen,
+      outlineId: outlineId,
+      onToggleOutline: () => setOutlineOpen(o => !o),
+      display: display,
+      units: units,
+      onSelectUnit: navigated,
+      locale: locale,
+      onLocaleChange: onLocaleChange,
+      fullscreen: full.on,
+      onToggleFullscreen: full.toggle
     }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
       className: "cls3-pbody",
       children: [outlineOpen && /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {

@@ -262,7 +262,7 @@ const UnitRow = ({ item, number, onNavigate }) => {
 UnitRow.propTypes = { item: itemShape.isRequired, number: PropTypes.string.isRequired, onNavigate: PropTypes.func };
 
 export const OutlinePanel = ({
-  sections = [], resources = [], progress, onNavigate, id, onClose,
+  sections = [], resources = [], progress, onNavigate, id, onClose, overlay = false,
 }) => {
   const intl = useClassroomIntl();
   const t = (m, v) => intl.formatMessage(m, v);
@@ -286,7 +286,11 @@ export const OutlinePanel = ({
   };
 
   return (
-    <aside className="cls3-outline" id={id} aria-label={t(messages.pl3Nav)}>
+    <aside
+      className={`cls-root cls3-outline${overlay ? ' cls3-outline--overlay' : ''}`}
+      id={id}
+      aria-label={t(messages.pl3Nav)}
+    >
       <div className="cls3-outline__top">
         <div className="cls3-tabs" role="tablist" aria-label={t(messages.pl3Nav)}>
           {tabs.map((k) => (
@@ -396,6 +400,7 @@ OutlinePanel.propTypes = {
   onNavigate: PropTypes.func,
   id: PropTypes.string,
   onClose: PropTypes.func,
+  overlay: PropTypes.bool, // learning app on phones: fixed over the lesson
 };
 
 // ---- Pager: big side arrows + footer "‹ Previous · n / N · Next ›" ----
@@ -469,19 +474,96 @@ const wide = () => {
   try { return window.matchMedia('(min-width: 1024px)').matches; } catch (e) { return true; }
 };
 
+// Full screen on one element (the player, or the whole page in the learning app). `getTarget` → element.
+export function useFullscreen(getTarget) {
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const onChange = () => setOn(Boolean(document.fullscreenElement));
+    document.addEventListener('fullscreenchange', onChange);
+    return () => document.removeEventListener('fullscreenchange', onChange);
+  }, []);
+  const supported = typeof document !== 'undefined' && Boolean(document.fullscreenEnabled);
+  const toggle = () => {
+    if (document.fullscreenElement) { document.exitFullscreen?.(); return; }
+    getTarget()?.requestFullscreen?.()?.catch?.(() => {});
+  };
+  return { on, toggle: supported ? toggle : undefined };
+}
+
+// ---- Player top bar on its own (the learning app puts it in its header slot) ----
+export const PlayerTopBar3 = ({
+  courseTitle, backHref, logoUrl, outlineOpen, outlineId, onToggleOutline, display, units, onSelectUnit,
+  locale, onLocaleChange, fullscreen, onToggleFullscreen,
+}) => {
+  const intl = useClassroomIntl();
+  const Link = useLinkComponent();
+  const t = (m, v) => intl.formatMessage(m, v);
+  return (
+    <header className="cls3-ptop" aria-label={t(messages.playerLabel)}>
+      {onToggleOutline && (
+        <button
+          type="button"
+          className="cls3-ptool cls3-ptop__toggle"
+          aria-expanded={Boolean(outlineOpen)}
+          aria-controls={outlineOpen ? outlineId : undefined}
+          aria-label={t(messages.playerOutline)}
+          onClick={onToggleOutline}
+        >
+          <KitIcon src={MenuOpen} size={22} />
+        </button>
+      )}
+      <Link className="cls3-ptop__back" href={backHref} aria-label={t(messages.pl3BackLabel)}>
+        <KitIcon src={ArrowBackIos} size={16} />
+        <span>{t(messages.shell3MyLearning)}</span>
+      </Link>
+      {logoUrl && <img className="cls3-ptop__logo" src={logoUrl} alt={t(messages.brand)} />}
+      <p className="cls3-ptop__title" title={courseTitle}>{courseTitle}</p>
+      <PlayerToolbar
+        settings={display.settings}
+        onChange={display.update}
+        onReset={display.reset}
+        units={units}
+        onSelectUnit={onSelectUnit}
+        locale={locale}
+        onLocaleChange={onLocaleChange}
+        fullscreen={fullscreen}
+        onToggleFullscreen={onToggleFullscreen}
+      />
+    </header>
+  );
+};
+
+PlayerTopBar3.propTypes = {
+  courseTitle: PropTypes.string.isRequired,
+  backHref: PropTypes.string.isRequired,
+  logoUrl: PropTypes.string,
+  outlineOpen: PropTypes.bool,
+  outlineId: PropTypes.string,
+  onToggleOutline: PropTypes.func,
+  display: PropTypes.shape({
+    settings: PropTypes.shape({}).isRequired, update: PropTypes.func.isRequired, reset: PropTypes.func.isRequired,
+  }).isRequired,
+  units: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
+  onSelectUnit: PropTypes.func,
+  locale: PropTypes.string,
+  onLocaleChange: PropTypes.func,
+  fullscreen: PropTypes.bool,
+  onToggleFullscreen: PropTypes.func,
+};
+
 // ---- The whole player ----
 const PlayerLayout3 = ({
   courseTitle, backHref, logoUrl, sections = [], resources = [], progress, locale, onLocaleChange, onNavigate,
   onDisplayChange, initialDisplay, unitTitle, children,
 }) => {
   const intl = useClassroomIntl();
-  const Link = useLinkComponent();
   const t = (m, v) => intl.formatMessage(m, v);
   const root = useRef(null);
   const outlineId = useId();
-  const { settings, update, reset } = useDisplaySettings(initialDisplay);
+  const display = useDisplaySettings(initialDisplay);
+  const { settings } = display;
   const [outlineOpen, setOutlineOpen] = useState(wide);
-  const [fullscreen, setFullscreen] = useState(false);
+  const full = useFullscreen(() => root.current);
 
   const units = useMemo(() => flattenOutline(sections), [sections]);
   const at = units.findIndex((u) => u.current);
@@ -490,11 +572,6 @@ const PlayerLayout3 = ({
   const next = at >= 0 && at < units.length - 1 ? units[at + 1] : null;
 
   useEffect(() => { onDisplayChange?.(settings); }, [settings, onDisplayChange]);
-  useEffect(() => {
-    const onChange = () => setFullscreen(Boolean(document.fullscreenElement));
-    document.addEventListener('fullscreenchange', onChange);
-    return () => document.removeEventListener('fullscreenchange', onChange);
-  }, []);
 
   // ← / → press the side arrow links, so keys and clicks take the same (router-aware) path.
   const press = (dir) => root.current?.querySelector(`a.cls3-arrow--${dir}`)?.click();
@@ -504,48 +581,29 @@ const PlayerLayout3 = ({
     if (!wide()) { setOutlineOpen(false); }
     onNavigate?.(unit);
   };
-  const toggleFullscreen = () => {
-    if (document.fullscreenElement) { document.exitFullscreen?.(); return; }
-    root.current?.requestFullscreen?.()?.catch?.(() => {});
-  };
-  const attrs = displayAttributes(settings);
 
   return (
     <div
       className={`cls-root cls3-player${outlineOpen ? ' is-outline-open' : ''}`}
       ref={root}
       lang={locale}
-      {...attrs}
+      {...displayAttributes(settings)}
     >
-      <header className="cls3-ptop" aria-label={t(messages.playerLabel)}>
-        <button
-          type="button"
-          className="cls3-ptool cls3-ptop__toggle"
-          aria-expanded={outlineOpen}
-          aria-controls={outlineId}
-          aria-label={t(messages.playerOutline)}
-          onClick={() => setOutlineOpen((o) => !o)}
-        >
-          <KitIcon src={MenuOpen} size={22} />
-        </button>
-        <Link className="cls3-ptop__back" href={backHref} aria-label={t(messages.pl3BackLabel)}>
-          <KitIcon src={ArrowBackIos} size={16} />
-          <span>{t(messages.shell3MyLearning)}</span>
-        </Link>
-        {logoUrl && <img className="cls3-ptop__logo" src={logoUrl} alt={t(messages.brand)} />}
-        <p className="cls3-ptop__title" title={courseTitle}>{courseTitle}</p>
-        <PlayerToolbar
-          settings={settings}
-          onChange={update}
-          onReset={reset}
-          units={units}
-          onSelectUnit={navigated}
-          locale={locale}
-          onLocaleChange={onLocaleChange}
-          fullscreen={fullscreen}
-          onToggleFullscreen={typeof document !== 'undefined' && document.fullscreenEnabled ? toggleFullscreen : undefined}
-        />
-      </header>
+      <PlayerTopBar3
+        courseTitle={courseTitle}
+        backHref={backHref}
+        logoUrl={logoUrl}
+        outlineOpen={outlineOpen}
+        outlineId={outlineId}
+        onToggleOutline={() => setOutlineOpen((o) => !o)}
+        display={display}
+        units={units}
+        onSelectUnit={navigated}
+        locale={locale}
+        onLocaleChange={onLocaleChange}
+        fullscreen={full.on}
+        onToggleFullscreen={full.toggle}
+      />
 
       <div className="cls3-pbody">
         {outlineOpen && (

@@ -423,6 +423,12 @@ Object.defineProperty(exports, "PlayerTopBar", {
     return _Player.PlayerTopBar;
   }
 });
+Object.defineProperty(exports, "PlayerTopBar3", {
+  enumerable: true,
+  get: function () {
+    return _Player2.PlayerTopBar3;
+  }
+});
 Object.defineProperty(exports, "PortalError", {
   enumerable: true,
   get: function () {
@@ -787,6 +793,12 @@ Object.defineProperty(exports, "useDropdown", {
   enumerable: true,
   get: function () {
     return _Shell2.useDropdown;
+  }
+});
+Object.defineProperty(exports, "useFullscreen", {
+  enumerable: true,
+  get: function () {
+    return _Player2.useFullscreen;
   }
 });
 Object.defineProperty(exports, "useIdleTimer", {

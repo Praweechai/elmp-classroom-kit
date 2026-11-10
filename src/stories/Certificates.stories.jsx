@@ -29,15 +29,21 @@ export const Empty = { render: (_, { globals }) => page(globals.locale, { items:
 
 const DialogDemo = ({ locale }) => {
   const [open, setOpen] = useState(true);
-  return open ? (
-    <CertificateDialog
-      certificate={certificates.data[0]}
-      learnerName={name(locale)}
-      logoUrl={storyLogo}
-      onClose={() => setOpen(false)}
-      onDownload={() => {}}
-    />
-  ) : null;
+  // The dialog floats over the page (the screenshot tool needs the page under it).
+  return (
+    <>
+      {page(locale, {})}
+      {open && (
+        <CertificateDialog
+          certificate={certificates.data[0]}
+          learnerName={name(locale)}
+          logoUrl={storyLogo}
+          onClose={() => setOpen(false)}
+          onDownload={() => {}}
+        />
+      )}
+    </>
+  );
 };
 DialogDemo.propTypes = { locale: PropTypes.string };
 export const ViewDialog = { render: (_, { globals }) => <DialogDemo locale={globals.locale} /> };
