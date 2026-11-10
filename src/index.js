@@ -66,3 +66,9 @@ export { default as usePortal } from './portal/usePortal';
 export {
   AnnouncementBanner, BottomTabs3, ClassroomShell3, SearchBox, SidebarNav3, TopBar3, useDropdown, useSidebar3,
 } from './components/Shell3';
+export {
+  default as CourseCard2, CARD_STATUSES, StatusChip, categoryLabel,
+} from './components/CourseCard2';
+export {
+  default as MyLearningView, AchievementList, MyLearningSkeleton, toCard,
+} from './views/MyLearningView';

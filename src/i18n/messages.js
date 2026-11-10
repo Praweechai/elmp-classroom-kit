@@ -288,6 +288,33 @@ const messages = defineMessages({
   shell3Footer: { id: 'cls.s3.footer', defaultMessage: '© {year} Mission Hospital' },
   shell3Privacy: { id: 'cls.s3.privacy', defaultMessage: 'Privacy (PDPA)' },
   shell3Accessibility: { id: 'cls.s3.accessibility', defaultMessage: 'Accessibility' },
+
+  // Plan 5 · P5-2.02 — My Learning (S-100) + course card 2
+  mlWelcome: { id: 'cls.ml.welcome', defaultMessage: 'Welcome back, {name}. You have {n, plural, =0 {no courses} one {# course} other {# courses}} in progress.' },
+  mlInProgress: { id: 'cls.ml.inProgress', defaultMessage: 'In progress' },
+  mlSort: { id: 'cls.ml.sort', defaultMessage: 'Sort' },
+  mlSortRecent: { id: 'cls.ml.sortRecent', defaultMessage: 'Most recent' },
+  mlSortDue: { id: 'cls.ml.sortDue', defaultMessage: 'Due date' },
+  mlSortProgress: { id: 'cls.ml.sortProgress', defaultMessage: 'Progress' },
+  mlSortTitle: { id: 'cls.ml.sortTitle', defaultMessage: 'Title A–Z' },
+  mlView: { id: 'cls.ml.view', defaultMessage: 'View' },
+  mlGrid: { id: 'cls.ml.grid', defaultMessage: 'Grid view' },
+  mlList: { id: 'cls.ml.list', defaultMessage: 'List view' },
+  mlFilters: { id: 'cls.ml.filters', defaultMessage: 'Filter by category' },
+  mlAll: { id: 'cls.ml.all', defaultMessage: 'All' },
+  mlEmpty: { id: 'cls.ml.empty', defaultMessage: 'No courses in progress match this filter.' },
+  mlAchievements: { id: 'cls.ml.achievements', defaultMessage: 'Latest achievements' },
+  mlAchievementsAll: { id: 'cls.ml.achievementsAll', defaultMessage: 'View all achievements' },
+  mlAchievementProgress: { id: 'cls.ml.achievementProgress', defaultMessage: '{n} of {max} so far' },
+  mlLastActive: { id: 'cls.ml.lastActive', defaultMessage: 'Last active {when}' },
+  cardRequired: { id: 'cls.card.required', defaultMessage: 'Required' },
+  cardDue: { id: 'cls.card.due', defaultMessage: 'Due {date}' },
+  cardSelfPaced: { id: 'cls.card.selfPaced', defaultMessage: 'Self-paced' },
+  catClinical: { id: 'cls.cat.clinical', defaultMessage: 'Clinical' },
+  catSafety: { id: 'cls.cat.safety', defaultMessage: 'Patient safety' },
+  catCompliance: { id: 'cls.cat.compliance', defaultMessage: 'Compliance' },
+  catSoft: { id: 'cls.cat.soft', defaultMessage: 'Professional skills' },
+  catGeneral: { id: 'cls.cat.general', defaultMessage: 'General' },
 });
 
 export default messages;

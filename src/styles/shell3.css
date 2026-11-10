@@ -114,3 +114,74 @@
 @media (prefers-reduced-motion: reduce) {
   .cls3-shell * { transition: none !important; }
 }
+
+/* ---- P5-2.02 My Learning (S-100) + course card 2 ---- */
+.cls3-ml { display: flex; flex-direction: column; gap: 24px; }
+.cls3-hero p { color: var(--cls-text-2); font-size: 16px; }
+.cls3-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.cls3-stats > .cls-stat, .cls3-stats > * { background: var(--cls-surface); border: 1px solid var(--cls-border); border-radius: var(--cls-radius-panel); box-shadow: var(--cls-shadow-1); padding: 14px 16px; }
+.cls3-two { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 28px; align-items: start; }
+.cls3-side-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.cls3-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.cls3-head h2 { font-size: 18px; font-weight: 600; }
+.cls3-controls { display: flex; align-items: center; gap: 12px; }
+.cls3-select select { height: 38px; padding: 0 10px; border: 1px solid var(--cls-border-input); border-radius: var(--cls-radius-button); background: var(--cls-surface); color: var(--cls-text); font: inherit; font-size: 14px; }
+.cls3-toggle { display: inline-flex; border: 1px solid var(--cls-border); border-radius: var(--cls-radius-button); overflow: hidden; background: var(--cls-surface); }
+.cls3-toggle button { display: grid; place-items: center; width: 40px; height: 38px; border: 0; background: transparent; color: var(--cls-text-3); cursor: pointer; }
+.cls3-toggle button[aria-pressed="true"] { background: var(--cls-action); color: #fff; }
+.cls3-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.cls3-pill { min-height: 36px; padding: 6px 16px; border: 1px solid var(--cls-border); border-radius: var(--cls-radius-pill); background: var(--cls-surface); color: var(--cls-text); font: inherit; font-size: 14px; cursor: pointer; }
+.cls3-pill:hover { border-color: var(--cls-action); }
+.cls3-pill[aria-pressed="true"] { background: var(--cls-action); border-color: var(--cls-action); color: #fff; font-weight: 600; }
+.cls3-empty { padding: 40px 0; text-align: center; color: var(--cls-text-3); }
+.cls3-cards { display: grid; gap: 20px; }
+.cls3-cards--grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+.cls3-cards--list { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+
+.cls3-course { display: flex; flex-direction: column; overflow: hidden; background: var(--cls-surface); border: 1px solid var(--cls-border); border-radius: var(--cls-radius-panel); box-shadow: var(--cls-shadow-1); }
+.cls3-course__cover { position: relative; }
+.cls3-course__cover .cls-cover { height: 130px; border-radius: 0; }
+.cls3-course__req { position: absolute; right: 12px; top: 12px; padding: 2px 10px; border-radius: var(--cls-radius-pill); background: var(--cls-gold-tint); color: var(--cls-gold-text); font-size: 12px; font-weight: 600; }
+.cls3-course__body { display: flex; flex: 1; flex-direction: column; gap: 6px; padding: 14px 16px 16px; min-width: 0; }
+.cls3-course__eyebrow { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--cls-text-3); }
+.cls3-course__title { font-size: 17px; font-weight: 700; line-height: 1.3; }
+.cls3-course__title a { color: var(--cls-text); text-decoration: none; }
+.cls3-course__title a:hover { text-decoration: underline; }
+.cls3-course__meta { font-size: 13px; color: var(--cls-text-3); }
+.cls3-course__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; padding-top: 10px; }
+.cls3-course__foot small { color: var(--cls-text-3); font-size: 12px; }
+.cls3-course--list { flex-direction: row; border-left: 4px solid var(--cls-action); }
+.cls3-course--list .cls3-course__cover { width: 200px; flex: none; }
+.cls3-course--list .cls3-course__cover .cls-cover { height: 100%; min-height: 120px; }
+
+.cls3-chip { display: inline-block; padding: 2px 10px; border: 1px solid; border-radius: var(--cls-radius-pill); font-size: 12px; font-weight: 600; white-space: nowrap; }
+.cls3-chip--ok { color: var(--cls-info-text); background: var(--cls-info-bg); border-color: var(--cls-info-edge); }
+.cls3-chip--soon { color: var(--cls-soon-text); background: var(--cls-soon-bg); border-color: var(--cls-soon-edge); }
+.cls3-chip--gold { color: var(--cls-gold-text); background: var(--cls-gold-tint); border-color: var(--cls-gold-border); }
+.cls3-chip--late { color: var(--cls-late-text); background: var(--cls-late-bg); border-color: var(--cls-late-border); }
+.cls3-chip--done { color: var(--cls-ok-text); background: var(--cls-ok-bg); border-color: var(--cls-action-tint-border); }
+.cls3-chip--plain { color: var(--cls-done-text); background: var(--cls-done-bg); border-color: var(--cls-border); }
+
+.cls3-ach { display: flex; flex-direction: column; gap: 16px; margin: 4px 0 12px; padding: 0; list-style: none; }
+.cls3-ach li { display: flex; gap: 12px; }
+.cls3-ach p { font-size: 13px; color: var(--cls-text-2); }
+.cls3-ach small { font-size: 12px; color: var(--cls-text-3); }
+.cls3-ach__badge { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: var(--cls-gold-tint); border: 2px solid var(--cls-gold); color: var(--cls-gold-text); }
+.cls3-ach--locked .cls3-ach__badge { background: var(--cls-sunken); border-color: var(--cls-border-strong); color: var(--cls-text-3); }
+.cls3-link { color: var(--cls-action); font-weight: 600; font-size: 14px; }
+
+@media (max-width: 1279px) {
+  .cls3-two { grid-template-columns: minmax(0, 1fr); }
+  .cls3-side-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+}
+@media (max-width: 1023px) {
+  .cls3-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  .cls3-side-col { display: flex; }
+  .cls3-stats { gap: 10px; }
+  .cls3-stats > * { padding: 12px; }
+  .cls3-course--list { flex-direction: column; border-left-width: 1px; }
+  .cls3-course--list .cls3-course__cover { width: auto; }
+  .cls3-course--list .cls3-course__cover .cls-cover { height: 110px; min-height: 0; }
+}

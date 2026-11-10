@@ -578,7 +578,7 @@ TopBar3.propTypes = {
   unread: _propTypes.default.number,
   onOpenMessages: _propTypes.default.func
 };
-const DISMISS_KEY = 'elmp.banner.dismissed';
+const DISMISS_KEY = 'elmp.announcement.dismissed';
 const readDismissed = () => {
   try {
     return window.sessionStorage.getItem(DISMISS_KEY);
