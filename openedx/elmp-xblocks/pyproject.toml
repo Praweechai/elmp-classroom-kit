@@ -1,0 +1,24 @@
+# ELMP lesson blocks — our own XBlocks for the lesson area (P5-6 fix loop, owner: "code the learning environment").
+# Our screens and our grading code; Open edX only stores the grade and completion.
+# Installed into the Open edX image by .github/workflows/build-openedx.yml.
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "elmp-xblocks"
+version = "0.1.0"
+description = "ELMP lesson blocks: quiz and video with the Mission Hospital Learning look."
+license = { text = "AGPL-3.0" }
+requires-python = ">=3.11"
+dependencies = []  # XBlock and web-fragments come with Open edX
+
+[project.entry-points."xblock.v1"]
+elmp_quiz = "elmp_xblocks.quiz:ElmpQuizBlock"
+elmp_video = "elmp_xblocks.video:ElmpVideoBlock"
+
+[tool.setuptools]
+packages = ["elmp_xblocks"]
+
+[tool.setuptools.package-data]
+elmp_xblocks = ["static/*.js", "static/*.css"]

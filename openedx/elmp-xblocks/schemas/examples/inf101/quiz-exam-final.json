@@ -1,0 +1,144 @@
+{
+  "mode": "exam",
+  "title": "Final quiz",
+  "max_attempts": 3,
+  "pass_pct": 80,
+  "shuffle": true,
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "How long should an alcohol hand rub take?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "5–10 seconds"
+        },
+        {
+          "id": "b",
+          "text": "20–30 seconds"
+        },
+        {
+          "id": "c",
+          "text": "2 minutes"
+        }
+      ],
+      "answer": [
+        "b"
+      ],
+      "explain": "Keep rubbing for 20–30 seconds, until your hands are dry."
+    },
+    {
+      "id": "q2",
+      "prompt": "When must you wash with soap and water instead of using a rub?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "When hands are visibly dirty"
+        },
+        {
+          "id": "b",
+          "text": "Before every patient"
+        },
+        {
+          "id": "c",
+          "text": "After using a computer"
+        }
+      ],
+      "answer": [
+        "a"
+      ],
+      "explain": "Alcohol rub does not remove visible dirt or body fluids."
+    },
+    {
+      "id": "q3",
+      "type": "multi",
+      "prompt": "Select ALL the moments that come AFTER patient contact.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "After body fluid exposure risk"
+        },
+        {
+          "id": "b",
+          "text": "Before a clean procedure"
+        },
+        {
+          "id": "c",
+          "text": "After touching a patient"
+        },
+        {
+          "id": "d",
+          "text": "After touching patient surroundings"
+        }
+      ],
+      "answer": [
+        "a",
+        "c",
+        "d"
+      ],
+      "explain": "Moments 3, 4 and 5 protect you and the ward."
+    },
+    {
+      "id": "q4",
+      "prompt": "Do gloves replace hand hygiene?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Yes, gloves are enough"
+        },
+        {
+          "id": "b",
+          "text": "No — clean hands before and after gloves"
+        }
+      ],
+      "answer": [
+        "b"
+      ],
+      "explain": "Gloves can have tiny holes, and hands get contaminated when taking them off."
+    },
+    {
+      "id": "q5",
+      "prompt": "You straightened a patient’s bed sheet. Which moment applies?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Moment 2"
+        },
+        {
+          "id": "b",
+          "text": "Moment 5"
+        },
+        {
+          "id": "c",
+          "text": "None"
+        }
+      ],
+      "answer": [
+        "b"
+      ],
+      "explain": "Bed linen is in the patient zone — moment 5."
+    },
+    {
+      "id": "q6",
+      "prompt": "Which parts of the hand are missed most often?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Palms"
+        },
+        {
+          "id": "b",
+          "text": "Thumbs and fingertips"
+        },
+        {
+          "id": "c",
+          "text": "Wrists"
+        }
+      ],
+      "answer": [
+        "b"
+      ],
+      "explain": "That is why steps 5 and 6 exist."
+    }
+  ]
+}

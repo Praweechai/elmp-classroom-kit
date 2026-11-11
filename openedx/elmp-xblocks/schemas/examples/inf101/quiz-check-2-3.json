@@ -1,0 +1,46 @@
+{
+  "mode": "check",
+  "title": "Check your understanding",
+  "questions": [
+    {
+      "id": "k2a",
+      "prompt": "You are about to insert a urinary catheter. Which moment is this?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Moment 1 — before touching a patient"
+        },
+        {
+          "id": "b",
+          "text": "Moment 2 — before a clean / aseptic procedure"
+        },
+        {
+          "id": "c",
+          "text": "Moment 4 — after touching a patient"
+        }
+      ],
+      "answer": [
+        "b"
+      ],
+      "explain": "A catheter is an aseptic procedure — clean right before it."
+    },
+    {
+      "id": "k2b",
+      "prompt": "You adjusted the IV pump but did not touch the patient. Do you need to clean your hands?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Yes — moment 5"
+        },
+        {
+          "id": "b",
+          "text": "No"
+        }
+      ],
+      "answer": [
+        "a"
+      ],
+      "explain": "The pump is in the patient zone — moment 5."
+    }
+  ]
+}

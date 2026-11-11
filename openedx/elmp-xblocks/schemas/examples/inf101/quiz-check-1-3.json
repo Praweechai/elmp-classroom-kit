@@ -1,0 +1,76 @@
+{
+  "mode": "check",
+  "title": "Check your understanding",
+  "questions": [
+    {
+      "id": "k1a",
+      "prompt": "How do most germs travel between patients in hospital?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Through the air"
+        },
+        {
+          "id": "b",
+          "text": "On the hands of staff"
+        },
+        {
+          "id": "c",
+          "text": "Through food"
+        }
+      ],
+      "answer": [
+        "b"
+      ],
+      "explain": "Hands are the main route during everyday care."
+    },
+    {
+      "id": "k1b",
+      "prompt": "You just took off your gloves. What next?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Nothing — gloves protected me"
+        },
+        {
+          "id": "b",
+          "text": "Clean my hands"
+        }
+      ],
+      "answer": [
+        "b"
+      ],
+      "explain": "Hands get contaminated while gloves come off."
+    },
+    {
+      "id": "k1c",
+      "type": "multi",
+      "prompt": "Select ALL the surfaces that can carry germs.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Bed rail"
+        },
+        {
+          "id": "b",
+          "text": "Monitor buttons"
+        },
+        {
+          "id": "c",
+          "text": "Patient’s skin"
+        },
+        {
+          "id": "d",
+          "text": "Call bell"
+        }
+      ],
+      "answer": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "explain": "All of them — that is why moment 5 exists."
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://elmp.local/schemas/elmp_activity.schema.json",
+  "title": "elmp_activity (D-87)",
+  "description": "One block, six kinds. Never graded (has_score = False), so the data the activity needs for instant feedback may reach the browser. Completes (1.0) through the 'finish' handler when the 'done when' rule of the kind is met. Flip cards are not here: they stay a content-kit pattern (D-85).",
+  "type": "object",
+  "properties": {
+    "kind": { "enum": ["hotspot", "order", "scenario", "sort", "deck", "practice"] },
+    "title": { "$ref": "common.schema.json#/$defs/text" }
+  },
+  "required": ["kind"],
+  "oneOf": [
+    {
+      "description": "hotspot — done when every spot has been opened.",
+      "properties": {
+        "kind": { "const": "hotspot" }, "title": true,
+        "art": { "$ref": "common.schema.json#/$defs/art" },
+        "alt": { "$ref": "common.schema.json#/$defs/text" },
+        "spots": {
+          "type": "array", "minItems": 2, "maxItems": 12,
+          "items": {
+            "type": "object",
+            "properties": {
+              "n": { "type": "integer", "minimum": 1 },
+              "x": { "description": "% from left", "type": "number", "minimum": 0, "maximum": 100 },
+              "y": { "description": "% from top", "type": "number", "minimum": 0, "maximum": 100 },
+              "title": { "$ref": "common.schema.json#/$defs/text" },
+              "text": { "$ref": "common.schema.json#/$defs/text" }
+            },
+            "required": ["n", "x", "y", "title", "text"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["art", "alt", "spots"],
+      "additionalProperties": false
+    },
+    {
+      "description": "order — items written in the correct order; shown shuffled. Done when the order is correct (retries allowed).",
+      "properties": {
+        "kind": { "const": "order" }, "title": true,
+        "items": { "type": "array", "minItems": 3, "maxItems": 8, "items": { "$ref": "common.schema.json#/$defs/text" } }
+      },
+      "required": ["items"],
+      "additionalProperties": false
+    },
+    {
+      "description": "scenario — branching story. good: true = best choice, false = learn-from-it branch, null = navigation only. Done when an end scene is reached.",
+      "properties": {
+        "kind": { "const": "scenario" }, "title": true,
+        "start": { "$ref": "common.schema.json#/$defs/id" },
+        "scenes": {
+          "type": "object", "minProperties": 2,
+          "propertyNames": { "$ref": "common.schema.json#/$defs/id" },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "art": { "$ref": "common.schema.json#/$defs/art" },
+              "text": { "$ref": "common.schema.json#/$defs/text" },
+              "end": { "type": "boolean", "default": false },
+              "choices": {
+                "type": "array", "maxItems": 4,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "text": { "$ref": "common.schema.json#/$defs/text" },
+                    "next": { "$ref": "common.schema.json#/$defs/id" },
+                    "good": { "type": ["boolean", "null"] },
+                    "feedback": { "$ref": "common.schema.json#/$defs/text" }
+                  },
+                  "required": ["text", "next"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["text"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["start", "scenes"],
+      "additionalProperties": false
+    },
+    {
+      "description": "sort — put each card in a bin; feedback per card. Done when every card is placed (score shown, not graded).",
+      "properties": {
+        "kind": { "const": "sort" }, "title": true,
+        "bins": { "type": "array", "minItems": 2, "maxItems": 4, "items": { "$ref": "common.schema.json#/$defs/text" } },
+        "items": {
+          "type": "array", "minItems": 2, "maxItems": 16,
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": { "$ref": "common.schema.json#/$defs/text" },
+              "bin": { "type": "integer", "minimum": 0, "maximum": 3 },
+              "why": { "$ref": "common.schema.json#/$defs/text" }
+            },
+            "required": ["text", "bin"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["bins", "items"],
+      "additionalProperties": false
+    },
+    {
+      "description": "deck — flashcards with 'Got it' / 'Again' (Again cards come back). Done when every card got 'Got it' once.",
+      "properties": {
+        "kind": { "const": "deck" }, "title": true,
+        "cards": {
+          "type": "array", "minItems": 2, "maxItems": 30,
+          "items": {
+            "type": "object",
+            "properties": {
+              "front": { "$ref": "common.schema.json#/$defs/text" },
+              "back": { "$ref": "common.schema.json#/$defs/text" }
+            },
+            "required": ["front", "back"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["cards"],
+      "additionalProperties": false
+    },
+    {
+      "description": "practice — guided timer (e.g. 20-second hand rub); steps light up in turn. Done when the timer runs to the end once.",
+      "properties": {
+        "kind": { "const": "practice" }, "title": true,
+        "seconds": { "type": "integer", "minimum": 5, "maximum": 300, "default": 20 },
+        "art": { "$ref": "common.schema.json#/$defs/art" },
+        "steps": { "type": "array", "minItems": 1, "maxItems": 12, "items": { "$ref": "common.schema.json#/$defs/text" } }
+      },
+      "required": ["steps"],
+      "additionalProperties": false
+    }
+  ]
+}

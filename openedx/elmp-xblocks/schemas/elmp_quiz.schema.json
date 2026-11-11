@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://elmp.local/schemas/elmp_quiz.schema.json",
+  "title": "elmp_quiz (D-87, D-91)",
+  "description": "mode check = not graded, instant feedback per question, unlimited retries, completes on first submit. mode exam = graded (only this counts, D-91), attempts, best score, completes when graded. The server keeps 'answer' and 'explain'; the browser gets questions without them (grading.public_questions). Exam review after submit shows right/wrong + explain per question, never the correct choice.",
+  "type": "object",
+  "properties": {
+    "mode": { "enum": ["check", "exam"] },
+    "title": { "$ref": "common.schema.json#/$defs/text" },
+    "intro": { "$ref": "common.schema.json#/$defs/text" },
+    "max_attempts": {
+      "description": "exam only; 0 = unlimited. Enforced on the server.",
+      "type": "integer", "minimum": 0, "maximum": 10, "default": 3
+    },
+    "pass_pct": {
+      "description": "exam only; shown to the learner and used for 'passed'. The course grade cut-off itself stays in Open edX grading policy.",
+      "type": "integer", "minimum": 1, "maximum": 100, "default": 80
+    },
+    "shuffle": {
+      "description": "Shuffle question order and choices per attempt (server side).",
+      "type": "boolean", "default": false
+    },
+    "weight": {
+      "description": "exam only; points in the course grade. Empty = number of questions.",
+      "type": ["number", "null"], "minimum": 0, "default": null
+    },
+    "questions": {
+      "type": "array", "minItems": 1, "maxItems": 50,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "type": { "enum": ["single", "multi"], "default": "single" },
+          "prompt": { "$ref": "common.schema.json#/$defs/text" },
+          "choices": {
+            "type": "array", "minItems": 2, "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "$ref": "common.schema.json#/$defs/id" },
+                "text": { "$ref": "common.schema.json#/$defs/text" }
+              },
+              "required": ["id", "text"],
+              "additionalProperties": false
+            }
+          },
+          "answer": {
+            "description": "Choice ids. single = exactly one. Never sent to the browser.",
+            "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/id" }
+          },
+          "explain": { "$ref": "common.schema.json#/$defs/text" }
+        },
+        "required": ["id", "prompt", "choices", "answer"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["mode", "questions"],
+  "additionalProperties": false
+}

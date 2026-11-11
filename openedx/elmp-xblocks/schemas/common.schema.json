@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://elmp.local/schemas/common.schema.json",
+  "title": "ELMP blocks — shared parts",
+  "description": "Learner text is plain text (no HTML) in the course language, or {en, th} when a course is written in both. Interface words (Check, Try again…) come from the block bundle, not from here.",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,39}$"
+    },
+    "text": {
+      "oneOf": [
+        { "type": "string", "minLength": 1, "maxLength": 2000 },
+        {
+          "type": "object",
+          "properties": {
+            "en": { "type": "string", "minLength": 1, "maxLength": 2000 },
+            "th": { "type": "string", "minLength": 1, "maxLength": 2000 }
+          },
+          "required": ["en"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "art": {
+      "description": "A drawn illustration from content kit 3 (D-96) by name, or a course file under /static/.",
+      "type": "string",
+      "pattern": "^([a-z][a-z0-9-]{1,30}|/static/[A-Za-z0-9._/-]+\\.(svg|png|jpg|webp))$"
+    }
+  }
+}

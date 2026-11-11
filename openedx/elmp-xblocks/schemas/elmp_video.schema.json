@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://elmp.local/schemas/elmp_video.schema.json",
+  "title": "elmp_video (D-87)",
+  "description": "Our video player. Counts as complete at complete_pct of the length watched (seconds actually played, tracked on the server through the 'progress' handler). Seeking past the furthest point watched is blocked unless allow_skip. Resume point saved. Captions on by default.",
+  "type": "object",
+  "properties": {
+    "title": { "$ref": "common.schema.json#/$defs/text" },
+    "src": {
+      "description": "MP4 (H.264/AAC) in the course files or the Portal media path.",
+      "type": "string", "pattern": "^(/static/|/media/)[A-Za-z0-9._/-]+\\.mp4$"
+    },
+    "poster": { "type": "string", "pattern": "^(/static/|/media/)[A-Za-z0-9._/-]+\\.(jpg|png|webp)$" },
+    "seconds": { "description": "Length; checked against the file when it loads.", "type": "integer", "minimum": 1, "maximum": 7200 },
+    "captions": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "lang": { "enum": ["en", "th"] },
+          "src": { "type": "string", "pattern": "^(/static/|/media/)[A-Za-z0-9._/-]+\\.vtt$" }
+        },
+        "required": ["lang", "src"],
+        "additionalProperties": false
+      }
+    },
+    "chapters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "at": { "type": "integer", "minimum": 0 },
+          "title": { "$ref": "common.schema.json#/$defs/text" }
+        },
+        "required": ["at", "title"],
+        "additionalProperties": false
+      }
+    },
+    "transcript": { "$ref": "common.schema.json#/$defs/text" },
+    "complete_pct": { "type": "integer", "minimum": 50, "maximum": 100, "default": 95 },
+    "allow_skip": { "type": "boolean", "default": false }
+  },
+  "required": ["src", "seconds", "captions"],
+  "additionalProperties": false
+}

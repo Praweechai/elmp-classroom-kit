@@ -1,0 +1,93 @@
+{
+  "kind": "scenario",
+  "title": "A morning on Ward 4",
+  "start": "s1",
+  "scenes": {
+    "s1": {
+      "art": "ward",
+      "text": "07:10 — You walk to bed 12 to check Mr. Somchai’s blood pressure. What do you do first?",
+      "choices": [
+        {
+          "text": "Clean my hands with alcohol rub at the bedside",
+          "next": "s2",
+          "good": true,
+          "feedback": "Correct — moment 1, before touching the patient."
+        },
+        {
+          "text": "Put on gloves straight away",
+          "next": "s1b",
+          "good": false,
+          "feedback": "Gloves are not needed for blood pressure — and gloves never replace moment 1."
+        }
+      ]
+    },
+    "s1b": {
+      "text": "You put on gloves without cleaning your hands. Germs from the corridor are now inside the gloves and on the cuff.",
+      "choices": [
+        {
+          "text": "Go back: clean hands first",
+          "next": "s1",
+          "good": null
+        }
+      ]
+    },
+    "s2": {
+      "text": "07:15 — The IV line needs a new dressing. Your hands are clean from moment 1, but you touched the bed rail since then. What now?",
+      "choices": [
+        {
+          "text": "Clean hands again before the dressing",
+          "next": "s3",
+          "good": true,
+          "feedback": "Correct — moment 2, right before an aseptic task."
+        },
+        {
+          "text": "Go ahead — I already cleaned them",
+          "next": "s2b",
+          "good": false,
+          "feedback": "The bed rail re-contaminated your hands."
+        }
+      ]
+    },
+    "s2b": {
+      "text": "Touching the rail moved germs back onto your hands, and now onto the IV site. This is how line infections start.",
+      "choices": [
+        {
+          "text": "Try again",
+          "next": "s2",
+          "good": null
+        }
+      ]
+    },
+    "s3": {
+      "text": "07:25 — Done. You straightened the bed sheet on your way out but did not touch Mr. Somchai. Next is bed 13.",
+      "choices": [
+        {
+          "text": "Clean my hands before going to bed 13",
+          "next": "end",
+          "good": true,
+          "feedback": "Correct — moment 5, after touching patient surroundings."
+        },
+        {
+          "text": "Go straight to bed 13 — I did not touch the patient",
+          "next": "s3b",
+          "good": false,
+          "feedback": "The sheet is inside the patient zone."
+        }
+      ]
+    },
+    "s3b": {
+      "text": "You carried germs from bed 12’s sheet to bed 13. Moment 5 is the most forgotten moment.",
+      "choices": [
+        {
+          "text": "Try again",
+          "next": "s3",
+          "good": null
+        }
+      ]
+    },
+    "end": {
+      "text": "Well done — you used moments 1, 2 and 5 correctly on one short round.",
+      "end": true
+    }
+  }
+}

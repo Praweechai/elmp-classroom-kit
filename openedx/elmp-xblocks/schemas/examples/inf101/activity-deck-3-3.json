@@ -1,0 +1,30 @@
+{
+  "kind": "deck",
+  "title": "Key terms",
+  "cards": [
+    {
+      "front": "Patient zone",
+      "back": "The patient and their immediate surroundings, e.g. bed, rails, monitor, IV pump."
+    },
+    {
+      "front": "Aseptic procedure",
+      "back": "Any task that could let germs into the body — injections, wound dressings, catheters."
+    },
+    {
+      "front": "Healthcare-associated infection (HAI)",
+      "back": "An infection a patient gets while receiving care that was not present on admission."
+    },
+    {
+      "front": "Alcohol-based hand rub",
+      "back": "The first choice for hand hygiene: fast, effective and kinder to skin."
+    },
+    {
+      "front": "Moment 5",
+      "back": "After touching patient surroundings, even without touching the patient."
+    },
+    {
+      "front": "20–30 seconds",
+      "back": "How long a complete hand rub takes — until hands are dry."
+    }
+  ]
+}

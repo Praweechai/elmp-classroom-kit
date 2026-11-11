@@ -1,0 +1,40 @@
+{
+  "kind": "sort",
+  "title": "Rub or wash?",
+  "bins": [
+    "Alcohol rub",
+    "Soap & water"
+  ],
+  "items": [
+    {
+      "text": "Before taking a pulse",
+      "bin": 0,
+      "why": "Clean, routine contact — rub."
+    },
+    {
+      "text": "Hands visibly dirty",
+      "bin": 1,
+      "why": "Rub does not remove dirt — wash."
+    },
+    {
+      "text": "After helping a patient with diarrhoea (C. diff)",
+      "bin": 1,
+      "why": "Spores are not killed by alcohol — wash."
+    },
+    {
+      "text": "Before an injection",
+      "bin": 0,
+      "why": "Moment 2 — rub right before."
+    },
+    {
+      "text": "After adjusting the IV pump",
+      "bin": 0,
+      "why": "Moment 5 — rub."
+    },
+    {
+      "text": "After using the toilet",
+      "bin": 1,
+      "why": "Wash with soap and water."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "title": "Why it matters",
+  "src": "/static/inf101-why-it-matters.mp4",
+  "poster": "/static/inf101-why-it-matters.jpg",
+  "seconds": 45,
+  "captions": [
+    {
+      "lang": "en",
+      "src": "/static/inf101-why-it-matters.en.vtt"
+    },
+    {
+      "lang": "th",
+      "src": "/static/inf101-why-it-matters.th.vtt"
+    }
+  ],
+  "chapters": [
+    {
+      "at": 0,
+      "title": "Germs on hands"
+    },
+    {
+      "at": 15,
+      "title": "The 5 moments"
+    },
+    {
+      "at": 30,
+      "title": "Rub or wash?"
+    }
+  ],
+  "transcript": "Every shift, your hands touch hundreds of surfaces. Germs travel on hands from one patient to the next. The WHO 5 moments show exactly when to clean them. Before the patient, before clean tasks, and after. Use alcohol rub for most moments — it is fast. Wash with soap when hands are visibly dirty.",
+  "complete_pct": 95,
+  "allow_skip": false
+}

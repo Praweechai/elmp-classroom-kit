@@ -42,6 +42,11 @@ jobs:
         run: |
           pip install --quiet "django>=5.2,<6"
           python -m unittest discover -s openedx/elmp-activity/tests -v
+      - name: ELMP lesson block tests (V-3)
+        working-directory: openedx/elmp-xblocks
+        run: |
+          pip install --quiet pytest jsonschema "XBlock>=5.1" web-fragments
+          python -m pytest -q -p no:cacheprovider
 
   build:
     needs: test

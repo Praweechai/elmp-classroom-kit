@@ -1,0 +1,43 @@
+{
+  "kind": "hotspot",
+  "title": "Tap each number to see the moment",
+  "art": "zone",
+  "alt": "Patient in a bed with the patient zone around it",
+  "spots": [
+    {
+      "n": 1,
+      "x": 22,
+      "y": 30,
+      "title": "Before touching a patient",
+      "text": "Protects the patient from germs on your hands. Example: before taking a pulse or helping them sit up."
+    },
+    {
+      "n": 2,
+      "x": 72,
+      "y": 22,
+      "title": "Before a clean / aseptic procedure",
+      "text": "Protects the patient from germs entering their body. Example: before giving an injection or handling a catheter."
+    },
+    {
+      "n": 3,
+      "x": 80,
+      "y": 66,
+      "title": "After body fluid exposure risk",
+      "text": "Protects you and the ward. Example: after taking blood or emptying a urine bag — even if you wore gloves."
+    },
+    {
+      "n": 4,
+      "x": 46,
+      "y": 74,
+      "title": "After touching a patient",
+      "text": "Protects you and the next patient. Example: after a bed bath or examining the patient."
+    },
+    {
+      "n": 5,
+      "x": 16,
+      "y": 70,
+      "title": "After touching patient surroundings",
+      "text": "Protects the next patient. Example: after changing bed linen or adjusting the IV pump — even if you did not touch the patient."
+    }
+  ]
+}

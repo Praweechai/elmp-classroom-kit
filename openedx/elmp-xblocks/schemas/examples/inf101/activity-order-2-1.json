@@ -1,0 +1,11 @@
+{
+  "kind": "order",
+  "title": "Now put the 5 moments in order",
+  "items": [
+    "Before touching a patient",
+    "Before a clean or aseptic procedure",
+    "After body fluid exposure risk",
+    "After touching a patient",
+    "After touching patient surroundings"
+  ]
+}
