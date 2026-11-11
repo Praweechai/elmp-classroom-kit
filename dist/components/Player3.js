@@ -389,7 +389,7 @@ const OutlinePanel = ({
     children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
       className: "cls3-outline__top",
       children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
-        className: "cls3-tabs",
+        className: "cls3-outline-tabs",
         role: "tablist",
         "aria-label": t(_i18n.messages.pl3Nav),
         children: tabs.map(k => /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {

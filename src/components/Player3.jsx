@@ -292,7 +292,7 @@ export const OutlinePanel = ({
       aria-label={t(messages.pl3Nav)}
     >
       <div className="cls3-outline__top">
-        <div className="cls3-tabs" role="tablist" aria-label={t(messages.pl3Nav)}>
+        <div className="cls3-outline-tabs" role="tablist" aria-label={t(messages.pl3Nav)}>
           {tabs.map((k) => (
             <button
               key={k}
