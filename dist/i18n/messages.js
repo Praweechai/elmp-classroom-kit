@@ -1669,6 +1669,10 @@ const messages = (0, _reactIntl.defineMessages)({
     id: 'cls.p4.nextPage',
     defaultMessage: 'Next · {n}'
   },
+  p4NextPlain: {
+    id: 'cls.p4.nextPlain',
+    defaultMessage: 'Next page'
+  },
   p4NextAnyway: {
     id: 'cls.p4.nextAnyway',
     defaultMessage: 'Go on anyway'

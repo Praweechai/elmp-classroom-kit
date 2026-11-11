@@ -474,6 +474,7 @@ const messages = defineMessages({
   p4LeftActivity: { id: 'cls.p4.leftActivity', defaultMessage: 'Finish the activity' },
   p4LeftQuiz: { id: 'cls.p4.leftQuiz', defaultMessage: 'Take the final quiz' },
   p4NextPage: { id: 'cls.p4.nextPage', defaultMessage: 'Next · {n}' },
+  p4NextPlain: { id: 'cls.p4.nextPlain', defaultMessage: 'Next page' },
   p4NextAnyway: { id: 'cls.p4.nextAnyway', defaultMessage: 'Go on anyway' },
   p4Minutes: { id: 'cls.p4.minutes', defaultMessage: '{n} min' },
 });

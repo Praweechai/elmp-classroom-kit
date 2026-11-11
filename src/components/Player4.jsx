@@ -311,7 +311,7 @@ export const EndCard = ({
       {nextOpen && (
         <Link className={`cls4-next${ok ? '' : ' is-soft'}`} href={next.href} onClick={go(next)}>
           <span>
-            <small>{t(messages.p4NextPage, { n: next.number || '' })}</small>
+            <small>{next.number ? t(messages.p4NextPage, { n: next.number }) : t(messages.p4NextPlain)}</small>
             <b>{next.title}</b>
           </span>
           <KitIcon src={ArrowForward} size={22} />

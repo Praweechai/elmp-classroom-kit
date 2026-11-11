@@ -498,9 +498,9 @@ const EndCard = ({
       onClick: go(next),
       children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
         children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("small", {
-          children: t(_i18n.messages.p4NextPage, {
-            n: next.number || ''
-          })
+          children: next.number ? t(_i18n.messages.p4NextPage, {
+            n: next.number
+          }) : t(_i18n.messages.p4NextPlain)
         }), /*#__PURE__*/(0, _jsxRuntime.jsx)("b", {
           children: next.title
         })]

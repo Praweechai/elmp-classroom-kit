@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.flattenOutline = exports.default = exports.UnitPager = exports.PlayerTopBar3 = exports.PlayerToolbar = exports.OutlinePanel = void 0;
+exports.placeNumber = exports.flattenOutline = exports.default = exports.UnitPager = exports.PlayerTopBar3 = exports.PlayerToolbar = exports.OutlinePanel = void 0;
 exports.useArrowKeys = useArrowKeys;
 exports.useFullscreen = useFullscreen;
 var _react = require("react");
@@ -31,9 +31,14 @@ const clamp = v => Math.max(0, Math.min(100, Math.round(Number(v) || 0)));
 const EDITABLE = /^(INPUT|TEXTAREA|SELECT)$/;
 const SWITCHES = [['contrast', _i18n.messages.pl3Contrast], ['spacing', _i18n.messages.pl3Spacing], ['reduceMotion', _i18n.messages.pl3Motion]];
 
-// sections → one flat list of units with their place (1.1, 1.2 …) and section title.
+// The place of a unit (1.1, 1.2 …) — empty when the title already starts with its own number
+// ("1.2 Video – …", Learner v2 courses), so the number never shows twice.
+const placeNumber = (title, si, ii) => /^\d+(\.\d+)+\s/.test(title || '') ? '' : `${si + 1}.${ii + 1}`;
+
+// sections → one flat list of units with their place and section title.
+exports.placeNumber = placeNumber;
 const flattenOutline = (sections = []) => sections.flatMap((s, si) => s.items.map((item, ii) => _objectSpread(_objectSpread({}, item), {}, {
-  number: `${si + 1}.${ii + 1}`,
+  number: placeNumber(item.title, si, ii),
   sectionId: s.id,
   sectionTitle: s.title
 })));
@@ -321,7 +326,7 @@ const UnitRow = ({
         src: _icons.Check,
         size: 12
       })]
-    }), /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
+    }), number && /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
       className: "cls3-unit__num cls-num",
       "aria-hidden": "true",
       children: number
@@ -349,7 +354,7 @@ const UnitRow = ({
 };
 UnitRow.propTypes = {
   item: itemShape.isRequired,
-  number: _propTypes.default.string.isRequired,
+  number: _propTypes.default.string,
   onNavigate: _propTypes.default.func
 };
 const OutlinePanel = ({
@@ -466,7 +471,7 @@ const OutlinePanel = ({
       }), /*#__PURE__*/(0, _jsxRuntime.jsx)("ul", {
         className: "cls3-mods",
         children: sections.map((s, si) => {
-          const items = s.items.map((it, ii) => [it, `${si + 1}.${ii + 1}`]).filter(([it]) => !needle || `${it.title} ${s.title}`.toLowerCase().includes(needle));
+          const items = s.items.map((it, ii) => [it, placeNumber(it.title, si, ii)]).filter(([it]) => !needle || `${it.title} ${s.title}`.toLowerCase().includes(needle));
           if (needle && items.length === 0) {
             return null;
           }

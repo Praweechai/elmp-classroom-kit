@@ -25,9 +25,13 @@ const clamp = (v) => Math.max(0, Math.min(100, Math.round(Number(v) || 0)));
 const EDITABLE = /^(INPUT|TEXTAREA|SELECT)$/;
 const SWITCHES = [['contrast', messages.pl3Contrast], ['spacing', messages.pl3Spacing], ['reduceMotion', messages.pl3Motion]];
 
-// sections → one flat list of units with their place (1.1, 1.2 …) and section title.
+// The place of a unit (1.1, 1.2 …) — empty when the title already starts with its own number
+// ("1.2 Video – …", Learner v2 courses), so the number never shows twice.
+export const placeNumber = (title, si, ii) => (/^\d+(\.\d+)+\s/.test(title || '') ? '' : `${si + 1}.${ii + 1}`);
+
+// sections → one flat list of units with their place and section title.
 export const flattenOutline = (sections = []) => sections.flatMap((s, si) => s.items.map((item, ii) => ({
-  ...item, number: `${si + 1}.${ii + 1}`, sectionId: s.id, sectionTitle: s.title,
+  ...item, number: placeNumber(item.title, si, ii), sectionId: s.id, sectionTitle: s.title,
 })));
 
 const sectionPct = (s) => (
@@ -245,7 +249,7 @@ const UnitRow = ({ item, number, onNavigate }) => {
         {item.locked && <KitIcon src={Lock} size={12} />}
         {!item.locked && item.complete && <KitIcon src={Check} size={12} />}
       </span>
-      <span className="cls3-unit__num cls-num" aria-hidden="true">{number}</span>
+      {number && <span className="cls3-unit__num cls-num" aria-hidden="true">{number}</span>}
       <span className="cls3-unit__title">{item.title}</span>
       <span className="cls-sr">{` (${stateText})`}</span>
     </>
@@ -265,7 +269,7 @@ const UnitRow = ({ item, number, onNavigate }) => {
     </li>
   );
 };
-UnitRow.propTypes = { item: itemShape.isRequired, number: PropTypes.string.isRequired, onNavigate: PropTypes.func };
+UnitRow.propTypes = { item: itemShape.isRequired, number: PropTypes.string, onNavigate: PropTypes.func };
 
 export const OutlinePanel = ({
   sections = [], resources = [], progress, onNavigate, id, onClose, overlay = false, knowledge, certificate,
@@ -348,7 +352,7 @@ export const OutlinePanel = ({
           {knowledge && <KnowledgeCard correct={knowledge.correct} total={knowledge.total} />}
           <ul className="cls3-mods">
             {sections.map((s, si) => {
-              const items = s.items.map((it, ii) => [it, `${si + 1}.${ii + 1}`])
+              const items = s.items.map((it, ii) => [it, placeNumber(it.title, si, ii)])
                 .filter(([it]) => !needle || `${it.title} ${s.title}`.toLowerCase().includes(needle));
               if (needle && items.length === 0) { return null; }
               const expanded = needle ? true : Boolean(open[s.id]);

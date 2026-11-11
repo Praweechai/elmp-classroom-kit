@@ -165,6 +165,12 @@ describe('display settings', () => {
     expect(units).toHaveLength(7);
     expect(units[3]).toMatchObject({ id: 'q4', number: '2.2', sectionTitle: '2. Isolation precautions' });
   });
+
+  it('flattenOutline: no second number when the title already has one (V-7.01, "1.1 0.1 Welcome")', () => {
+    const units = flattenOutline([{ id: 's', title: '0.1 Welcome', items: [{ id: 'u', title: '0.1 Welcome', href: '/u' }] },
+      { id: 't', title: '2. Two', items: [{ id: 'v', title: '2. Plain', href: '/v' }] }]);
+    expect(units.map((u) => u.number)).toEqual(['', '2.1']);
+  });
 });
 
 describe('useLessonDisplay', () => {

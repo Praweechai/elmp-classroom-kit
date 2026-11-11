@@ -412,6 +412,7 @@
   "cls.p4.leftActivity": "ทำกิจกรรมให้เสร็จ",
   "cls.p4.leftQuiz": "ทำแบบทดสอบท้ายบท",
   "cls.p4.nextPage": "ถัดไป · {n}",
+  "cls.p4.nextPlain": "หน้าถัดไป",
   "cls.p4.nextAnyway": "ไปต่อเลย",
   "cls.p4.minutes": "{n} นาที"
 }

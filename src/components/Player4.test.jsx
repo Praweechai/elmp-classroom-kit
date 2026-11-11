@@ -181,6 +181,12 @@ describe('EndCard', () => {
     expect(container.querySelector('.cls4-end.is-ok')).toBeNull();
   });
 
+  it('titles with their own number: "Next page", no second number (V-7.01)', () => {
+    wrap(<EndCard left={[]} next={{ ...next, title: '1.3 Check', number: '' }} prev={{ ...prev, title: '1.1 Germs', number: '' }} />);
+    expect(screen.getByRole('link', { name: /Next page 1.3 Check/ })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '1.1 Germs' })).toBeInTheDocument();
+  });
+
   it('page complete: saved line, strong Next; nothing known = nothing to wait for; Thai', () => {
     const onNavigate = jest.fn();
     const { rerender } = wrap(<EndCard left={[]} complete next={next} onNavigate={onNavigate} />);
