@@ -58,7 +58,7 @@
   transform: scaleX(0); transform-origin: left; will-change: transform; }
 
 /* ---- end of page ---- */
-.cls4-end { display: grid; gap: 12px; margin: 32px auto 8px; max-width: 760px; }
+.cls4-end { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin: 32px auto 8px; max-width: 760px; } /* long titles cut with … , never wider than the page (V-7.01, 390 px) */
 .cls4-end__st { display: flex; gap: 12px; align-items: center; padding: 14px 16px; border-radius: 14px; background: var(--cls-sunken); color: var(--cls-text-2); }
 .cls4-end__st b { display: block; color: var(--cls-text); }
 .cls4-end__st small { font-size: 13px; }
