@@ -32,7 +32,10 @@ export const Language = { render: (_, { globals }) => <LanguageToggle value={glo
 
 export const States = {
   render: () => (
-    <div style={{ display: 'grid', gap: 16, maxWidth: 720 }}>
+    <div style={{
+      display: 'grid', gap: 16, maxWidth: 720, margin: '0 auto',
+    }}
+    >
       <Notice onRetry={() => {}}>Deadlines are not available right now.</Notice>
       <div className="cls-panel"><EmptyState title="Nothing here yet">No training assigned yet. HR will add your courses.</EmptyState></div>
       <div className="cls-panel" style={{ display: 'grid', gap: 10 }}>

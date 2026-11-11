@@ -22,7 +22,7 @@ export const Pills = {
 export const Progress = {
   render: () => (
     <div style={{
-      display: 'flex', gap: 24, alignItems: 'center', maxWidth: 640,
+      display: 'flex', gap: 24, alignItems: 'center', maxWidth: 640, margin: '0 auto',
     }}
     >
       <div style={{ flex: 1 }}><ProgressBar value={62} /></div>
@@ -46,7 +46,7 @@ export const CourseCards = {
 
 export const Continue = {
   render: () => (
-    <div style={{ maxWidth: 840 }}>
+    <div style={{ maxWidth: 840, margin: '0 auto' }}>
       <ContinueCard title="Infection Control 2026" code="INF101" category="clinical" href="#" roadmap="Infection Control 2026" unitIndex={3} unitCount={8} unitTitle="Hand hygiene" progress={62} />
     </div>
   ),
@@ -54,7 +54,10 @@ export const Continue = {
 
 export const RequiredGroups = {
   render: () => (
-    <div style={{ display: 'grid', gap: 12, maxWidth: 840 }}>
+    <div style={{
+      display: 'grid', gap: 12, maxWidth: 840, margin: '0 auto',
+    }}
+    >
       <RequiredGroup assignment={fx.overdueAssignment} courseHref={() => '#'} />
       <RequiredGroup assignment={fx.dueSoonAssignment} courseHref={() => '#'} />
       <RequiredGroup assignment={fx.completedAssignment} courseHref={() => '#'} />
@@ -79,7 +82,7 @@ export const CourseKeyFacts = {
 
 export const Outline = {
   render: () => (
-    <div style={{ maxWidth: 760 }}>
+    <div style={{ maxWidth: 760, margin: '0 auto' }}>
       <CourseOutline title="Course outline" sections={fx.outline} />
     </div>
   ),
