@@ -7,8 +7,8 @@ from elmp_xblocks import watching
 from elmp_xblocks.watching import VideoError
 
 pytest.importorskip("xblock")
-from elmp_xblocks.video import ElmpVideoBlock  # noqa: E402
-from tests.helpers import call, load, make  # noqa: E402
+from elmp_xblocks.video import ElmpVideoBlock
+from tests.helpers import call, load, make
 
 VIDEO = load("video-1-2.json")  # 45 s, complete at 95 % = 42.75 s
 
@@ -39,7 +39,7 @@ def test_broken_video_rejected(over):
 
 def test_schema_agrees():
     pytest.importorskip("jsonschema")
-    from tests.test_schemas import validator  # noqa: PLC0415
+    from tests.test_schemas import validator
 
     check = validator("elmp_video")
     for over in ({"src": "/static/x.avi"}, {"seconds": 0}, {"captions": []}, {"complete_pct": 40}, {"extra": 1}):

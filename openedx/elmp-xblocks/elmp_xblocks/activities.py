@@ -3,6 +3,8 @@ Activity rules for elmp_activity (doc 02 §9, D-87): six kinds, never graded. Th
 feedback), but completion is still decided here: finish() checks the "done when" rule of the kind against what the
 learner did. Plain Python, easy to test.
 """
+from itertools import pairwise
+
 from .common import ART, BlockError, is_id, is_int, is_text, only_keys, text
 
 KINDS = ("hotspot", "order", "scenario", "sort", "deck", "practice")
@@ -138,7 +140,7 @@ def clean_activity(data):
 # ---------- what the page gets (text in the learner's language) ----------
 
 def public_activity(a, lang="en"):
-    t = lambda v: text(v, lang)  # noqa: E731
+    t = lambda v: text(v, lang)
     kind = a["kind"]
     if kind == "hotspot":
         body = {"art": a["art"], "alt": t(a["alt"]),
@@ -190,7 +192,7 @@ def finish(a, data, started_seconds_ago=None):
               "path must list the scenes visited")
         _need(path[0] == a["start"], "the path must begin at the start")
         scenes = a["scenes"]
-        for here, there in zip(path, path[1:]):
+        for here, there in pairwise(path):
             _need(here in scenes and any(c["next"] == there for c in scenes[here].get("choices", [])),
                   "the path does not follow the choices")
         _need(scenes.get(path[-1], {}).get("end"), "an end scene has not been reached")

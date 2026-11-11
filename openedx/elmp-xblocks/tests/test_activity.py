@@ -7,8 +7,8 @@ from elmp_xblocks import activities
 from elmp_xblocks.activities import ActivityError
 
 pytest.importorskip("xblock")
-from elmp_xblocks.activity import ElmpActivityBlock  # noqa: E402
-from tests.helpers import EXAMPLES, call, load, make  # noqa: E402
+from elmp_xblocks.activity import ElmpActivityBlock
+from tests.helpers import EXAMPLES, call, load, make
 
 FILES = {p.name.split("-")[1]: p.name for p in EXAMPLES.glob("activity-*.json")}
 
