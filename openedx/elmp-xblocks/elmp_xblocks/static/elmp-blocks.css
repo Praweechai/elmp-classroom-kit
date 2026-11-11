@@ -183,9 +183,25 @@ html[data-elmp-theme="dark"] .elmp-block {
 }
 .elmp-block .bar > i {transform-origin: left;}
 .elmp-block .art {width: 100%; height: auto; display: block;}
-.elmp-block .art .bub {animation: floaty 5s ease-in-out infinite; animation-delay: var(--d); transform-box: fill-box; transform-origin: center;}
-.elmp-block .art .germ {animation: floaty 4s ease-in-out infinite; animation-delay: var(--d);}
-.elmp-block .art .pulse {animation: blink 2.2s ease-in-out infinite; animation-delay: var(--d); transform-box: fill-box; transform-origin: center;}
+.elmp-block .art .bub {animation: floaty 5s ease-in-out infinite; transform-box: fill-box; transform-origin: center;}
+.elmp-block .art .germ {animation: floaty 4s ease-in-out infinite;}
+.elmp-block .art .pulse {animation: blink 2.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center;}
+.elmp-block .art [data-d="0"] {animation-delay: 0s;}
+.elmp-block .art [data-d="2"] {animation-delay: 0.2s;}
+.elmp-block .art [data-d="3"] {animation-delay: 0.3s;}
+.elmp-block .art [data-d="4"] {animation-delay: 0.4s;}
+.elmp-block .art [data-d="5"] {animation-delay: 0.5s;}
+.elmp-block .art [data-d="6"] {animation-delay: 0.6s;}
+.elmp-block .art [data-d="8"] {animation-delay: 0.8s;}
+.elmp-block .art [data-d="9"] {animation-delay: 0.9s;}
+.elmp-block .art [data-d="10"] {animation-delay: 1s;}
+.elmp-block .art [data-d="12"] {animation-delay: 1.2s;}
+.elmp-block .art [data-d="15"] {animation-delay: 1.5s;}
+.elmp-block .art [data-d="16"] {animation-delay: 1.6s;}
+.elmp-block .art [data-d="18"] {animation-delay: 1.8s;}
+.elmp-block .art [data-d="20"] {animation-delay: 2s;}
+.elmp-block .art [data-d="24"] {animation-delay: 2.4s;}
+.elmp-block .art [data-d="30"] {animation-delay: 3s;}
 .elmp-block .art .rubring {animation: spin 6s linear infinite; transform-origin: 300px 200px;}
 .elmp-block .nb-h {font-size: 1.45rem; letter-spacing: -.015em; margin-bottom: 12px; display: flex; gap: 10px; align-items: center;}
 .elmp-block .callout--warn {background: var(--st-over-tint); border-color: color-mix(in srgb, var(--st-over) 25%, transparent);}
@@ -278,6 +294,8 @@ html[data-elmp-theme="dark"] .elmp-block {
 
 /* ---------- block parts not in the prototype ---------- */
 .elmp-block .btn--ghost:disabled { opacity: .5; }
+/* same reading width as content kit 3 (.elmp-v3), centred in the lesson */
+.elmp-block { max-width: 820px; margin-left: auto; margin-right: auto; }
 .elmp-block .eb-title { font-size: 1.25rem; font-weight: 700; letter-spacing: -.01em; margin-bottom: 14px; }
 .elmp-block .eb-intro { color: var(--t2); margin: -6px 0 14px; }
 .elmp-block .eb-error { padding: 14px 16px; border-radius: var(--r-md); background: var(--red-50); color: var(--red-700);
