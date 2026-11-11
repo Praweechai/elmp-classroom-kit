@@ -13,6 +13,7 @@ OLX (config = JSON in the shape of schemas/elmp_quiz.schema.json):
   <elmp_quiz url_name="final-quiz" display_name="Final quiz" config='{"mode": "exam", "questions": [...]}'/>
 """
 import json
+from typing import ClassVar
 
 from web_fragments.fragment import Fragment
 from xblock.completable import XBlockCompletionMode
@@ -21,9 +22,10 @@ from xblock.fields import Dict, Integer, Scope, String
 
 from . import grading
 from .resources import learner_lang, resource
+from .studio import StudioJsonMixin
 
 
-class ElmpQuizBlock(XBlock):
+class ElmpQuizBlock(StudioJsonMixin, XBlock):
     display_name = String(display_name="Display name", default="Quiz", scope=Scope.settings)
     config = Dict(help="The quiz (schemas/elmp_quiz.schema.json). Answers never leave the server.",
                   default={}, scope=Scope.content)
@@ -37,6 +39,13 @@ class ElmpQuizBlock(XBlock):
     checked = Dict(default={}, scope=Scope.user_state, help="check: {qid: {given, correct}}")
 
     has_custom_completion = True  # we publish completion ourselves (check: first check, exam: first grade)
+    STUDIO_TEMPLATE: ClassVar[dict] = {
+        "mode": "check",
+        "questions": [{"id": "q1", "prompt": {"en": "Question?", "th": "คำถาม?"},
+                       "choices": [{"id": "a", "text": "Right"}, {"id": "b", "text": "Wrong"}],
+                       "answer": ["a"], "explain": "Why it is right."}],
+    }
+    clean = staticmethod(grading.clean_quiz)
     completion_mode = XBlockCompletionMode.COMPLETABLE
 
     # ---------- quiz data ----------
@@ -129,6 +138,18 @@ class ElmpQuizBlock(XBlock):
         frag.add_javascript(resource("static/elmp-blocks.js"))
         frag.initialize_js("ElmpBlock", config)
         return frag
+
+    def preview_config(self, quiz, lang):
+        """Studio preview: what a new learner sees (no attempts, nothing checked)."""
+        state = {"block": "quiz", "mode": quiz["mode"], "lang": lang,
+                 "title": grading.text(quiz.get("title"), lang) or self.display_name,
+                 "intro": grading.text(quiz.get("intro"), lang),
+                 "questions": grading.public_questions(quiz, lang), "complete": False, "checked": {}}
+        if quiz["mode"] == "exam":
+            state.update({"possible": len(quiz["questions"]), "passPct": quiz["pass_pct"], "attempts": 0,
+                          "maxAttempts": quiz["max_attempts"], "attemptsLeft": grading.attempts_left(quiz, 0),
+                          "best": None})
+        return state
 
     # ---------- handlers ----------
 

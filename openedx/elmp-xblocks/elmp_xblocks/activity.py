@@ -7,6 +7,7 @@ OLX (config = JSON in the shape of schemas/elmp_activity.schema.json):
 """
 import json
 import time
+from typing import ClassVar
 
 from web_fragments.fragment import Fragment
 from xblock.completable import XBlockCompletionMode
@@ -15,10 +16,12 @@ from xblock.fields import Boolean, Dict, Float, Scope, String
 
 from . import activities
 from .common import text
-from .resources import learner_lang, resource
+from .resources import course_url, learner_lang, resource
+from .studio import StudioJsonMixin
 
 
-class ElmpActivityBlock(XBlock):
+@XBlock.wants("replace_urls")
+class ElmpActivityBlock(StudioJsonMixin, XBlock):
     display_name = String(display_name="Display name", default="Activity", scope=Scope.settings)
     config = Dict(help="The activity (schemas/elmp_activity.schema.json).", default={}, scope=Scope.content)
 
@@ -32,16 +35,28 @@ class ElmpActivityBlock(XBlock):
     icon_class = "other"
 
     clock = staticmethod(time.time)  # tests replace it
+    STUDIO_TEMPLATE: ClassVar[dict] = {"kind": "order", "title": "Put the steps in order", "items": ["First", "Second", "Third"]}
+    clean = staticmethod(activities.clean_activity)
 
     def activity(self):
         return activities.clean_activity(self.config)
 
+    def _public(self, act, lang):
+        public = activities.public_activity(act, lang)
+        if public.get("art"):
+            public["art"] = course_url(self, public["art"])
+        for scene in public.get("scenes", {}).values():
+            scene["art"] = course_url(self, scene["art"])
+        return {"block": "activity", "title": text(act.get("title"), lang) or self.display_name, "lang": lang, **public}
+
+    def preview_config(self, act, lang):
+        """Studio preview: a new learner (not done)."""
+        return {**self._public(act, lang), "complete": False, "result": {}}
+
     def student_view(self, context=None):  # pylint: disable=unused-argument
         lang = learner_lang()
         try:
-            act = self.activity()
-            config = {"block": "activity", "title": text(act.get("title"), lang) or self.display_name, "lang": lang,
-                      **activities.public_activity(act, lang), "complete": self.done, "result": self.result}
+            config = {**self._public(self.activity(), lang), "complete": self.done, "result": self.result}
         except activities.ActivityError as err:
             config = {"block": "activity", "title": self.display_name, "lang": lang, "error": str(err)}
         kind = config.get("kind", "error")

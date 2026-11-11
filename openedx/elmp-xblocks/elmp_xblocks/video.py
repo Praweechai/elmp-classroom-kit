@@ -7,6 +7,7 @@ OLX (config = JSON in the shape of schemas/elmp_video.schema.json):
 """
 import json
 import time
+from typing import ClassVar
 
 from web_fragments.fragment import Fragment
 from xblock.completable import XBlockCompletionMode
@@ -15,10 +16,12 @@ from xblock.fields import Boolean, Dict, Float, List, Scope, String
 
 from . import watching
 from .common import text
-from .resources import learner_lang, resource
+from .resources import course_url, learner_lang, resource
+from .studio import StudioJsonMixin
 
 
-class ElmpVideoBlock(XBlock):
+@XBlock.wants("replace_urls")
+class ElmpVideoBlock(StudioJsonMixin, XBlock):
     display_name = String(display_name="Display name", default="Video", scope=Scope.settings)
     config = Dict(help="The video (schemas/elmp_video.schema.json).", default={}, scope=Scope.content)
 
@@ -34,22 +37,35 @@ class ElmpVideoBlock(XBlock):
     icon_class = "video"
 
     clock = staticmethod(time.time)  # tests replace it
+    STUDIO_TEMPLATE: ClassVar[dict] = {"title": "Video", "src": "/static/video.mp4", "seconds": 60,
+                       "captions": [{"lang": "en", "src": "/static/video.en.vtt"}],
+                       "chapters": [{"at": 0, "title": "Start"}]}
+    clean = staticmethod(watching.clean_video)
 
     def video(self):
         return watching.clean_video(self.config)
 
-    def _state(self, video, lang):
-        watched = watching.watched_seconds(self.stretches)
+    def preview_config(self, video, lang):
+        """Studio preview: a new learner (nothing watched)."""
+        return self._state(video, lang, fresh=True)
+
+    def _state(self, video, lang, fresh=False):
+        stretches, position, done = ([], 0.0, False) if fresh else (self.stretches, self.position, self.done)
+        watched = watching.watched_seconds(stretches)
+        public = watching.public_video(video, lang)
+        public["src"] = course_url(self, public["src"])
+        public["poster"] = course_url(self, public["poster"])
+        public["captions"] = [{**c, "src": course_url(self, c["src"])} for c in public["captions"]]
         return {
             "block": "video",
             "title": text(video.get("title"), lang) or self.display_name,
             "lang": lang,
-            **watching.public_video(video, lang),
-            "position": self.position,
-            "furthest": watching.furthest(self.stretches),
+            **public,
+            "position": position,
+            "furthest": watching.furthest(stretches),
             "watched": round(watched, 1),
             "percent": min(100, round(100 * watched / video["seconds"])),
-            "complete": self.done,
+            "complete": done,
         }
 
     def student_view(self, context=None):  # pylint: disable=unused-argument

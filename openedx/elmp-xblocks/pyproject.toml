@@ -22,4 +22,4 @@ elmp_activity = "elmp_xblocks.activity:ElmpActivityBlock"
 packages = ["elmp_xblocks"]
 
 [tool.setuptools.package-data]
-elmp_xblocks = ["static/*.js", "static/*.css"]
+elmp_xblocks = ["static/*.js", "static/*.css", "static/*.html"]

@@ -1,0 +1,26 @@
+/* Studio editor for the ELMP blocks (D-95). */
+.elmp-studio { font-family: "Inter", "IBM Plex Sans Thai", system-ui, sans-serif; color: #121714; padding: 16px; }
+.elmp-studio .es-bar { display: flex; gap: 16px; align-items: end; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; }
+.elmp-studio .es-name { display: grid; gap: 4px; font-weight: 600; font-size: .9rem; }
+.elmp-studio .es-display { min-width: 320px; max-width: 100%; height: 38px; padding: 0 10px; border: 1px solid #D0D7D3; border-radius: 8px; font: inherit; }
+.elmp-studio .es-type { font: 600 .8rem/1 "IBM Plex Mono", monospace; color: #47524C; background: #EEF1EF; padding: 6px 10px; border-radius: 99px; }
+.elmp-studio .es-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.elmp-studio .es-pane { border: 1px solid #E2E7E4; border-radius: 12px; padding: 12px; background: #fff; min-width: 0; }
+.elmp-studio .es-pane--preview { background: #F4F6F5; max-height: 70vh; overflow: auto; }
+.elmp-studio .es-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.elmp-studio .es-tools { display: flex; gap: 6px; flex-wrap: wrap; }
+.elmp-studio .es-json { width: 100%; min-height: 420px; resize: vertical; font: 13px/1.5 "IBM Plex Mono", Consolas, monospace;
+  border: 1px solid #D0D7D3; border-radius: 8px; padding: 10px; tab-size: 2; }
+.elmp-studio .es-help { font-size: .8rem; color: #6B756F; margin: 8px 0 0; }
+.elmp-studio .es-msg:empty { display: none; }
+.elmp-studio .es-msg { margin-top: 10px; padding: 10px 12px; border-radius: 8px; font-size: .9rem; }
+.elmp-studio .es-msg.is-ok { background: #E8F5EE; color: #03692A; }
+.elmp-studio .es-msg.is-bad { background: #FEF3F2; color: #B42318; }
+.elmp-studio .es-btn { height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid #D0D7D3; background: #fff; font: 600 .85rem/1 inherit; cursor: pointer; }
+.elmp-studio .es-btn:hover { background: #EEF1EF; }
+.elmp-studio .es-btn--main { background: #03692A; border-color: #03692A; color: #fff; }
+.elmp-studio .es-btn--main:hover { background: #025622; }
+.elmp-studio .es-btn[aria-pressed="true"] { background: #EEF7F1; border-color: #03692A; color: #03692A; }
+.elmp-studio .es-actions { display: flex; gap: 8px; margin-top: 14px; }
+.elmp-studio .es-empty { color: #6B756F; }
+@media (max-width: 900px) { .elmp-studio .es-grid { grid-template-columns: 1fr; } }

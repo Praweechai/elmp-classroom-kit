@@ -1,0 +1,30 @@
+<div class="elmp-studio">
+  <div class="es-bar">
+    <label class="es-name">Display name <input type="text" class="es-display" maxlength="200"></label>
+    <span class="es-type"></span>
+  </div>
+  <div class="es-grid">
+    <section class="es-pane">
+      <div class="es-head"><b>Content (JSON)</b>
+        <span class="es-tools">
+          <button type="button" class="es-btn" data-es="example">Insert example</button>
+          <button type="button" class="es-btn" data-es="format">Tidy</button>
+          <button type="button" class="es-btn es-btn--main" data-es="preview">Check &amp; preview</button>
+        </span>
+      </div>
+      <textarea class="es-json" spellcheck="false" aria-label="Block content as JSON"></textarea>
+      <p class="es-help">Text can be plain or {"en": "...", "th": "..."}. The format is in the block schemas (doc 02 §9). Answers never reach learners.</p>
+      <div class="es-msg" role="status" aria-live="polite"></div>
+    </section>
+    <section class="es-pane es-pane--preview">
+      <div class="es-head"><b>Preview</b>
+        <span class="es-tools"><button type="button" class="es-btn" data-es="lang" aria-pressed="false">ไทย</button></span>
+      </div>
+      <div class="es-preview"><p class="es-empty">Press "Check &amp; preview".</p></div>
+    </section>
+  </div>
+  <div class="es-actions">
+    <button type="button" class="es-btn es-btn--main" data-es="save">Save</button>
+    <button type="button" class="es-btn" data-es="cancel">Cancel</button>
+  </div>
+</div>

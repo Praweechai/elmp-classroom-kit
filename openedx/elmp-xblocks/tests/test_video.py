@@ -166,3 +166,31 @@ def test_block_author_mistake():
 def test_workbench_scenario():
     (_, xml), = ElmpVideoBlock.workbench_scenarios()
     assert watching.clean_video(json.loads(xml.split("'")[1]))["seconds"] == 45
+
+
+def test_static_paths_become_course_urls():
+    from elmp_xblocks.resources import course_url
+
+    class Service:
+        @staticmethod
+        def replace_urls(s):
+            return s.replace('"/static/', '"/asset-v1:ELMP+INF101+2026+type@asset+block/')
+
+    class FakeRuntime:
+        def __init__(self, service):
+            self._s = service
+
+        def service(self, block, name):
+            assert name == "replace_urls"
+            return self._s
+
+    class Block:
+        def __init__(self, service):
+            self.runtime = FakeRuntime(service)
+
+    assert course_url(Block(Service()), "/static/a.mp4") == "/asset-v1:ELMP+INF101+2026+type@asset+block/a.mp4"
+    assert course_url(Block(Service()), "/media/a.mp4") == "/media/a.mp4"
+    assert course_url(Block(None), "/static/a.mp4") == "/static/a.mp4"
+    assert course_url(Block(Service()), None) is None
+    cfg = video_block().student_view().json_init_args  # toy runtime has no service: paths unchanged
+    assert cfg["src"] == VIDEO["src"] and cfg["captions"][0]["src"] == VIDEO["captions"][0]["src"]
