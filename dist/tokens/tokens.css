@@ -78,6 +78,18 @@
   --cls-banner: #025622;
   --cls-banner-text: #FFFFFF;
   --cls-banner-urgent: #B42318;
+  --cls-st-todo: #7C5CDB;
+  --cls-st-todo-tint: #F3EFFD;
+  --cls-st-todo-text: #5B3FB8;
+  --cls-st-prog: #2E6FD8;
+  --cls-st-prog-tint: #EAF2FE;
+  --cls-st-prog-text: #1D4FA8;
+  --cls-st-done: #16844A;
+  --cls-st-done-tint: #E8F5EE;
+  --cls-st-done-text: #03692A;
+  --cls-st-over: #D92D20;
+  --cls-st-over-tint: #FEECEA;
+  --cls-st-over-text: #B42318;
   --cls-cover-clinical: linear-gradient(135deg, #025622 0%, #16844A 100%);
   --cls-cover-safety: linear-gradient(135deg, #0B4F6C 0%, #2E90FA 100%);
   --cls-cover-compliance: linear-gradient(135deg, #43209F 0%, #7A5AF8 100%);
@@ -110,6 +122,7 @@
   --cls-ease-enter: cubic-bezier(.05, .7, .1, 1);
   --cls-ease-exit: cubic-bezier(.3, 0, .8, .15);
   --cls-ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  --cls-ease-out: cubic-bezier(.2, .8, .2, 1);
   --cls-size-header: 64px;
   --cls-size-player-bar: 56px;
   --cls-size-bottom-bar: 64px;
@@ -124,5 +137,5 @@
   --cls-size-tree: 320px;
   --cls-size-rail: 40px;
   --cls-size-topbar: 60px;
-  --cls-size-page-max: 1280px;
+  --cls-size-page-max: 1600px;
 }

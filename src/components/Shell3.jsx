@@ -4,13 +4,14 @@ import {
 import PropTypes from 'prop-types';
 import {
   Apps, BarChart, Campaign, ChevronLeft, ChevronRight, Close, DonutLarge, HelpOutline, Home, KeyboardArrowDown,
-  Language, Logout, MenuBook, Schedule, Search, WorkspacePremium,
+  Language, Logout, MenuBook, Schedule, Search, WorkspacePremium, DarkMode, LightMode,
 } from '@openedx/paragon/icons';
 
 import { kitLanguage, messages, useClassroomIntl } from '../i18n';
 import { Avatar, MessagesButton } from './Header';
 import KitIcon from './KitIcon';
 import { useLinkComponent } from './LinkContext';
+import useDisplaySettings, { displayAttributes } from '../player/useDisplaySettings';
 
 // Plan 5 Shell 3 (S-100…S-105, D-73…D-77): NetAcad page arrangement, page links in the left sidebar,
 // thin top bar (title, Explore, search with suggestions, EN/TH, help, profile), green HR banner (CA-14),
@@ -346,7 +347,7 @@ ProfileMenu.propTypes = {
 
 export const TopBar3 = ({
   title, user, links, locale, onLocaleChange, categories = [], allCoursesHref, searchItems, onSearch, helpItems = [],
-  unread = 0, onOpenMessages,
+  unread = 0, onOpenMessages, dark, onToggleDark,
 }) => {
   const intl = useClassroomIntl();
   const Link = useLinkComponent();
@@ -365,6 +366,11 @@ export const TopBar3 = ({
         )}
         {searchItems && <SearchBox items={searchItems} onSearch={onSearch} dd={dd} />}
         <div className="cls3-topbar__right">
+          {onToggleDark && (
+            <button type="button" className="cls3-tb-btn" aria-pressed={Boolean(dark)} aria-label={t(messages.v2DarkOn)} onClick={onToggleDark}>
+              <KitIcon src={dark ? LightMode : DarkMode} size={20} />
+            </button>
+          )}
           <LanguageMenu dd={dd} locale={locale} onLocaleChange={onLocaleChange} />
           {helpItems.length > 0 && <LinkMenu name="help" dd={dd} label={t(messages.shell3Help)} icon={HelpOutline} items={helpItems} right />}
           {onOpenMessages && <MessagesButton unread={unread} onClick={onOpenMessages} />}
@@ -388,6 +394,8 @@ TopBar3.propTypes = {
   helpItems: PropTypes.arrayOf(itemShape),
   unread: PropTypes.number,
   onOpenMessages: PropTypes.func,
+  dark: PropTypes.bool,
+  onToggleDark: PropTypes.func, // kit 2.1: dark mode button (same `elmp.display` setting as the player)
 };
 
 const DISMISS_KEY = 'elmp.announcement.dismissed';
@@ -453,13 +461,20 @@ BottomTabs3.propTypes = {
 
 export const ClassroomShell3 = ({
   current, title, links, user, locale, onLocaleChange, logoUrl, announcement, categories, allCoursesHref,
-  searchItems, onSearch, helpItems, unread, onOpenMessages, pageAs = 'main', children,
+  searchItems, onSearch, helpItems, unread, onOpenMessages, pageAs = 'main', display, children,
 }) => {
   const intl = useClassroomIntl();
   const [state, toggle] = useSidebar3();
+  const { settings, update } = useDisplaySettings(display);
   const Page = pageAs === 'div' ? 'div' : 'main';
+  // Kit 2.1: pause looping alerts while the tab is hidden (battery; doc 10 motion rules).
+  useEffect(() => {
+    const onVisible = () => document.documentElement.classList.toggle('cls-tab-hidden', document.hidden);
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, []);
   return (
-    <div className="cls3-shell cls-root" data-sidebar={state} lang={kitLanguage(locale)}>
+    <div className="cls3-shell cls-root" data-sidebar={state} lang={kitLanguage(locale)} {...displayAttributes(settings)}>
       <AnnouncementBanner announcement={announcement} locale={locale} />
       <div className="cls3-shell__frame">
         <SidebarNav3 current={current} links={links} user={user} state={state} onToggle={toggle} logoUrl={logoUrl} />
@@ -477,6 +492,8 @@ export const ClassroomShell3 = ({
             helpItems={helpItems}
             unread={unread}
             onOpenMessages={onOpenMessages}
+            dark={settings.theme === 'dark'}
+            onToggleDark={() => update({ theme: settings.theme === 'dark' ? 'light' : 'dark' })}
           />
           <Page className="cls3-shell__page" id={Page === 'main' ? 'main' : undefined}>{children}</Page>
           <footer className="cls3-footer">
@@ -512,5 +529,6 @@ ClassroomShell3.propTypes = {
   unread: PropTypes.number,
   onOpenMessages: PropTypes.func,
   pageAs: PropTypes.oneOf(['main', 'div']),
+  display: PropTypes.shape({ theme: PropTypes.oneOf(['light', 'dark']) }), // starting display settings (stories, tests)
   children: PropTypes.node,
 };

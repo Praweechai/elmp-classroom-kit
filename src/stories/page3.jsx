@@ -4,7 +4,8 @@ import storyLogo from './logo';
 import { ClassroomShell3, kitLanguage } from '../index';
 
 // Shared Shell 3 frame for the Plan 5 page stories (S-101…S-104).
-export const now = new Date('2026-11-10T09:00:00+07:00');
+// Wednesday of the CA-11 `learning_time` fixture week (kit 2.1).
+export const now = new Date('2026-11-11T09:00:00+07:00');
 const links = {
   home: '#home', courses: '#courses', grades: '#grades', progress: '#progress', certificates: '#certificates', signOut: '#out',
 };
@@ -18,7 +19,9 @@ const TITLES = {
   certificates: ['Certificates', 'ใบประกาศ'],
 };
 
-export const Page3 = ({ current, locale, children }) => (
+export const Page3 = ({
+  current, locale, display = { theme: 'light' }, children,
+}) => (
   <ClassroomShell3
     current={current}
     title={TITLES[current][kitLanguage(locale) === 'th' ? 1 : 0]}
@@ -26,6 +29,7 @@ export const Page3 = ({ current, locale, children }) => (
     user={nok}
     locale={locale}
     logoUrl={storyLogo}
+    display={display}
   >
     {children}
   </ClassroomShell3>
@@ -34,5 +38,6 @@ export const Page3 = ({ current, locale, children }) => (
 Page3.propTypes = {
   current: PropTypes.oneOf(Object.keys(TITLES)).isRequired,
   locale: PropTypes.string,
+  display: PropTypes.shape({ theme: PropTypes.string }),
   children: PropTypes.node,
 };

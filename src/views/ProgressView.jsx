@@ -1,27 +1,28 @@
 import PropTypes from 'prop-types';
-import { AccessTime, CheckCircle, PlayCircle } from '@openedx/paragon/icons';
+import {
+  AssignmentInd, Check, PlayArrow, Schedule, Shield, VerifiedUser, Warning,
+} from '@openedx/paragon/icons';
 
 import {
   formatDate, formatHours, localized, messages, useClassroomIntl,
 } from '../i18n';
-import {
-  DashCard, DeadlineList, StatRing, StreakWeek, pctOf,
-} from '../components/Dashboard';
 import { Notice, Skeleton } from '../components/Feedback';
+import KitIcon from '../components/KitIcon';
+import {
+  LicenceCard, WeekColumns, learningTimeShape, usePageEnter,
+} from '../components/Learner21';
 import { useLinkComponent } from '../components/LinkContext';
 import PageStrip from '../components/PageStrip';
-import { ProgressBar } from '../components/Progress';
 
-// S-103 Progress (F-134): page strip, three stat cards (completed, in progress, hours), overall completion
-// donut + hours-per-week bars (8 weeks), course progress list, required training deadlines.
-// Part 1 = CA-11 only: the weekly bars need CA-16, so the 7-day streak takes their place until then.
+// S-103 Progress 2.1 — "Am I up to date?" (Learner v2, doc 10 V-1.03, D-94): status line, requirement groups
+// (Everyone / For my job) with one row per requirement, licence CNEU card, this week's minutes.
+// Data: CA-17 `compliance` (groups + licence). Before CA-17 is switched on the page builds one "Required training"
+// group from CA-11 required courses. Week bars: CA-11 `learning_time` (Mon–Sun), else CA-16 8 weeks.
 
-const ACTIVE = ['in_progress', 'almost', 'overdue', 'due_soon'];
 const R = 54;
 const C = 2 * Math.PI * R;
 
-const coursePct = (c) => (c.status === 'completed' ? 100 : Math.round(pctOf(c.units_done, c.units_total)));
-
+// Kept for other screens and the Plan 5 stories (kit 2.0 API).
 export const Donut = ({ pct, label }) => (
   <svg className="cls3-donut" width="140" height="140" viewBox="0 0 140 140" role="img" aria-label={label}>
     <circle cx="70" cy="70" r={R} fill="none" className="cls3-donut__track" strokeWidth="14" />
@@ -70,110 +71,183 @@ WeekBars.propTypes = {
   weeks: PropTypes.arrayOf(PropTypes.shape({ week_start: PropTypes.string, minutes: PropTypes.number })).isRequired,
 };
 
-const ProgressView = ({
-  dashboard, grades, status = 'ready', now, hoursGoal, onRetry, features = {},
-}) => {
+const STATE = {
+  ok: [Check, messages.v2StateOk],
+  soon: [Schedule, messages.v2StateSoon],
+  due: [Schedule, messages.v2StateDue],
+  overdue: [Warning, messages.v2StateOverdue],
+  in_progress: [PlayArrow, messages.v2StateInProgress],
+};
+const NEEDS_ACTION = ['overdue', 'due', 'soon'];
+
+// Before CA-17: CA-11 required courses → one group.
+export const fallbackGroups = (dashboard) => {
+  const d = dashboard || {};
+  const due = Object.fromEntries((d.deadlines || []).map((x) => [x.course_key, x.due_at]));
+  const items = (d.courses || []).filter((c) => c.required).map((c) => {
+    const state = ({
+      completed: 'ok', passed: 'ok', overdue: 'overdue', not_started: 'due',
+    })[c.status] || 'in_progress';
+    return {
+      name: c.title, course_key: c.course_key, every_months: undefined, state, date: due[c.course_key] || null,
+    };
+  });
+  return items.length ? [{ key: 'required', items }] : [];
+};
+
+const GROUP = {
+  everyone: [Shield, messages.v2GroupEveryone],
+  job: [AssignmentInd, messages.v2GroupJob],
+  required: [Shield, messages.v2GroupRequired],
+};
+
+const ReqRow = ({ item, course }) => {
   const intl = useClassroomIntl();
   const Link = useLinkComponent();
   const t = (m, v) => intl.formatMessage(m, v);
-  const strip = (
-    <PageStrip id="cls3-progress-strip" title={t(messages.shell3Progress)}>{t(messages.pageProgressIntro)}</PageStrip>
+  const [icon, stateLabel] = STATE[item.state] || STATE.due;
+  const name = localized(item.name, intl.locale);
+  const date = item.date ? formatDate(item.date, intl.locale) : null;
+  let when = null;
+  if (item.state === 'ok') {
+    when = date && <b>{t(messages.v2ValidUntil, { date })}</b>;
+  } else if (item.state === 'soon') {
+    when = date && <b className="is-soon">{t(messages.v2RenewBy, { date })}</b>;
+  } else if (item.state === 'overdue') {
+    when = date && <b className="is-late">{t(messages.cardDue, { date })}</b>;
+  } else if (date) {
+    when = <b>{t(messages.cardDue, { date })}</b>;
+  }
+  let action = messages.start;
+  if (item.state === 'ok') { action = messages.review; } else if (item.state === 'soon') {
+    action = messages.v2Renew;
+  } else if (item.state === 'in_progress' || ['in_progress', 'almost', 'due_soon', 'overdue'].includes(course?.status)) {
+    action = messages.continue;
+  }
+  let every = null;
+  if (item.every_months) { every = t(messages.v2Every, { n: item.every_months }); }
+  if (item.every_months === null) { every = t(messages.v2Once); }
+  const courseTitle = course ? localized(course.title, intl.locale) : null;
+  const sub = [course?.code, courseTitle !== name ? courseTitle : null, every].filter(Boolean).join(' · ');
+  const href = course?.resume_href || course?.href;
+  return (
+    <li className="cls3-req">
+      <span className={`cls3-req__st cls3-req__st--${item.state === 'in_progress' ? 'progress' : item.state}`}>
+        <KitIcon src={icon} size={16} />
+        <span className="cls-sr">{t(stateLabel)}</span>
+      </span>
+      <div>
+        <div className="cls3-req__name">{name}</div>
+        {sub && <div className="cls3-req__sub">{sub}</div>}
+      </div>
+      <div className="cls3-req__when">{when}</div>
+      {href ? (
+        <Link
+          className={`cls-btn cls-btn--sm ${NEEDS_ACTION.includes(item.state) ? 'cls-btn--primary' : 'cls-btn--secondary'}`}
+          href={href}
+          aria-label={t(messages.actionLabel, { action: t(action), title: name })}
+        >
+          {t(action)}
+        </Link>
+      ) : <span />}
+    </li>
   );
+};
+ReqRow.propTypes = {
+  item: PropTypes.shape({
+    name: PropTypes.oneOfType([PropTypes.string, PropTypes.shape({})]),
+    course_key: PropTypes.string,
+    every_months: PropTypes.number,
+    state: PropTypes.string,
+    date: PropTypes.string,
+  }).isRequired,
+  course: PropTypes.shape({
+    code: PropTypes.string,
+    title: PropTypes.oneOfType([PropTypes.string, PropTypes.shape({})]),
+    status: PropTypes.string,
+    href: PropTypes.string,
+    resume_href: PropTypes.string,
+  }),
+};
+
+const ProgressView = ({
+  dashboard, grades, compliance, status = 'ready', now, onRetry, features = {}, jobTitle,
+}) => {
+  const intl = useClassroomIntl();
+  const t = (m, v) => intl.formatMessage(m, v);
+  const pageRef = usePageEnter([status]);
+  const intro = <PageStrip id="cls3-progress-strip" title={t(messages.v2UpToDate)}>{t(messages.v2ProgSub)}</PageStrip>;
   if (status === 'loading') {
     return (
-      <div className="cls3-page" aria-busy="true">
-        {strip}
-        <div className="cls3-stats cls3-stats--3">{[0, 1, 2].map((i) => <Skeleton key={i} height={88} radius={16} />)}</div>
-        <div className="cls3-even">{[0, 1].map((i) => <Skeleton key={i} height={240} radius={16} />)}</div>
+      <div className="cls3-v2" aria-busy="true">
+        {intro}
+        <Skeleton height={84} radius={16} />
+        <div className="cls3-prog2"><Skeleton height={360} radius={16} /><Skeleton height={240} radius={16} /></div>
       </div>
     );
   }
   if (status === 'error') {
-    return <div className="cls3-page">{strip}<Notice onRetry={onRetry}>{t(messages.notAvailable)}</Notice></div>;
+    return <div className="cls3-v2">{intro}<Notice onRetry={onRetry}>{t(messages.notAvailable)}</Notice></div>;
   }
 
   const d = dashboard || {};
-  const courses = d.courses || [];
-  const rings = d.rings || {};
-  const enrolled = rings.enrolled ?? courses.length;
-  const done = rings.completed ?? courses.filter((c) => c.status === 'completed').length;
-  const active = courses.filter((c) => ACTIVE.includes(c.status)).length;
-  const hours = rings.hours_learned;
-  const scale = hoursGoal || 10;
-  const overall = courses.length ? Math.round(courses.reduce((s, c) => s + coursePct(c), 0) / courses.length) : 0;
-  const unitsDone = courses.reduce((s, c) => s + (c.units_done || 0), 0);
-  const unitsTotal = courses.reduce((s, c) => s + (c.units_total || 0), 0);
+  const courses = Object.fromEntries((d.courses || []).map((c) => [c.course_key, c]));
+  const groups = (features.compliance !== false && compliance?.groups) || fallbackGroups(d);
+  const all = groups.flatMap((g) => g.items);
+  const need = all.filter((i) => NEEDS_ACTION.includes(i.state)).length;
+  const week = features.streak !== false ? d.learning_time?.week_days : null;
   const weeks = grades?.weekly_minutes;
-  const summary = grades?.summary;
+  const weekTotal = (week || []).reduce((s, x) => s + (x.minutes || 0), 0);
 
   return (
-    <div className="cls3-page">
-      {strip}
-      <ul className="cls3-stats cls3-stats--3">
-        <StatRing icon={CheckCircle} tone="green" label={t(messages.prCompleted)} value={`${done}/${enrolled}`} pct={pctOf(done, enrolled)} />
-        <StatRing icon={PlayCircle} tone="blue" label={t(messages.statusInProgress)} value={`${active}/${enrolled}`} pct={pctOf(active, enrolled)} />
-        <StatRing
-          icon={AccessTime}
-          tone="gold"
-          label={t(messages.prHours)}
-          sub={hoursGoal ? t(messages.prHoursGoal, { hours: formatHours(hoursGoal, intl.locale) }) : undefined}
-          value={hours == null ? '—' : t(messages.hoursShort, { hours: formatHours(hours, intl.locale) })}
-          pct={hours ? Math.min(100, (hours / scale) * 100) : 0}
-        />
-      </ul>
+    <div className="cls3-v2" ref={pageRef}>
+      {intro}
+      <section className={`cls3-statusbar cls3-rise${need ? ' cls3-statusbar--warn' : ''}`} role="status">
+        <span className="cls3-statusbar__ic" aria-hidden="true"><KitIcon src={need ? Warning : VerifiedUser} size={26} /></span>
+        <div>
+          <h2>{need ? t(messages.v2ActionN, { n: need }) : t(messages.v2AllGood)}</h2>
+          {need > 0 && <p>{t(messages.v2ActionHint)}</p>}
+        </div>
+      </section>
 
-      <div className="cls3-even">
-        <DashCard title={t(messages.prOverall)} titleId="cls3-pr-overall" className="cls3-center">
-          <Donut pct={overall} label={t(messages.prOverallAria, { pct: overall })} />
-          {unitsTotal > 0 && <p className="cls3-note">{t(messages.unitsOf, { done: unitsDone, total: unitsTotal })}</p>}
-        </DashCard>
-        {weeks && weeks.length > 0 ? (
-          <DashCard
-            title={t(messages.prWeekly)}
-            sub={t(messages.prWeeklySub)}
-            titleId="cls3-pr-weekly"
-          >
-            <WeekBars weeks={weeks} />
-            {summary && (
-              <p className="cls3-note">
-                {t(messages.prThisWeek, {
-                  hours: formatHours((summary.minutes_week || 0) / 60, intl.locale), n: summary.days_active_month || 0,
-                })}
-              </p>
-            )}
-          </DashCard>
-        ) : (features.streak !== false && d.streak && (
-          <DashCard title={t(messages.dashStreak)} titleId="cls3-pr-streak">
-            <StreakWeek days={d.streak.days} current={d.streak.current} best={d.streak.best} today={now} />
-          </DashCard>
-        ))}
-      </div>
-
-      <div className="cls3-two">
-        <DashCard title={t(messages.prCourses)} titleId="cls3-pr-courses">
-          {courses.length === 0 ? <p className="cls-dempty">{t(messages.coursesEmpty)}</p> : (
-            <ul className="cls3-plist">
-              {courses.map((c) => {
-                const title = localized(c.title, intl.locale);
-                const p = coursePct(c);
-                return (
-                  <li key={c.course_key}>
-                    <div className="cls3-plist__name">
-                      <Link href={c.href}>{title}</Link>
-                      <small>{t(messages.unitsOf, { done: c.units_done ?? 0, total: c.units_total ?? 0 })}</small>
-                    </div>
-                    <ProgressBar value={p} label={title} />
-                    <b className="cls-num">{`${p}%`}</b>
-                  </li>
-                );
-              })}
-            </ul>
+      <div className="cls3-prog2">
+        <div>
+          {groups.length === 0 && <p className="cls3-empty">{t(messages.coursesEmpty)}</p>}
+          {groups.map((g) => {
+            const [icon, label] = GROUP[g.key] || GROUP.required;
+            const ok = g.items.filter((i) => i.state === 'ok').length;
+            return (
+              <section key={g.key} className="cls3-card2 cls3-group cls3-rise" aria-labelledby={`cls3-grp-${g.key}`}>
+                <div className="cls3-group__head">
+                  <h2 id={`cls3-grp-${g.key}`}>
+                    <span className="cls3-group__ic" aria-hidden="true"><KitIcon src={icon} size={20} /></span>
+                    {t(label)}
+                    {g.key === 'job' && jobTitle ? ` · ${jobTitle}` : ''}
+                  </h2>
+                  <span className="cls3-group__count">{t(messages.v2GroupCount, { ok, n: g.items.length })}</span>
+                </div>
+                <ul>
+                  {g.items.map((i) => <ReqRow key={`${g.key}-${i.course_key}`} item={i} course={courses[i.course_key]} />)}
+                </ul>
+              </section>
+            );
+          })}
+        </div>
+        <aside>
+          <LicenceCard licence={features.compliance !== false ? compliance?.licence : null} />
+          {week && week.length > 0 && (
+            <section className="cls3-card2 cls3-side2 cls3-rise" aria-labelledby="cls3-pr-week">
+              <h2 id="cls3-pr-week" className="cls3-card2__title">{t(messages.v2ThisWeek)}</h2>
+              <p className="cls3-note">{t(messages.v2Minutes, { n: weekTotal })}</p>
+              <WeekColumns days={week} now={now} />
+            </section>
           )}
-        </DashCard>
-        <aside className="cls3-side-col">
-          <DashCard title={t(messages.dashDeadlines)} titleId="cls3-pr-dl">
-            <DeadlineList items={d.deadlines} />
-          </DashCard>
+          {(!week || week.length === 0) && weeks && weeks.length > 0 && (
+            <section className="cls3-card2 cls3-side2 cls3-rise" aria-labelledby="cls3-pr-weekly">
+              <h2 id="cls3-pr-weekly" className="cls3-card2__title">{t(messages.prWeekly)}</h2>
+              <WeekBars weeks={weeks} />
+            </section>
+          )}
         </aside>
       </div>
     </div>
@@ -182,22 +256,24 @@ const ProgressView = ({
 
 ProgressView.propTypes = {
   dashboard: PropTypes.shape({ // CA-11
-    rings: PropTypes.shape({}),
     courses: PropTypes.arrayOf(PropTypes.shape({})),
     deadlines: PropTypes.arrayOf(PropTypes.shape({})),
-    streak: PropTypes.shape({
-      days: PropTypes.arrayOf(PropTypes.bool), current: PropTypes.number, best: PropTypes.number,
-    }),
+    learning_time: learningTimeShape,
   }),
-  grades: PropTypes.shape({ // CA-16 (Part 2): weekly bars + this-week line
-    summary: PropTypes.shape({ minutes_week: PropTypes.number, days_active_month: PropTypes.number }),
+  grades: PropTypes.shape({ // CA-16: 8-week bars when CA-11 learning_time is not there
     weekly_minutes: PropTypes.arrayOf(PropTypes.shape({})),
+  }),
+  compliance: PropTypes.shape({ // CA-17 (D-94)
+    groups: PropTypes.arrayOf(PropTypes.shape({
+      key: PropTypes.string, items: PropTypes.arrayOf(PropTypes.shape({})),
+    })),
+    licence: LicenceCard.propTypes.licence,
   }),
   status: PropTypes.oneOf(['loading', 'ready', 'error']),
   now: PropTypes.instanceOf(Date),
-  hoursGoal: PropTypes.number,
   onRetry: PropTypes.func,
-  features: PropTypes.shape({ streak: PropTypes.bool }),
+  features: PropTypes.shape({ streak: PropTypes.bool, compliance: PropTypes.bool }),
+  jobTitle: PropTypes.string, // shown after "For my job", e.g. "Registered Nurse · ICU"
 };
 
 export default ProgressView;

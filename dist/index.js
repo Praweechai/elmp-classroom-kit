@@ -231,6 +231,12 @@ Object.defineProperty(exports, "DashboardView", {
     return _DashboardView.default;
   }
 });
+Object.defineProperty(exports, "DateDeadlines", {
+  enumerable: true,
+  get: function () {
+    return _Learner.DateDeadlines;
+  }
+});
 Object.defineProperty(exports, "DeadlineList", {
   enumerable: true,
   get: function () {
@@ -259,6 +265,12 @@ Object.defineProperty(exports, "Gauge", {
   enumerable: true,
   get: function () {
     return _Dashboard.Gauge;
+  }
+});
+Object.defineProperty(exports, "GoalRing", {
+  enumerable: true,
+  get: function () {
+    return _Learner.GoalRing;
   }
 });
 Object.defineProperty(exports, "GradesView", {
@@ -313,6 +325,12 @@ Object.defineProperty(exports, "LanguageToggle", {
   enumerable: true,
   get: function () {
     return _Header.LanguageToggle;
+  }
+});
+Object.defineProperty(exports, "LicenceCard", {
+  enumerable: true,
+  get: function () {
+    return _Learner.LicenceCard;
   }
 });
 Object.defineProperty(exports, "LinkContext", {
@@ -459,6 +477,12 @@ Object.defineProperty(exports, "RequiredGroup", {
     return _RequiredGroup.default;
   }
 });
+Object.defineProperty(exports, "ResumeHero", {
+  enumerable: true,
+  get: function () {
+    return _Learner.ResumeHero;
+  }
+});
 Object.defineProperty(exports, "SEND_EVERY_MS", {
   enumerable: true,
   get: function () {
@@ -469,6 +493,12 @@ Object.defineProperty(exports, "STATUSES", {
   enumerable: true,
   get: function () {
     return _StatusPill.STATUSES;
+  }
+});
+Object.defineProperty(exports, "STATUS_TONES", {
+  enumerable: true,
+  get: function () {
+    return _Learner.STATUS_TONES;
   }
 });
 Object.defineProperty(exports, "SearchBox", {
@@ -519,6 +549,12 @@ Object.defineProperty(exports, "StatusPill", {
     return _StatusPill.default;
   }
 });
+Object.defineProperty(exports, "StatusTiles", {
+  enumerable: true,
+  get: function () {
+    return _Learner.StatusTiles;
+  }
+});
 Object.defineProperty(exports, "StreakWeek", {
   enumerable: true,
   get: function () {
@@ -549,10 +585,22 @@ Object.defineProperty(exports, "TONES", {
     return _Dashboard.TONES;
   }
 });
+Object.defineProperty(exports, "TONE_LABEL", {
+  enumerable: true,
+  get: function () {
+    return _Learner.TONE_LABEL;
+  }
+});
 Object.defineProperty(exports, "ToastProvider", {
   enumerable: true,
   get: function () {
     return _Feedback.ToastProvider;
+  }
+});
+Object.defineProperty(exports, "TodayCard", {
+  enumerable: true,
+  get: function () {
+    return _Learner.TodayCard;
   }
 });
 Object.defineProperty(exports, "TopBar", {
@@ -583,6 +631,12 @@ Object.defineProperty(exports, "WeekBars", {
   enumerable: true,
   get: function () {
     return _ProgressView.WeekBars;
+  }
+});
+Object.defineProperty(exports, "WeekColumns", {
+  enumerable: true,
+  get: function () {
+    return _Learner.WeekColumns;
   }
 });
 Object.defineProperty(exports, "bangkokDay", {
@@ -639,6 +693,12 @@ Object.defineProperty(exports, "entryToCard", {
     return _CoursesView.entryToCard;
   }
 });
+Object.defineProperty(exports, "fallbackGroups", {
+  enumerable: true,
+  get: function () {
+    return _ProgressView.fallbackGroups;
+  }
+});
 Object.defineProperty(exports, "flattenOutline", {
   enumerable: true,
   get: function () {
@@ -669,6 +729,12 @@ Object.defineProperty(exports, "getPortalClient", {
     return _PortalClient.getPortalClient;
   }
 });
+Object.defineProperty(exports, "gradeRows", {
+  enumerable: true,
+  get: function () {
+    return _GradesView.gradeRows;
+  }
+});
 Object.defineProperty(exports, "greetingKey", {
   enumerable: true,
   get: function () {
@@ -693,6 +759,12 @@ Object.defineProperty(exports, "kitLanguage", {
     return _i18n.kitLanguage;
   }
 });
+Object.defineProperty(exports, "learningTimeShape", {
+  enumerable: true,
+  get: function () {
+    return _Learner.learningTimeShape;
+  }
+});
 Object.defineProperty(exports, "localized", {
   enumerable: true,
   get: function () {
@@ -705,10 +777,22 @@ Object.defineProperty(exports, "messages", {
     return _i18n.messages;
   }
 });
+Object.defineProperty(exports, "motionAllowed", {
+  enumerable: true,
+  get: function () {
+    return _Learner.motionAllowed;
+  }
+});
 Object.defineProperty(exports, "nextRequiredCourse", {
   enumerable: true,
   get: function () {
     return _CourseFinished.nextRequiredCourse;
+  }
+});
+Object.defineProperty(exports, "pickResume", {
+  enumerable: true,
+  get: function () {
+    return _MyLearningView.pickResume;
   }
 });
 Object.defineProperty(exports, "postDisplay", {
@@ -733,6 +817,12 @@ Object.defineProperty(exports, "statusGroup", {
   enumerable: true,
   get: function () {
     return _CoursesView.statusGroup;
+  }
+});
+Object.defineProperty(exports, "statusTone", {
+  enumerable: true,
+  get: function () {
+    return _Learner.statusTone;
   }
 });
 Object.defineProperty(exports, "timeAgo", {
@@ -783,6 +873,12 @@ Object.defineProperty(exports, "useClassroomIntl", {
     return _i18n.useClassroomIntl;
   }
 });
+Object.defineProperty(exports, "useCountUp", {
+  enumerable: true,
+  get: function () {
+    return _Learner.useCountUp;
+  }
+});
 Object.defineProperty(exports, "useDisplaySettings", {
   enumerable: true,
   get: function () {
@@ -819,6 +915,12 @@ Object.defineProperty(exports, "useLinkComponent", {
     return _LinkContext.useLinkComponent;
   }
 });
+Object.defineProperty(exports, "usePageEnter", {
+  enumerable: true,
+  get: function () {
+    return _Learner.usePageEnter;
+  }
+});
 Object.defineProperty(exports, "usePortal", {
   enumerable: true,
   get: function () {
@@ -853,6 +955,7 @@ require("./tokens/tokens.css");
 require("./styles/classroom.css");
 require("./styles/shell3.css");
 require("./styles/player3.css");
+require("./styles/learner21.css");
 var _tokens2 = _interopRequireDefault(require("./tokens/tokens"));
 var _i18n = require("./i18n");
 var _KitIcon = _interopRequireDefault(require("./components/KitIcon"));
@@ -893,11 +996,12 @@ var _CourseCard2 = _interopRequireWildcard(require("./components/CourseCard2"));
 var _MyLearningView = _interopRequireWildcard(require("./views/MyLearningView"));
 var _PageStrip = _interopRequireDefault(require("./components/PageStrip"));
 var _CoursesView = _interopRequireWildcard(require("./views/CoursesView"));
-var _GradesView = _interopRequireDefault(require("./views/GradesView"));
+var _GradesView = _interopRequireWildcard(require("./views/GradesView"));
 var _ProgressView = _interopRequireWildcard(require("./views/ProgressView"));
 var _CertificatesView2 = _interopRequireWildcard(require("./views/CertificatesView2"));
 var _Player2 = _interopRequireWildcard(require("./components/Player3"));
 var _useDisplaySettings = _interopRequireWildcard(require("./player/useDisplaySettings"));
+var _Learner = require("./components/Learner21");
 var cache;
 function _interopRequireWildcard(e, t) { if (!t && e && e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c && {}.hasOwnProperty.call(e, c) && ((r = a && Object.getOwnPropertyDescriptor(e, c)) && (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }

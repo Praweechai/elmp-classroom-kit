@@ -5,7 +5,8 @@
 .cls3-shell__frame { flex: 1; display: grid; grid-template-columns: var(--cls-size-sidebar) minmax(0, 1fr); min-height: 0; }
 .cls3-shell[data-sidebar="collapsed"] .cls3-shell__frame { grid-template-columns: var(--cls-size-sidebar-collapsed) minmax(0, 1fr); }
 .cls3-shell__main { display: flex; flex-direction: column; min-width: 0; }
-.cls3-shell__page { flex: 1; width: 100%; max-width: var(--cls-size-page-max); padding: 24px 32px 48px; }
+/* Centred: without margin auto, screens wider than sidebar + page max left all the spare room on the right. */
+.cls3-shell__page { flex: 1; width: 100%; max-width: var(--cls-size-page-max); margin: 0 auto; padding: 24px 32px 48px; }
 .cls3-shell :focus-visible { outline: 3px solid var(--cls-action); outline-offset: 2px; }
 
 /* Banner (CA-14) */

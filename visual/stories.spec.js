@@ -27,3 +27,28 @@ stories.forEach((story) => {
     });
   });
 });
+
+// Big screens (P5-6: at 1900 px the page sat on the left with an empty strip on the right).
+// Any max-width box must be centred in its parent: spare room split evenly, never piled on one side.
+[1920, 2560].forEach((width) => {
+  stories.forEach((story) => {
+    test(`${story.id} wide ${width}: no one-sided empty space`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`/iframe.html?id=${story.id}&viewMode=story`, { waitUntil: 'networkidle' });
+      await page.locator('#storybook-root > *').first().waitFor();
+      const lopsided = await page.evaluate(() => [...document.querySelectorAll('#storybook-root *')].filter((el) => {
+        const cs = getComputedStyle(el);
+        if (cs.maxWidth === 'none' || cs.display === 'none' || cs.position !== 'static') { return false; }
+        const p = el.parentElement; const r = el.getBoundingClientRect(); const pr = p.getBoundingClientRect();
+        const pcs = getComputedStyle(p);
+        const inner = pr.width - parseFloat(pcs.paddingLeft) - parseFloat(pcs.paddingRight);
+        if (inner - r.width < 120 || (/flex/.test(pcs.display) && !/column/.test(pcs.flexDirection))) { return false; }
+        if (r.width < 600) { return false; }
+        const left = r.left - pr.left - parseFloat(pcs.paddingLeft);
+        const right = pr.right - parseFloat(pcs.paddingRight) - r.right;
+        return Math.abs(left - right) > 24;
+      }).map((el) => `${el.tagName}.${el.className}`));
+      expect(lopsided, 'wide boxes centred (no empty strip on one side)').toEqual([]);
+    });
+  });
+});

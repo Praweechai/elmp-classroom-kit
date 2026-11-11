@@ -6,19 +6,21 @@ import {
 import CourseCover, { CATEGORIES } from './CourseCover';
 import { useLinkComponent } from './LinkContext';
 import { ProgressBar } from './Progress';
+import { statusTone } from './Learner21';
 
 // Plan 5 course card (S-100/S-101, NetAcad arrangement): cover with code + Required chip, category + status chip,
 // title, meta (self-paced · units · hours · due), progress bar, last active + action. Grid or list layout.
+// Kit 2.1: one colour per status (D-92) on the chip and on the strip under the cover (strip length = progress).
 
 export const CARD_STATUSES = ['not_started', 'in_progress', 'almost', 'due_soon', 'overdue', 'completed'];
 
 const CHIP = {
-  overdue: ['late', messages.statusOverdue],
-  due_soon: ['soon', messages.statusDueSoon],
-  almost: ['gold', messages.statusAlmost],
-  completed: ['done', messages.statusCompleted],
-  not_started: ['plain', messages.statusNotStarted],
-  in_progress: ['ok', messages.statusInProgress],
+  overdue: messages.statusOverdue,
+  due_soon: messages.statusDueSoon,
+  almost: messages.statusAlmost,
+  completed: messages.statusCompleted,
+  not_started: messages.v2StTodo,
+  in_progress: messages.statusInProgress,
 };
 
 const CATEGORY_LABEL = {
@@ -31,8 +33,8 @@ const CATEGORY_LABEL = {
 
 export const StatusChip = ({ status }) => {
   const intl = useClassroomIntl();
-  const [tone, label] = CHIP[status] || CHIP.in_progress;
-  return <span className={`cls3-chip cls3-chip--${tone}`}>{intl.formatMessage(label)}</span>;
+  const label = CHIP[status] || CHIP.in_progress;
+  return <span className={`cls3-chip cls3-tone--${statusTone(status)}`}>{intl.formatMessage(label)}</span>;
 };
 
 StatusChip.propTypes = { status: PropTypes.oneOf(CARD_STATUSES).isRequired };
@@ -64,7 +66,10 @@ const CourseCard2 = ({
   const pct = done ? 100 : Math.min(Math.round(progress), status === 'almost' ? 99 : 100);
 
   return (
-    <article className={`cls3-course cls3-course--${layout}`}>
+    <article
+      className={`cls3-course cls3-course--${layout} cls3-tone--${statusTone(status)} cls3-lift cls3-rise`}
+      style={{ '--p': pct / 100 }}
+    >
       <div className="cls3-course__cover">
         <CourseCover
           imageUrl={coverUrl}
@@ -73,6 +78,7 @@ const CourseCard2 = ({
           style={coverStyle}
         />
         {required && <span className="cls3-course__req">{t(messages.cardRequired)}</span>}
+        <span className="cls3-strip-fill" aria-hidden="true" />
       </div>
       <div className="cls3-course__body">
         <div className="cls3-course__eyebrow">

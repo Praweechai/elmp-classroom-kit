@@ -102,7 +102,22 @@ const color = {
   // Plan 5 (kit 2.0): green HR banner (CA-14) and the urgent variant.
   banner: green[700],
   bannerText: '#FFFFFF',
-  bannerUrgent: '#B42318'
+  bannerUrgent: '#B42318',
+  // Learner v2 (kit 2.1, D-92): one colour per status —
+  // To do violet · In progress blue · Completed green · Overdue red.
+  // `st*` = bars, icons, strips (3:1 graphics); `st*Text` on `st*Tint` = pill text (4.5:1). Dark values: motion.css.
+  stTodo: '#7C5CDB',
+  stTodoTint: '#F3EFFD',
+  stTodoText: '#5B3FB8',
+  stProg: '#2E6FD8',
+  stProgTint: '#EAF2FE',
+  stProgText: '#1D4FA8',
+  stDone: '#16844A',
+  stDoneTint: '#E8F5EE',
+  stDoneText: '#03692A',
+  stOver: '#D92D20',
+  stOverTint: '#FEECEA',
+  stOverText: '#B42318'
 };
 
 // Generated course covers by category (doc 04 §2.1).
@@ -147,7 +162,8 @@ const motion = {
   easeStandard: 'cubic-bezier(.2, 0, 0, 1)',
   easeEnter: 'cubic-bezier(.05, .7, .1, 1)',
   easeExit: 'cubic-bezier(.3, 0, .8, .15)',
-  easeSpring: 'cubic-bezier(.34, 1.56, .64, 1)'
+  easeSpring: 'cubic-bezier(.34, 1.56, .64, 1)',
+  easeOut: 'cubic-bezier(.2, .8, .2, 1)' // kit 2.1 motion layer: entrances, bars, rings
 };
 const size = {
   header: '64px',
@@ -167,13 +183,15 @@ const size = {
   rail: '40px',
   topbar: '60px',
   // Plan 5 thin top bar (Shell 3)
-  pageMax: '1280px'
+  pageMax: '1600px' // P5-6: wide screens (owner works at 1920 px); page is centred
 };
 
 // Text/background pairs that must reach WCAG AA (doc 04 §10, checked by tokens.test.js).
 const contrastPairs = [['text', 'surface', 4.5], ['text2', 'surface', 4.5], ['text3', 'surface', 4.5], ['text3', 'bg', 4.5], ['action', 'surface', 4.5], ['action', 'actionTint', 4.5], ['okText', 'okBg', 4.5], ['soonText', 'soonBg', 4.5], ['lateText', 'lateBg', 4.5], ['doneText', 'doneBg', 4.5], ['infoTextStrong', 'infoBg', 4.5], ['goldText', 'goldTint', 4.5], ['goldText', 'surface', 4.5], ['surface', 'action', 4.5], ['borderInput', 'surface', 3], ['violetText', 'violetTint', 4.5], ['pinkText', 'pinkTint', 4.5], ['infoText', 'infoBg', 4.5],
 // Plan 4: ring fills are graphics next to their text value (WCAG 1.4.11 → 3:1 on white)
-['bannerText', 'banner', 4.5], ['bannerText', 'bannerUrgent', 4.5], ['ring1', 'surface', 3], ['ring3', 'surface', 3], ['ring4', 'surface', 3], ['ringLate', 'surface', 3]];
+['bannerText', 'banner', 4.5], ['bannerText', 'bannerUrgent', 4.5], ['ring1', 'surface', 3], ['ring3', 'surface', 3], ['ring4', 'surface', 3], ['ringLate', 'surface', 3],
+// kit 2.1 status colours (D-92)
+['stTodoText', 'stTodoTint', 4.5], ['stProgText', 'stProgTint', 4.5], ['stDoneText', 'stDoneTint', 4.5], ['stOverText', 'stOverTint', 4.5], ['stTodoText', 'surface', 4.5], ['stProgText', 'surface', 4.5], ['stDoneText', 'surface', 4.5], ['stOverText', 'surface', 4.5], ['stTodo', 'surface', 3], ['stProg', 'surface', 3], ['stDone', 'surface', 3], ['stOver', 'surface', 3]];
 module.exports = {
   palette,
   color,

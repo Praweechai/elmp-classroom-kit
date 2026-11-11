@@ -13,9 +13,16 @@ var _i18n = require("../i18n");
 var _Header = require("./Header");
 var _KitIcon = _interopRequireDefault(require("./KitIcon"));
 var _LinkContext = require("./LinkContext");
+var _useDisplaySettings = _interopRequireWildcard(require("../player/useDisplaySettings"));
 var _jsxRuntime = require("react/jsx-runtime");
+var cache;
+function _interopRequireWildcard(e, t) { if (!t && e && e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c && {}.hasOwnProperty.call(e, c) && ((r = a && Object.getOwnPropertyDescriptor(e, c)) && (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-// Plan 5 Shell 3 (S-100…S-105, D-73…D-77): NetAcad page arrangement, page links in the left sidebar,
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
+function _toPrimitive(t, e) { if ("object" != typeof t || !t) return t; var r; if ("undefined" != typeof Symbol && void 0 !== (r = t[Symbol.toPrimitive])) { var i = r.call(t, e || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === e ? String : Number)(t); } // Plan 5 Shell 3 (S-100…S-105, D-73…D-77): NetAcad page arrangement, page links in the left sidebar,
 // thin top bar (title, Explore, search with suggestions, EN/TH, help, profile), green HR banner (CA-14),
 // footer, phone bottom tabs. The Plan 4 ClassroomShell stays exported until the forks move (P5-4).
 const PAGES = [['home', _icons.Home, _i18n.messages.shell3MyLearning, _i18n.messages.shell3MyLearning], ['courses', _icons.MenuBook, _i18n.messages.shell3Courses, _i18n.messages.shell3Courses], ['grades', _icons.BarChart, _i18n.messages.shell3Grades, _i18n.messages.shell3Grades], ['progress', _icons.DonutLarge, _i18n.messages.shell3Progress, _i18n.messages.shell3Progress], ['certificates', _icons.WorkspacePremium, _i18n.messages.shell3Certificates, _i18n.messages.shell3CertsShort], ['hours', _icons.Schedule, _i18n.messages.navHours, _i18n.messages.navHoursShort] // only while CE hours are on (F-112)
@@ -499,7 +506,9 @@ const TopBar3 = ({
   onSearch,
   helpItems = [],
   unread = 0,
-  onOpenMessages
+  onOpenMessages,
+  dark,
+  onToggleDark
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
   const Link = (0, _LinkContext.useLinkComponent)();
@@ -540,7 +549,17 @@ const TopBar3 = ({
         dd: dd
       }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
         className: "cls3-topbar__right",
-        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(LanguageMenu, {
+        children: [onToggleDark && /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
+          type: "button",
+          className: "cls3-tb-btn",
+          "aria-pressed": Boolean(dark),
+          "aria-label": t(_i18n.messages.v2DarkOn),
+          onClick: onToggleDark,
+          children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
+            src: dark ? _icons.LightMode : _icons.DarkMode,
+            size: 20
+          })
+        }), /*#__PURE__*/(0, _jsxRuntime.jsx)(LanguageMenu, {
           dd: dd,
           locale: locale,
           onLocaleChange: onLocaleChange
@@ -577,7 +596,9 @@ TopBar3.propTypes = {
   onSearch: _propTypes.default.func,
   helpItems: _propTypes.default.arrayOf(itemShape),
   unread: _propTypes.default.number,
-  onOpenMessages: _propTypes.default.func
+  onOpenMessages: _propTypes.default.func,
+  dark: _propTypes.default.bool,
+  onToggleDark: _propTypes.default.func // kit 2.1: dark mode button (same `elmp.display` setting as the player)
 };
 const DISMISS_KEY = 'elmp.announcement.dismissed';
 const readDismissed = () => {
@@ -688,15 +709,27 @@ const ClassroomShell3 = ({
   unread,
   onOpenMessages,
   pageAs = 'main',
+  display,
   children
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
   const [state, toggle] = useSidebar3();
+  const {
+    settings,
+    update
+  } = (0, _useDisplaySettings.default)(display);
   const Page = pageAs === 'div' ? 'div' : 'main';
-  return /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
+  // Kit 2.1: pause looping alerts while the tab is hidden (battery; doc 10 motion rules).
+  (0, _react.useEffect)(() => {
+    const onVisible = () => document.documentElement.classList.toggle('cls-tab-hidden', document.hidden);
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, []);
+  return /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", _objectSpread(_objectSpread({
     className: "cls3-shell cls-root",
     "data-sidebar": state,
-    lang: (0, _i18n.kitLanguage)(locale),
+    lang: (0, _i18n.kitLanguage)(locale)
+  }, (0, _useDisplaySettings.displayAttributes)(settings)), {}, {
     children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(AnnouncementBanner, {
       announcement: announcement,
       locale: locale
@@ -723,7 +756,11 @@ const ClassroomShell3 = ({
           onSearch: onSearch,
           helpItems: helpItems,
           unread: unread,
-          onOpenMessages: onOpenMessages
+          onOpenMessages: onOpenMessages,
+          dark: settings.theme === 'dark',
+          onToggleDark: () => update({
+            theme: settings.theme === 'dark' ? 'light' : 'dark'
+          })
         }), /*#__PURE__*/(0, _jsxRuntime.jsx)(Page, {
           className: "cls3-shell__page",
           id: Page === 'main' ? 'main' : undefined,
@@ -750,7 +787,7 @@ const ClassroomShell3 = ({
       current: current,
       links: links
     })]
-  });
+  }));
 };
 exports.ClassroomShell3 = ClassroomShell3;
 ClassroomShell3.propTypes = {
@@ -770,5 +807,9 @@ ClassroomShell3.propTypes = {
   unread: _propTypes.default.number,
   onOpenMessages: _propTypes.default.func,
   pageAs: _propTypes.default.oneOf(['main', 'div']),
+  display: _propTypes.default.shape({
+    theme: _propTypes.default.oneOf(['light', 'dark'])
+  }),
+  // starting display settings (stories, tests)
   children: _propTypes.default.node
 };

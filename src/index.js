@@ -2,6 +2,7 @@ import './tokens/tokens.css';
 import './styles/classroom.css';
 import './styles/shell3.css';
 import './styles/player3.css';
+import './styles/learner21.css';
 
 export { default as tokens } from './tokens/tokens';
 export {
@@ -90,3 +91,13 @@ export {
   default as useDisplaySettings, DEFAULT_DISPLAY, DISPLAY_KEY, DISPLAY_MESSAGE, TEXT_SCALE, displayAttributes,
   displayMessage, isDefaultDisplay, postDisplay, sanitizeDisplay, useLessonDisplay,
 } from './player/useDisplaySettings';
+
+// Learner v2 · kit 2.1 (doc 10 V-1): status tones (D-92), motion layer, My Learning 2.1 parts, Grades rows,
+// Progress "Am I up to date?", shell dark mode.
+export {
+  DateDeadlines, GoalRing, LicenceCard, ResumeHero, STATUS_TONES, StatusTiles, TONE_LABEL, TodayCard, WeekColumns,
+  learningTimeShape, motionAllowed, statusTone, useCountUp, usePageEnter,
+} from './components/Learner21';
+export { pickResume } from './views/MyLearningView';
+export { gradeRows } from './views/GradesView';
+export { fallbackGroups } from './views/ProgressView';

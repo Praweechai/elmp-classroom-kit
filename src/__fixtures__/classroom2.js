@@ -158,6 +158,10 @@ export const grades = {
         title: t('Infection Control & Hand Hygiene', 'การควบคุมการติดเชื้อและสุขอนามัยของมือ'),
         grade_pct: 93,
         passed: null, // null = course not finished yet
+        // Learner v2 Grades rows (doc 10 §7, additive): dates per course, null when not yet
+        started_at: '2026-10-02T08:10:00+07:00',
+        due_at: '2026-10-29T23:59:59+07:00',
+        completed_at: null,
         parts: [
           part('b-inf-1', t('Video check 1', 'คำถามระหว่างวิดีโอ 1'), 'quiz', 1, 1),
           part('b-inf-2', t('5 moments quiz', 'แบบทดสอบ 5 จังหวะ'), 'quiz', 5, 5, { attempts: 2 }),
@@ -170,12 +174,79 @@ export const grades = {
         title: t('Hospital Regulations', 'ระเบียบโรงพยาบาล'),
         grade_pct: 87,
         passed: true,
+        started_at: '2026-10-20T13:00:00+07:00',
+        due_at: null,
+        completed_at: '2026-10-27T15:50:00+07:00',
         parts: [
           part('b-reg-1', t('Rules quiz', 'แบบทดสอบระเบียบ'), 'quiz', 4, 5),
           part('b-reg-2', t('Final quiz', 'แบบทดสอบท้ายบท'), 'exam', 9, 10, { submitted_at: '2026-10-27T15:50:00+07:00' }),
         ],
       },
     ],
+  },
+  meta: generated,
+};
+
+// Learner v2 (doc 10 §7, D-93) — CA-11 `GET /dashboard` gains `learning_time`, built from the Plan 4
+// CA-12 activity rows (no new endpoint). Day = ≥ 60 active seconds (Bangkok). A week counts for the
+// streak when it has ≥ days_needed learning days; the current week never breaks the streak before it ends.
+// `null` while the feature is off. Replaces CA-11 `streak` (daily) once the dashboard fork reads it (V-2).
+export const learningTime = {
+  today_minutes: 0,
+  goal_minutes: 15,
+  // Mon → Sun of this week; days after today = null
+  week_days: [
+    { date: '2026-11-09', minutes: 12 },
+    { date: '2026-11-10', minutes: 8 },
+    { date: '2026-11-11', minutes: 0 },
+    { date: '2026-11-12', minutes: null },
+    { date: '2026-11-13', minutes: null },
+    { date: '2026-11-14', minutes: null },
+    { date: '2026-11-15', minutes: null },
+  ],
+  week_streak: { current: 4, best: 6, days_needed: 3 },
+};
+
+// CA-17 GET /classroom/api/v1/compliance — "Am I up to date?" (D-94). Requirements set by HR:
+// group everyone | job (job role), course, renew every N months (null = once). Own data only (PDPA).
+// state: ok (valid) · soon (renew within 30 days or due within 14) · due · overdue · in_progress.
+// date: valid-until for ok/soon-after-completion, otherwise the due date.
+export const compliance = {
+  data: {
+    groups: [
+      {
+        key: 'everyone',
+        items: [
+          {
+            name: t('Infection Control & Hand Hygiene', 'การควบคุมการติดเชื้อและสุขอนามัยของมือ'), course_key: 'course-v1:MHB+INF101+2026', every_months: 12, state: 'overdue', date: '2026-10-29',
+          },
+          {
+            name: t('Patient Safety Basics', 'พื้นฐานความปลอดภัยของผู้ป่วย'), course_key: 'course-v1:MHB+PSB101+2026', every_months: 12, state: 'in_progress', date: '2026-11-20',
+          },
+          {
+            name: t('Hospital Regulations 2026', 'ระเบียบโรงพยาบาล 2026'), course_key: 'course-v1:MHB+REG101+2026', every_months: 12, state: 'due', date: '2026-11-11',
+          },
+          {
+            name: t('PDPA: Patient Data Basics', 'PDPA: พื้นฐานข้อมูลผู้ป่วย'), course_key: 'course-v1:MHB+PDP101+2026', every_months: 12, state: 'ok', date: '2027-09-14',
+          },
+        ],
+      },
+      {
+        key: 'job',
+        items: [
+          {
+            name: t('Basic Life Support Refresher', 'การช่วยชีวิตขั้นพื้นฐาน (ทบทวน)'), course_key: 'course-v1:MHB+BLS201+2026', every_months: 24, state: 'due', date: '2026-12-15',
+          },
+          {
+            name: t('ICU Sedation Safety', 'ความปลอดภัยการให้ยาระงับประสาทใน ICU'), course_key: 'course-v1:MHB+ICU210+2026', every_months: 12, state: 'soon', date: '2026-12-10',
+          },
+        ],
+      },
+    ],
+    // Nurse licence CNEU credits; null for staff without a licence
+    licence: {
+      name: t('Nursing licence (TNMC)', 'ใบอนุญาตประกอบวิชาชีพการพยาบาล (สภาการพยาบาล)'), have: 32, need: 50, renew_by: '2028-05-31',
+    },
   },
   meta: generated,
 };

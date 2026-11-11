@@ -1,0 +1,9 @@
+[
+  "CertificatePreview", "CertificatesView2", "ClassroomHeader", "ClassroomShell3", "CourseFinished", "CourseHero",
+  "CourseOutline", "CoursesView", "GradesView", "HoursView", "IdleDialog", "KitIcon", "LinkContext", "MyLearningView",
+  "NotificationPanel", "OutlinePanel", "OutlineRail", "PlayerTopBar3", "ProgressView", "ToastProvider", "UnitTitle",
+  "categoryLabel", "displayAttributes", "flattenOutline", "formatDate", "getClassroomIntl", "getPortalClient",
+  "localized", "messages", "useActivitySender", "useClassroomIntl", "useDisplaySettings", "useFullscreen",
+  "useIdleTimer", "useLessonDisplay", "usePortal", "useToast",
+  "PlayerLayout3", "TodayCard", "StatusTiles", "LicenceCard", "statusTone"
+]

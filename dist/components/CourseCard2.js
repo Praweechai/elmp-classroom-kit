@@ -9,21 +9,23 @@ var _i18n = require("../i18n");
 var _CourseCover = _interopRequireWildcard(require("./CourseCover"));
 var _LinkContext = require("./LinkContext");
 var _Progress = require("./Progress");
+var _Learner = require("./Learner21");
 var _jsxRuntime = require("react/jsx-runtime");
 var cache;
 function _interopRequireWildcard(e, t) { if (!t && e && e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c && {}.hasOwnProperty.call(e, c) && ((r = a && Object.getOwnPropertyDescriptor(e, c)) && (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 // Plan 5 course card (S-100/S-101, NetAcad arrangement): cover with code + Required chip, category + status chip,
 // title, meta (self-paced · units · hours · due), progress bar, last active + action. Grid or list layout.
+// Kit 2.1: one colour per status (D-92) on the chip and on the strip under the cover (strip length = progress).
 
 const CARD_STATUSES = exports.CARD_STATUSES = ['not_started', 'in_progress', 'almost', 'due_soon', 'overdue', 'completed'];
 const CHIP = {
-  overdue: ['late', _i18n.messages.statusOverdue],
-  due_soon: ['soon', _i18n.messages.statusDueSoon],
-  almost: ['gold', _i18n.messages.statusAlmost],
-  completed: ['done', _i18n.messages.statusCompleted],
-  not_started: ['plain', _i18n.messages.statusNotStarted],
-  in_progress: ['ok', _i18n.messages.statusInProgress]
+  overdue: _i18n.messages.statusOverdue,
+  due_soon: _i18n.messages.statusDueSoon,
+  almost: _i18n.messages.statusAlmost,
+  completed: _i18n.messages.statusCompleted,
+  not_started: _i18n.messages.v2StTodo,
+  in_progress: _i18n.messages.statusInProgress
 };
 const CATEGORY_LABEL = {
   clinical: _i18n.messages.catClinical,
@@ -36,9 +38,9 @@ const StatusChip = ({
   status
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
-  const [tone, label] = CHIP[status] || CHIP.in_progress;
+  const label = CHIP[status] || CHIP.in_progress;
   return /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
-    className: `cls3-chip cls3-chip--${tone}`,
+    className: `cls3-chip cls3-tone--${(0, _Learner.statusTone)(status)}`,
     children: intl.formatMessage(label)
   });
 };
@@ -94,7 +96,10 @@ const CourseCard2 = ({
   })].filter(Boolean).join(' · ');
   const pct = done ? 100 : Math.min(Math.round(progress), status === 'almost' ? 99 : 100);
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("article", {
-    className: `cls3-course cls3-course--${layout}`,
+    className: `cls3-course cls3-course--${layout} cls3-tone--${(0, _Learner.statusTone)(status)} cls3-lift cls3-rise`,
+    style: {
+      '--p': pct / 100
+    },
     children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
       className: "cls3-course__cover",
       children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_CourseCover.default, {
@@ -105,6 +110,9 @@ const CourseCard2 = ({
       }), required && /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
         className: "cls3-course__req",
         children: t(_i18n.messages.cardRequired)
+      }), /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
+        className: "cls3-strip-fill",
+        "aria-hidden": "true"
       })]
     }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
       className: "cls3-course__body",

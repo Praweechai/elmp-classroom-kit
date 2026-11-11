@@ -12,6 +12,7 @@ var _Feedback = require("../components/Feedback");
 var _KitIcon = _interopRequireDefault(require("../components/KitIcon"));
 var _LinkContext = require("../components/LinkContext");
 var _PageStrip = _interopRequireDefault(require("../components/PageStrip"));
+var _Learner = require("../components/Learner21");
 var _HomeView = require("./HomeView");
 var _jsxRuntime = require("react/jsx-runtime");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -181,15 +182,17 @@ const EarnedCard = ({
     onCopied?.(certificate);
   };
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("article", {
-    className: `cls3-certcard${revoked ? ' cls3-certcard--revoked' : ''}`,
+    className: `cls3-certcard cls3-lift cls3-rise cls3-tone--done${revoked ? ' cls3-certcard--revoked' : ''}`,
     id: certificate.code ? `cert-${certificate.code}` : undefined,
-    children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
+    children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
       className: "cls3-certcard__thumb",
       "aria-hidden": "true",
-      children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
+      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
         src: _icons.WorkspacePremium,
         size: 48
-      })
+      }), !revoked && /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
+        className: "cls3-certcard__shine"
+      })]
     }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
       className: "cls3-certcard__body",
       children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
@@ -287,7 +290,7 @@ const LockedCard = ({
   const t = (m, v) => intl.formatMessage(m, v);
   const title = (0, _i18n.localized)(course.title, intl.locale);
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("article", {
-    className: "cls3-certcard cls3-certcard--locked",
+    className: "cls3-certcard cls3-certcard--locked cls3-rise",
     children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
       className: "cls3-certcard__thumb",
       "aria-hidden": "true",
@@ -344,6 +347,7 @@ const CertificatesView2 = ({
   const [kind, setKind] = (0, _react.useState)(null);
   const [open, setOpen] = (0, _react.useState)(null);
   const close = (0, _react.useCallback)(() => setOpen(null), []); // stable, so the dialog keeps the element to refocus
+  const pageRef = (0, _Learner.usePageEnter)([status]);
   const code = status === 'error' ? error?.code || 'unavailable' : null;
   const strip = /*#__PURE__*/(0, _jsxRuntime.jsx)(_PageStrip.default, {
     id: "cls3-certs-strip",
@@ -371,6 +375,7 @@ const CertificatesView2 = ({
   const shown = kind ? items.filter(c => c.kind === kind) : items;
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
     className: "cls3-page",
+    ref: pageRef,
     children: [strip, code && _HomeView.NO_ACCESS.includes(code) && /*#__PURE__*/(0, _jsxRuntime.jsxs)("section", {
       className: "cls-panel cls-noaccess",
       role: "status",

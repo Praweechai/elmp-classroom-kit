@@ -13,6 +13,7 @@ import { EmptyState, Notice, Skeleton } from '../components/Feedback';
 import KitIcon from '../components/KitIcon';
 import { useLinkComponent } from '../components/LinkContext';
 import PageStrip from '../components/PageStrip';
+import { usePageEnter } from '../components/Learner21';
 import { NO_ACCESS } from './HomeView';
 
 // S-104 Certificates (F-135, NetAcad arrangement): page strip, 3-column cards. Earned = gold seal, date, code,
@@ -114,8 +115,14 @@ const EarnedCard = ({
   };
 
   return (
-    <article className={`cls3-certcard${revoked ? ' cls3-certcard--revoked' : ''}`} id={certificate.code ? `cert-${certificate.code}` : undefined}>
-      <div className="cls3-certcard__thumb" aria-hidden="true"><KitIcon src={WorkspacePremium} size={48} /></div>
+    <article
+      className={`cls3-certcard cls3-lift cls3-rise cls3-tone--done${revoked ? ' cls3-certcard--revoked' : ''}`}
+      id={certificate.code ? `cert-${certificate.code}` : undefined}
+    >
+      <div className="cls3-certcard__thumb" aria-hidden="true">
+        <KitIcon src={WorkspacePremium} size={48} />
+        {!revoked && <span className="cls3-certcard__shine" />}
+      </div>
       <div className="cls3-certcard__body">
         <p className="cls3-certcard__type">{t(roadmap ? messages.certificateRoadmap : messages.certificateCourse)}</p>
         <h2 className="cls3-certcard__title">{title}</h2>
@@ -195,7 +202,7 @@ const LockedCard = ({ course }) => {
   const t = (m, v) => intl.formatMessage(m, v);
   const title = localized(course.title, intl.locale);
   return (
-    <article className="cls3-certcard cls3-certcard--locked">
+    <article className="cls3-certcard cls3-certcard--locked cls3-rise">
       <div className="cls3-certcard__thumb" aria-hidden="true"><KitIcon src={Lock} size={44} /></div>
       <div className="cls3-certcard__body">
         <p className="cls3-certcard__type">{t(messages.certLockedLabel)}</p>
@@ -226,6 +233,7 @@ const CertificatesView2 = ({
   const [kind, setKind] = useState(null);
   const [open, setOpen] = useState(null);
   const close = useCallback(() => setOpen(null), []); // stable, so the dialog keeps the element to refocus
+  const pageRef = usePageEnter([status]);
   const code = status === 'error' ? (error?.code || 'unavailable') : null;
   const strip = (
     <PageStrip id="cls3-certs-strip" title={t(messages.shell3Certificates)}>{t(messages.pageCertsIntro)}</PageStrip>
@@ -247,7 +255,7 @@ const CertificatesView2 = ({
   const shown = kind ? items.filter((c) => c.kind === kind) : items;
 
   return (
-    <div className="cls3-page">
+    <div className="cls3-page" ref={pageRef}>
       {strip}
       {code && NO_ACCESS.includes(code) && (
         <section className="cls-panel cls-noaccess" role="status">

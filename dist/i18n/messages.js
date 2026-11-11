@@ -1334,6 +1334,231 @@ const messages = (0, _reactIntl.defineMessages)({
   pl3Pager: {
     id: 'cls.pl3.pager',
     defaultMessage: 'Units'
+  },
+  // Learner v2 · kit 2.1 (V-1): My Learning 2.1, Grades rows, Progress "Am I up to date?", shell dark mode
+  v2StTodo: {
+    id: 'cls.v2.st.todo',
+    defaultMessage: 'To do'
+  },
+  v2NeedsAttention: {
+    id: 'cls.v2.needsAttention',
+    defaultMessage: '{n, plural, one {# course needs your attention} other {# courses need your attention}}'
+  },
+  v2AllGood: {
+    id: 'cls.v2.allGood',
+    defaultMessage: 'You are up to date. Nice work!'
+  },
+  v2PickUp: {
+    id: 'cls.v2.pickUp',
+    defaultMessage: 'Pick up where you left off'
+  },
+  v2UpNext: {
+    id: 'cls.v2.upNext',
+    defaultMessage: 'Up next'
+  },
+  v2PctDone: {
+    id: 'cls.v2.pctDone',
+    defaultMessage: '{pct}% complete'
+  },
+  v2MinLeft: {
+    id: 'cls.v2.minLeft',
+    defaultMessage: 'About {n} min left'
+  },
+  v2Today: {
+    id: 'cls.v2.today',
+    defaultMessage: 'Today'
+  },
+  v2Goal: {
+    id: 'cls.v2.goal',
+    defaultMessage: 'Daily goal'
+  },
+  v2GoalUnit: {
+    id: 'cls.v2.goalUnit',
+    defaultMessage: '/ {goal} min'
+  },
+  v2GoalLeft: {
+    id: 'cls.v2.goalLeft',
+    defaultMessage: '{n, plural, one {# more minute to reach today’s goal} other {# more minutes to reach today’s goal}}'
+  },
+  v2GoalDone: {
+    id: 'cls.v2.goalDone',
+    defaultMessage: 'Goal reached — well done!'
+  },
+  v2GoalAria: {
+    id: 'cls.v2.goalAria',
+    defaultMessage: 'Today: {n} of {goal} minutes'
+  },
+  v2WeekStreak: {
+    id: 'cls.v2.weekStreak',
+    defaultMessage: '{n, plural, one {# week streak} other {# week streak}}'
+  },
+  v2ThisWeek: {
+    id: 'cls.v2.thisWeek',
+    defaultMessage: 'This week'
+  },
+  v2StreakHint: {
+    id: 'cls.v2.streakHint',
+    defaultMessage: 'Learn on any {n} days a week to keep it — made for shift work.'
+  },
+  v2DayAria: {
+    id: 'cls.v2.dayAria',
+    defaultMessage: '{day}: {n} min'
+  },
+  v2MyCourses: {
+    id: 'cls.v2.myCourses',
+    defaultMessage: 'My courses'
+  },
+  v2Tiles: {
+    id: 'cls.v2.tiles',
+    defaultMessage: 'Courses by status'
+  },
+  v2ShowAll: {
+    id: 'cls.v2.showAll',
+    defaultMessage: 'Show all'
+  },
+  v2Licence: {
+    id: 'cls.v2.licence',
+    defaultMessage: 'My licence'
+  },
+  v2Credits: {
+    id: 'cls.v2.credits',
+    defaultMessage: 'CNEU credits'
+  },
+  v2LicenceLine: {
+    id: 'cls.v2.licenceLine',
+    defaultMessage: 'Renew by {date} · {n} more needed'
+  },
+  v2LicenceAria: {
+    id: 'cls.v2.licenceAria',
+    defaultMessage: '{have} of {need} CNEU credits'
+  },
+  v2CompletedOn: {
+    id: 'cls.v2.completedOn',
+    defaultMessage: 'Completed {date}'
+  },
+  v2Optional: {
+    id: 'cls.v2.optional',
+    defaultMessage: 'Optional'
+  },
+  v2GradesSub: {
+    id: 'cls.v2.gradesSub',
+    defaultMessage: 'Every course you were given, with dates and your best final-quiz score.'
+  },
+  v2Started: {
+    id: 'cls.v2.started',
+    defaultMessage: 'Started'
+  },
+  v2Due: {
+    id: 'cls.v2.due',
+    defaultMessage: 'Due'
+  },
+  v2Completed: {
+    id: 'cls.v2.completed',
+    defaultMessage: 'Completed'
+  },
+  v2BestScore: {
+    id: 'cls.v2.bestScore',
+    defaultMessage: 'Best score'
+  },
+  v2PassMark: {
+    id: 'cls.v2.passMark',
+    defaultMessage: '/ {pct}% to pass'
+  },
+  v2Search: {
+    id: 'cls.v2.search',
+    defaultMessage: 'Search courses'
+  },
+  v2Status: {
+    id: 'cls.v2.status',
+    defaultMessage: 'Status'
+  },
+  v2Details: {
+    id: 'cls.v2.details',
+    defaultMessage: 'Details'
+  },
+  v2HideDetails: {
+    id: 'cls.v2.hideDetails',
+    defaultMessage: 'Hide details'
+  },
+  v2UpToDate: {
+    id: 'cls.v2.upToDate',
+    defaultMessage: 'Am I up to date?'
+  },
+  v2ProgSub: {
+    id: 'cls.v2.progSub',
+    defaultMessage: 'What the hospital and your licence require, and when.'
+  },
+  v2ActionN: {
+    id: 'cls.v2.actionN',
+    defaultMessage: '{n, plural, one {# item needs action} other {# items need action}}'
+  },
+  v2ActionHint: {
+    id: 'cls.v2.actionHint',
+    defaultMessage: 'Start with the red ones — they are past their date.'
+  },
+  v2GroupEveryone: {
+    id: 'cls.v2.groupEveryone',
+    defaultMessage: 'Everyone'
+  },
+  v2GroupJob: {
+    id: 'cls.v2.groupJob',
+    defaultMessage: 'For my job'
+  },
+  v2GroupRequired: {
+    id: 'cls.v2.groupRequired',
+    defaultMessage: 'Required training'
+  },
+  v2GroupCount: {
+    id: 'cls.v2.groupCount',
+    defaultMessage: '{ok} / {n} up to date'
+  },
+  v2Every: {
+    id: 'cls.v2.every',
+    defaultMessage: '{n, plural, =12 {Every year} =24 {Every 2 years} =36 {Every 3 years} other {Every # months}}'
+  },
+  v2Once: {
+    id: 'cls.v2.once',
+    defaultMessage: 'Once'
+  },
+  v2ValidUntil: {
+    id: 'cls.v2.validUntil',
+    defaultMessage: 'Valid until {date}'
+  },
+  v2RenewBy: {
+    id: 'cls.v2.renewBy',
+    defaultMessage: 'Renew by {date}'
+  },
+  v2Renew: {
+    id: 'cls.v2.renew',
+    defaultMessage: 'Renew'
+  },
+  v2Minutes: {
+    id: 'cls.v2.minutes',
+    defaultMessage: '{n, plural, one {# minute} other {# minutes}}'
+  },
+  v2StateOk: {
+    id: 'cls.v2.state.ok',
+    defaultMessage: 'Up to date'
+  },
+  v2StateSoon: {
+    id: 'cls.v2.state.soon',
+    defaultMessage: 'Renew soon'
+  },
+  v2StateDue: {
+    id: 'cls.v2.state.due',
+    defaultMessage: 'Due'
+  },
+  v2StateOverdue: {
+    id: 'cls.v2.state.overdue',
+    defaultMessage: 'Overdue'
+  },
+  v2StateInProgress: {
+    id: 'cls.v2.state.inProgress',
+    defaultMessage: 'In progress'
+  },
+  v2DarkOn: {
+    id: 'cls.v2.darkOn',
+    defaultMessage: 'Dark mode'
   }
 });
 var _default = exports.default = messages;

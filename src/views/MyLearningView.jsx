@@ -1,37 +1,39 @@
 import { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  AccessTime, Bedtime, Bolt, CheckCircle, GridView, Lock, Quiz, Shield, Star, ViewList,
+  Bedtime, Bolt, CheckCircle, Close, GridView, Lock, Star, ViewList, Warning,
 } from '@openedx/paragon/icons';
 
 import {
-  formatDate, formatHours, localized, messages, useClassroomIntl,
+  formatDate, greetingKey, localized, messages, useClassroomIntl,
 } from '../i18n';
-import CourseCard2, { categoryLabel } from '../components/CourseCard2';
+import CourseCard2 from '../components/CourseCard2';
 import {
-  DashCard, DeadlineList, NextQuizList, StatRing, StreakWeek, pctOf,
+  DashCard, NextQuizList, StreakWeek, pctOf,
 } from '../components/Dashboard';
 import { Notice, Skeleton } from '../components/Feedback';
 import KitIcon from '../components/KitIcon';
+import {
+  DateDeadlines, LicenceCard, ResumeHero, STATUS_TONES, StatusTiles, TONE_LABEL, TodayCard, learningTimeShape,
+  statusTone, usePageEnter,
+} from '../components/Learner21';
 import { useLinkComponent } from '../components/LinkContext';
 
-// S-100 My Learning (Plan 5, D-73/D-78): NetAcad arrangement — welcome strip, stat rings (old dashboard),
-// "In progress" cards with sort / grid-list / category filter; right column = deadlines, latest achievements,
-// next quizzes, streak. Pure view: the dashboard fork passes CA-11 (`dashboard`), and in Part 2 CA-15
-// (`catalogue`, adds covers/hours/last active) and CA-13 (`achievements`). Missing Part 2 data = hidden.
+// S-100 My Learning 2.1 (Learner v2, doc 10 V-1.02, D-86/D-92/D-93): greeting + overdue alert, "Pick up where
+// you left off" hero, Today card (daily goal + week streak, CA-11 `learning_time`), 4 status tiles that filter the
+// cards (To do / In progress / Completed / Overdue), course cards (sort, grid/list), side column: deadlines,
+// licence (CA-17), achievements (CA-13), next quizzes. Pure view: the dashboard fork passes the data.
+// Missing data = that part hidden (Part 1 has no `learning_time` / compliance yet → the old streak card shows).
 
-const HOURS_RING_SCALE = 10;
-const IN_PROGRESS = ['in_progress', 'almost', 'overdue', 'due_soon'];
 const SORTS = {
-  recent: messages.mlSortRecent,
   due: messages.mlSortDue,
+  recent: messages.mlSortRecent,
   progress: messages.mlSortProgress,
   title: messages.mlSortTitle,
 };
 const BADGE = {
   first_steps: Star, quiz_streak: Bolt, course_complete: CheckCircle, night_owl: Bedtime,
 };
-const pair = (v) => (Array.isArray(v) ? v : [0, 0]);
 
 // CA-11 course (+ CA-11 deadline, + CA-15 entry when Part 2 is on) → CourseCard2 props.
 export const toCard = (course, { deadline, entry, locale }) => {
@@ -54,6 +56,8 @@ export const toCard = (course, { deadline, entry, locale }) => {
     lastActivityAt: entry?.last_activity_at || course.last_activity_at || undefined,
     href: course.href,
     resumeHref: course.resume_href,
+    daysLeft: deadline?.days_left,
+    nextTitle: localized(course.next_title, locale) || undefined,
   };
 };
 
@@ -62,6 +66,15 @@ const sorters = {
   due: (a, b) => (a.dueAt || '9999').localeCompare(b.dueAt || '9999'),
   progress: (a, b) => b.progress - a.progress,
   title: (a, b) => a.title.localeCompare(b.title),
+};
+
+// The course to continue now: overdue first (most late), then in progress (most recent), then to do (soonest due).
+export const pickResume = (cards) => {
+  const by = (tone) => cards.filter((c) => statusTone(c.status) === tone);
+  return by('overdue').sort(sorters.due)[0]
+    || by('progress').sort(sorters.recent)[0]
+    || by('todo').sort(sorters.due)[0]
+    || null;
 };
 
 export const AchievementList = ({ items, limit = 3, allHref }) => {
@@ -107,12 +120,14 @@ AchievementList.propTypes = {
 };
 
 export const MyLearningSkeleton = () => (
-  <div className="cls3-ml" aria-busy="true">
-    <Skeleton width="50%" height={30} />
-    <div className="cls3-stats">
-      {[0, 1, 2, 3].map((i) => <Skeleton key={i} height={88} radius={16} />)}
+  <div className="cls3-v2" aria-busy="true">
+    <Skeleton width="40%" height={34} />
+    <div className="cls3-top2">
+      <Skeleton height={236} radius={24} />
+      <Skeleton height={236} radius={16} />
     </div>
-    <div className="cls3-two">
+    <div className="cls3-tiles">{[0, 1, 2, 3].map((i) => <Skeleton key={i} height={84} radius={16} />)}</div>
+    <div className="cls3-home2">
       <div className="cls3-cards cls3-cards--grid">{[0, 1].map((i) => <Skeleton key={i} height={320} radius={16} />)}</div>
       <Skeleton height={420} radius={16} />
     </div>
@@ -120,14 +135,16 @@ export const MyLearningSkeleton = () => (
 );
 
 const MyLearningView = ({
-  dashboard, catalogue, achievements, status = 'ready', firstName, now, features = {}, onRetry, achievementsHref,
+  dashboard, catalogue, achievements, compliance, status = 'ready', firstName, now, features = {}, onRetry,
+  achievementsHref,
 }) => {
   const intl = useClassroomIntl();
   const t = (m, v) => intl.formatMessage(m, v);
-  const [sort, setSort] = useState('recent');
+  const [sort, setSort] = useState('due');
   const [layout, setLayout] = useState('grid');
   const [filter, setFilter] = useState('all');
   const d = dashboard || {};
+  const pageRef = usePageEnter([status]);
 
   const cards = useMemo(() => {
     const deadlines = d.deadlines || [];
@@ -142,60 +159,62 @@ const MyLearningView = ({
   if (status === 'loading') { return <MyLearningSkeleton />; }
   const down = status === 'error';
 
-  const active = cards.filter((c) => IN_PROGRESS.includes(c.status));
-  const catOf = (c) => (typeof c.category === 'object' ? c.category?.key : c.category) || 'general';
-  const categories = [...new Map(active.map((c) => [catOf(c), categoryLabel(c.category, intl)])).entries()];
-  const shown = active.filter((c) => filter === 'all' || catOf(c) === filter).sort(sorters[sort]);
-
-  const rings = d.rings || {};
-  const [reqDone, reqTotal] = pair(rings.required_done);
-  const [quizDone, quizTotal] = pair(rings.quizzes_passed);
-  const hours = rings.hours_learned;
-  const dash = down ? '—' : null;
+  const countOf = (tone) => cards.filter((c) => statusTone(c.status) === tone).length;
+  const counts = Object.fromEntries(STATUS_TONES.map((tone) => [tone, countOf(tone)]));
+  const shown = cards.filter((c) => filter === 'all' || statusTone(c.status) === filter).sort(sorters[sort]);
+  const hero = pickResume(cards);
+  const heroLeft = hero?.hours ? Math.max(1, Math.round(hero.hours * 60 * (1 - hero.progress / 100))) : undefined;
+  const showToday = !down && features.streak !== false && d.learning_time;
+  const oldStreak = !down && features.streak !== false && !d.learning_time && d.streak;
+  const licence = compliance?.licence;
+  const listTitle = t(filter === 'all' ? messages.v2MyCourses : TONE_LABEL[filter]);
 
   return (
-    <div className="cls3-ml">
-      <section className="cls3-hero" aria-label={t(messages.shell3MyLearning)}>
-        <p>{firstName ? t(messages.mlWelcome, { name: firstName, n: active.length }) : null}</p>
+    <div className="cls3-v2" ref={pageRef}>
+      <section className="cls3-hello" aria-label={t(messages.shell3MyLearning)}>
+        {firstName && <h2>{t(messages[greetingKey(now || new Date())], { name: firstName })}</h2>}
+        {!down && (
+          <p>
+            {counts.overdue > 0 ? (
+              <span className="cls3-hello__alert">
+                <KitIcon src={Warning} size={18} />
+                {t(messages.v2NeedsAttention, { n: counts.overdue })}
+              </span>
+            ) : t(messages.v2AllGood)}
+          </p>
+        )}
       </section>
       {down && <Notice onRetry={onRetry}>{t(messages.notAvailable)}</Notice>}
 
-      <ul className="cls3-stats">
-        <StatRing
-          icon={Shield}
-          tone={d.gauge?.label === 'needs_attention' ? 'late' : 'green'}
-          label={t(messages.statRequiredDone)}
-          value={dash || `${reqDone}/${reqTotal}`}
-          pct={pctOf(reqDone, reqTotal)}
-        />
-        <StatRing
-          icon={Quiz}
-          tone="violet"
-          label={t(messages.statQuizzes)}
-          value={dash || `${quizDone}/${quizTotal}`}
-          pct={pctOf(quizDone, quizTotal)}
-        />
-        <StatRing
-          icon={CheckCircle}
-          tone="blue"
-          label={t(messages.statCompleted)}
-          value={dash || `${rings.completed ?? 0}/${rings.enrolled ?? 0}`}
-          pct={pctOf(rings.completed, rings.enrolled)}
-        />
-        <StatRing
-          icon={AccessTime}
-          tone="pink"
-          label={t(messages.statHoursLearned)}
-          value={dash || (hours == null ? '—' : t(messages.hoursShort, { hours: formatHours(hours, intl.locale) }))}
-          pct={hours ? Math.min(100, (hours / HOURS_RING_SCALE) * 100) : 0}
-        />
-      </ul>
+      {(hero || showToday) && (
+        <div className={`cls3-top2${hero && showToday ? '' : ' cls3-top2--solo'}`}>
+          {hero && (
+            <ResumeHero
+              title={hero.title}
+              href={hero.resumeHref || hero.href}
+              progress={statusTone(hero.status) === 'done' ? 100 : Math.round(hero.progress)}
+              tone={statusTone(hero.status)}
+              nextTitle={hero.nextTitle}
+              minutesLeft={heroLeft}
+              daysLate={hero.daysLeft < 0 ? -hero.daysLeft : 0}
+            />
+          )}
+          {showToday && <TodayCard learningTime={d.learning_time} now={now} className="cls3-rise" />}
+        </div>
+      )}
 
-      <div className="cls3-two">
-        <section className="cls3-main" aria-labelledby="cls3-inprog">
-          <div className="cls3-head">
-            <h2 id="cls3-inprog">{t(messages.mlInProgress)}</h2>
-            <div className="cls3-controls">
+      {!down && <StatusTiles counts={counts} value={filter} onChange={setFilter} />}
+
+      <div className="cls3-home2">
+        <section aria-labelledby="cls3-mycourses">
+          <div className="cls3-head2">
+            <h2 id="cls3-mycourses">{listTitle}<small>{shown.length}</small></h2>
+            <div>
+              {filter !== 'all' && (
+                <button type="button" className="cls-btn cls-btn--sm cls-btn--secondary" onClick={() => setFilter('all')}>
+                  <KitIcon src={Close} size={16} />{t(messages.v2ShowAll)}
+                </button>
+              )}
               <label className="cls3-select" htmlFor="cls3-sort">
                 <span className="cls-sr">{t(messages.mlSort)}</span>
                 <select id="cls3-sort" value={sort} onChange={(e) => setSort(e.target.value)}>
@@ -211,15 +230,6 @@ const MyLearningView = ({
               </div>
             </div>
           </div>
-          {categories.length > 1 && (
-            <div className="cls3-pills" role="group" aria-label={t(messages.mlFilters)}>
-              {[['all', t(messages.mlAll)], ...categories].map(([k, label]) => (
-                <button key={k} type="button" className="cls3-pill" aria-pressed={filter === k} onClick={() => setFilter(k)}>
-                  {label}
-                </button>
-              ))}
-            </div>
-          )}
           {!down && shown.length === 0 && <p className="cls3-empty">{t(messages.mlEmpty)}</p>}
           {shown.length > 0 && (
             <div className={`cls3-cards cls3-cards--${layout}`}>
@@ -228,21 +238,25 @@ const MyLearningView = ({
           )}
         </section>
 
-        <aside className="cls3-side-col">
-          <DashCard title={t(messages.dashDeadlines)} titleId="cls3-dl">
-            {down ? <p className="cls-dempty">{t(messages.notAvailable)}</p> : <DeadlineList items={d.deadlines} />}
-          </DashCard>
+        <aside>
+          <section className="cls3-card2 cls3-side2 cls3-rise" aria-labelledby="cls3-dl">
+            <h2 id="cls3-dl" className="cls3-card2__title">{t(messages.dashDeadlines)}</h2>
+            {down ? <p className="cls-dempty">{t(messages.notAvailable)}</p> : <DateDeadlines items={d.deadlines} />}
+          </section>
+          {!down && <LicenceCard licence={licence} />}
+          {oldStreak && (
+            <DashCard title={t(messages.dashStreak)} titleId="cls3-streak">
+              <StreakWeek days={d.streak.days} current={d.streak.current} best={d.streak.best} today={now} />
+            </DashCard>
+          )}
           {achievements && achievements.length > 0 && (
             <DashCard title={t(messages.mlAchievements)} titleId="cls3-ach">
               <AchievementList items={achievements} allHref={achievementsHref} />
             </DashCard>
           )}
-          <DashCard title={t(messages.dashQuizzes)} titleId="cls3-quiz">
-            {down ? <p className="cls-dempty">{t(messages.notAvailable)}</p> : <NextQuizList items={d.next_quizzes} />}
-          </DashCard>
-          {features.streak !== false && !down && d.streak && (
-            <DashCard title={t(messages.dashStreak)} titleId="cls3-streak">
-              <StreakWeek days={d.streak.days} current={d.streak.current} best={d.streak.best} today={now} />
+          {!down && d.next_quizzes && d.next_quizzes.length > 0 && (
+            <DashCard title={t(messages.dashQuizzes)} titleId="cls3-quiz">
+              <NextQuizList items={d.next_quizzes} />
             </DashCard>
           )}
         </aside>
@@ -253,17 +267,17 @@ const MyLearningView = ({
 
 MyLearningView.propTypes = {
   dashboard: PropTypes.shape({
-    gauge: PropTypes.shape({ label: PropTypes.string }),
-    rings: PropTypes.shape({}),
     deadlines: PropTypes.arrayOf(PropTypes.shape({})),
     streak: PropTypes.shape({
       days: PropTypes.arrayOf(PropTypes.bool), current: PropTypes.number, best: PropTypes.number,
     }),
+    learning_time: learningTimeShape, // CA-11 (D-93); null while switched off
     courses: PropTypes.arrayOf(PropTypes.shape({})),
     next_quizzes: PropTypes.arrayOf(PropTypes.shape({})),
   }),
   catalogue: PropTypes.arrayOf(PropTypes.shape({ course_key: PropTypes.string })), // CA-15 data (Part 2)
   achievements: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string })), // CA-13 data (Part 2)
+  compliance: PropTypes.shape({ licence: LicenceCard.propTypes.licence }), // CA-17 data (D-94)
   status: PropTypes.oneOf(['loading', 'ready', 'error']),
   firstName: PropTypes.string,
   now: PropTypes.instanceOf(Date),

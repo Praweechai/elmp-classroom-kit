@@ -1,6 +1,6 @@
 {
   "name": "@elmp/classroom-kit",
-  "version": "2.0.0-rc.1",
+  "version": "2.1.0-rc.0",
   "description": "ELMP Classroom kit: tokens, components, Portal client and EN/TH messages for the Mission Hospital Learning Classroom (Open edX Verawood MFE forks).",
   "license": "AGPL-3.0",
   "repository": "github:Praweechai/elmp-classroom-kit",
@@ -43,6 +43,7 @@
     "@testing-library/user-event": "^14.5.2",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "esbuild": "0.25.12",
     "http-server": "^14.1.1",
     "jest-axe": "^9.0.0",
     "prop-types": "^15.8.1",

@@ -1,7 +1,7 @@
-// Guards the CA-13…CA-16 fixture shapes (Portal doc plan-5/02-technical.md §5).
+// Guards the CA-13…CA-17 + CA-11 learning_time fixture shapes (Portal doc plan-5/02-technical.md §5, doc 10 §7).
 // If a contract changes, change the doc, the fixture and this test together.
 import {
-  achievements, announcement, noAnnouncement, catalogue, grades,
+  achievements, announcement, noAnnouncement, catalogue, grades, learningTime, compliance,
 } from './classroom2';
 
 const isText = (v) => v && typeof v.en === 'string' && typeof v.th === 'string';
@@ -59,6 +59,39 @@ describe('Plan 5 contracts', () => {
         expect(p.max).toBeGreaterThan(0);
         if (p.score === null) { expect(p.passed).toBeNull(); }
       });
+      ['started_at', 'due_at', 'completed_at'].forEach((k) => {
+        expect(c[k] === null || isDate(c[k])).toBe(true);
+      });
     });
+  });
+
+  test('CA-11 learning_time: today, goal, Mon–Sun week, week streak (D-93)', () => {
+    const lt = learningTime;
+    expect(lt.goal_minutes).toBe(15);
+    expect(lt.today_minutes).toBeGreaterThanOrEqual(0);
+    expect(lt.week_days).toHaveLength(7);
+    expect(new Date(`${lt.week_days[0].date}T12:00:00+07:00`).getUTCDay()).toBe(1); // Monday
+    lt.week_days.forEach((d) => {
+      expect(isDate(d.date)).toBe(true);
+      expect(d.minutes === null || d.minutes >= 0).toBe(true);
+    });
+    expect(lt.week_streak.days_needed).toBe(3);
+    expect(lt.week_streak.best).toBeGreaterThanOrEqual(lt.week_streak.current);
+  });
+
+  test('CA-17 compliance: groups everyone/job with states, licence or null (D-94)', () => {
+    const states = ['ok', 'soon', 'due', 'overdue', 'in_progress'];
+    expect(compliance.data.groups.map((g) => g.key)).toEqual(['everyone', 'job']);
+    compliance.data.groups.forEach((g) => g.items.forEach((i) => {
+      expect(isText(i.name)).toBe(true);
+      expect(i.course_key).toMatch(/^course-v1:/);
+      expect(i.every_months === null || i.every_months > 0).toBe(true);
+      expect(states).toContain(i.state);
+      expect(isDate(i.date)).toBe(true);
+    }));
+    const lic = compliance.data.licence;
+    expect(isText(lic.name)).toBe(true);
+    expect(lic.need).toBeGreaterThan(0);
+    expect(isDate(lic.renew_by)).toBe(true);
   });
 });

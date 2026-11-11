@@ -75,14 +75,21 @@ const displayAttributes = s => ({
     '--cls3-text-scale': s.textScale / 100
   }
 });
+
+// `initial` (stories, tests) starts from fixed settings and keeps them in memory only, so a demo never changes
+// the learner's saved choice.
 exports.displayAttributes = displayAttributes;
 function useDisplaySettings(initial) {
   const [settings, setSettings] = (0, _react.useState)(() => initial ? sanitizeDisplay(initial) : read());
+  const persist = !initial;
   (0, _react.useEffect)(() => {
+    if (!persist) {
+      return;
+    }
     try {
       window.localStorage.setItem(DISPLAY_KEY, JSON.stringify(settings));
     } catch (e) {/* private mode */}
-  }, [settings]);
+  }, [settings, persist]);
   const update = (0, _react.useCallback)(patch => setSettings(s => sanitizeDisplay(_objectSpread(_objectSpread({}, s), patch))), []);
   const reset = (0, _react.useCallback)(() => setSettings(_objectSpread({}, DEFAULT_DISPLAY)), []);
   return {

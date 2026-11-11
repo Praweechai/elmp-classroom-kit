@@ -1,167 +1,187 @@
+import { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import { HourglassEmpty, Grading, TrendingUp } from '@openedx/paragon/icons';
+import { Search } from '@openedx/paragon/icons';
 
-import { localized, messages, useClassroomIntl } from '../i18n';
-import { StatRing, pctOf } from '../components/Dashboard';
+import {
+  formatDate, localized, messages, useClassroomIntl,
+} from '../i18n';
+import { pctOf } from '../components/Dashboard';
+import CourseCover, { CATEGORIES } from '../components/CourseCover';
+import { StatusChip } from '../components/CourseCard2';
 import { Notice, Skeleton } from '../components/Feedback';
+import KitIcon from '../components/KitIcon';
+import {
+  STATUS_TONES, TONE_LABEL, statusTone, usePageEnter,
+} from '../components/Learner21';
 import { useLinkComponent } from '../components/LinkContext';
 import PageStrip from '../components/PageStrip';
 
-// S-102 Grades (F-133): page strip, three stat cards (average, graded items, pending), then tables.
-// Part 2 (CA-16 `grades`): one table card per course with every graded part (NetAcad arrangement).
-// Part 1 (CA-11 only): one table of courses — grade, pass mark, status — and a "See details" link to the
-// course's own progress page (the per-part scores live there until CA-16).
+// S-102 Grades 2.1 (Learner v2, doc 10 V-1.03): NetAcad "learning history" rows — one row per course with
+// started / due / completed / best score / status, search, status filter and sort. CA-16 (`grades`) gives the
+// dates, best score and the graded parts ("Details" opens them); without CA-16 the rows come from CA-11 only
+// (score + status + due date; dates the Portal does not know show "—").
 
 const KIND = { quiz: messages.grKindQuiz, activity: messages.grKindActivity, exam: messages.grKindExam };
-const avg = (list) => (list.length ? Math.round(list.reduce((s, v) => s + v, 0) / list.length) : null);
+const SORTS = { recent: messages.mlSortRecent, due: messages.mlSortDue, name: messages.mlSortTitle };
 const pct = (score, max) => Math.round((score / max) * 100);
 
-const ResultChip = ({ ok, children }) => (
-  <span className={`cls3-chip cls3-chip--${ok ? 'done' : 'late'}`}>{children}</span>
-);
-ResultChip.propTypes = { ok: PropTypes.bool, children: PropTypes.node };
-
-// Course status in words: Passed / Almost done / In progress / Not yet.
-const CourseResult = ({ passed, status }) => {
-  const intl = useClassroomIntl();
-  if (passed === true || status === 'completed' || status === 'passed') {
-    return <span className="cls3-chip cls3-chip--done">{intl.formatMessage(messages.statusPassed)}</span>;
-  }
-  if (status === 'almost') {
-    return <span className="cls3-chip cls3-chip--gold">{intl.formatMessage(messages.statusAlmost)}</span>;
-  }
-  if (passed === null) {
-    return <span className="cls3-chip cls3-chip--ok">{intl.formatMessage(messages.statusInProgress)}</span>;
-  }
-  return <span className="cls3-chip cls3-chip--plain">{intl.formatMessage(messages.grNotYet)}</span>;
+// CA-11 courses + CA-11 deadlines + CA-16 rows → one list (CA-16-only courses are kept too).
+export const gradeRows = ({ dashboard, grades, locale }) => {
+  const d = dashboard || {};
+  const byKey = Object.fromEntries((grades?.courses || []).map((g) => [g.course_key, g]));
+  const due = Object.fromEntries((d.deadlines || []).map((x) => [x.course_key, x.due_at]));
+  const rows = (d.courses || []).map((c) => {
+    const g = byKey[c.course_key] || {};
+    delete byKey[c.course_key];
+    return {
+      key: c.course_key,
+      code: c.code,
+      title: localized(g.title || c.title, locale),
+      category: c.category,
+      required: Boolean(c.required),
+      status: c.status === 'passed' ? 'completed' : (c.status || 'not_started'),
+      progress: c.status === 'completed' ? 100 : pctOf(c.units_done, c.units_total),
+      href: c.resume_href || c.href,
+      score: g.grade_pct ?? c.score_pct ?? null,
+      startedAt: g.started_at || null,
+      dueAt: g.due_at || due[c.course_key] || null,
+      completedAt: g.completed_at || null,
+      lastActivityAt: c.last_activity_at || null,
+      parts: g.parts || [],
+    };
+  });
+  Object.values(byKey).forEach((g) => rows.push({
+    key: g.course_key,
+    code: g.code,
+    title: localized(g.title, locale),
+    required: false,
+    status: (g.passed && 'completed') || (g.started_at ? 'in_progress' : 'not_started'),
+    progress: g.passed ? 100 : 0,
+    score: g.grade_pct ?? null,
+    startedAt: g.started_at || null,
+    dueAt: g.due_at || null,
+    completedAt: g.completed_at || null,
+    parts: g.parts || [],
+  }));
+  return rows;
 };
-CourseResult.propTypes = { passed: PropTypes.bool, status: PropTypes.string };
 
-const StatCards = ({ average, graded, pending }) => {
+const sorters = {
+  recent: (a, b) => (b.completedAt || b.startedAt || b.lastActivityAt || '').localeCompare(a.completedAt || a.startedAt || a.lastActivityAt || ''),
+  due: (a, b) => (a.dueAt || '9999').localeCompare(b.dueAt || '9999'),
+  name: (a, b) => a.title.localeCompare(b.title),
+};
+
+const PartsTable = ({ row, passMark }) => {
   const intl = useClassroomIntl();
   const t = (m, v) => intl.formatMessage(m, v);
-  const total = graded + pending;
   return (
-    <ul className="cls3-stats cls3-stats--3">
-      <StatRing icon={TrendingUp} tone="green" label={t(messages.grAverage)} value={average == null ? '—' : `${average}%`} pct={average || 0} />
-      <StatRing icon={Grading} tone="violet" label={t(messages.grGraded)} value={String(graded)} pct={pctOf(graded, total)} />
-      <StatRing icon={HourglassEmpty} tone="gold" label={t(messages.grPending)} value={String(pending)} pct={pctOf(pending, total)} />
-    </ul>
+    <div className="cls3-table-wrap">
+      <table className="cls3-table">
+        <caption className="cls-sr">{row.title}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{t(messages.grColAssessment)}</th>
+            <th scope="col">{t(messages.grColType)}</th>
+            <th scope="col">{t(messages.colScore)}</th>
+            <th scope="col">{t(messages.grColAttempts)}</th>
+            <th scope="col">{t(messages.grColPercent)}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {row.parts.map((p) => {
+            const graded = p.score != null;
+            const percent = graded ? pct(p.score, p.max) : null;
+            const ok = p.passed ?? percent >= passMark;
+            return (
+              <tr key={p.block_id}>
+                <th scope="row">{localized(p.name, intl.locale)}</th>
+                <td>{KIND[p.kind] ? t(KIND[p.kind]) : p.kind}</td>
+                <td className="cls-num">{graded ? `${p.score} / ${p.max}` : t(messages.grPending)}</td>
+                <td className="cls-num">{p.attempts ?? 0}</td>
+                <td>{graded ? <span className={`cls3-chip cls3-tone--${ok ? 'done' : 'overdue'}`}>{`${percent}%`}</span> : '—'}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 };
-StatCards.propTypes = {
-  average: PropTypes.number, graded: PropTypes.number.isRequired, pending: PropTypes.number.isRequired,
-};
-
-const CourseTableCard = ({ course, passMark }) => {
-  const intl = useClassroomIntl();
-  const t = (m, v) => intl.formatMessage(m, v);
-  const title = localized(course.title, intl.locale);
-  const id = `cls3-gr-${course.code || course.course_key}`;
-  return (
-    <section className="cls-dcard cls3-table-card" aria-labelledby={id}>
-      <div className="cls3-table-card__head">
-        <h2 id={id}>{course.code && <span className="cls3-code">{course.code}</span>}{title}</h2>
-        <div className="cls3-table-card__result">
-          {course.grade_pct != null && <b>{t(messages.grCourseGrade, { pct: course.grade_pct })}</b>}
-          <CourseResult passed={course.passed} />
-        </div>
-      </div>
-      <div className="cls3-table-wrap">
-        <table className="cls3-table">
-          <caption className="cls-sr">{title}</caption>
-          <thead>
-            <tr>
-              <th scope="col">{t(messages.grColAssessment)}</th>
-              <th scope="col">{t(messages.grColType)}</th>
-              <th scope="col">{t(messages.colScore)}</th>
-              <th scope="col">{t(messages.grColAttempts)}</th>
-              <th scope="col">{t(messages.grColPercent)}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {(course.parts || []).map((p) => {
-              const graded = p.score != null;
-              const percent = graded ? pct(p.score, p.max) : null;
-              return (
-                <tr key={p.block_id}>
-                  <th scope="row">{localized(p.name, intl.locale)}</th>
-                  <td>{KIND[p.kind] ? t(KIND[p.kind]) : p.kind}</td>
-                  <td className="cls-num">{graded ? `${p.score} / ${p.max}` : t(messages.grPending)}</td>
-                  <td className="cls-num">{p.attempts ?? 0}</td>
-                  <td>{graded ? <ResultChip ok={p.passed ?? percent >= passMark}>{`${percent}%`}</ResultChip> : '—'}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </section>
-  );
-};
-CourseTableCard.propTypes = {
-  course: PropTypes.shape({
-    course_key: PropTypes.string,
-    code: PropTypes.string,
-    title: PropTypes.oneOfType([PropTypes.string, PropTypes.shape({})]),
-    grade_pct: PropTypes.number,
-    passed: PropTypes.bool,
-    parts: PropTypes.arrayOf(PropTypes.shape({})),
-  }).isRequired,
+PartsTable.propTypes = {
+  row: PropTypes.shape({ title: PropTypes.string, parts: PropTypes.arrayOf(PropTypes.shape({})) }).isRequired,
   passMark: PropTypes.number.isRequired,
 };
 
-// Part 1: one row per CA-11 course.
-const SummaryTable = ({ courses, passMark }) => {
+const GradeRow = ({ row, passMark, index }) => {
   const intl = useClassroomIntl();
   const Link = useLinkComponent();
   const t = (m, v) => intl.formatMessage(m, v);
+  const [open, setOpen] = useState(false);
+  const tone = statusTone(row.status);
+  const date = (v) => (v ? formatDate(v, intl.locale) : '—');
+  const late = tone === 'overdue';
+  const detailsId = `cls3-gr-more-${row.code || index}`;
   return (
-    <section className="cls-dcard cls3-table-card" aria-labelledby="cls3-gr-courses">
-      <div className="cls3-table-card__head">
-        <h2 id="cls3-gr-courses">{t(messages.grCourses)}</h2>
+    <li className={`cls3-row cls3-tone--${tone} cls3-lift cls3-rise`}>
+      <div className="cls3-row__thumb" aria-hidden="true">
+        <CourseCover category={CATEGORIES.includes(row.category) ? row.category : 'general'} code={row.code} />
       </div>
-      <div className="cls3-table-wrap">
-        <table className="cls3-table">
-          <thead>
-            <tr>
-              <th scope="col">{t(messages.course)}</th>
-              <th scope="col">{t(messages.grColGrade)}</th>
-              <th scope="col">{t(messages.grColPass)}</th>
-              <th scope="col">{t(messages.colStatus)}</th>
-              <th scope="col"><span className="cls-sr">{t(messages.grDetail)}</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            {courses.map((c) => {
-              const title = localized(c.title, intl.locale);
-              const detail = c.progress_href || c.href;
-              return (
-                <tr key={c.course_key}>
-                  <th scope="row">{c.code && <span className="cls3-code">{c.code}</span>}{title}</th>
-                  <td className="cls-num">{c.score_pct == null ? '—' : `${c.score_pct}%`}</td>
-                  <td className="cls-num">{`${passMark}%`}</td>
-                  <td><CourseResult status={c.status} passed={c.status === 'not_started' ? false : undefined} /></td>
-                  <td>
-                    {detail && (
-                      <Link className="cls3-link" href={detail} aria-label={t(messages.actionLabel, { action: t(messages.grDetail), title })}>
-                        {t(messages.grDetail)}
-                      </Link>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <div className="cls3-row__main">
+        <div className="cls3-row__kind">
+          {row.code && <span className="cls3-code">{row.code}</span>}
+          <span className={`cls3-req-tag${row.required ? '' : ' cls3-req-tag--opt'}`}>
+            {t(row.required ? messages.cardRequired : messages.v2Optional)}
+          </span>
+        </div>
+        {row.href ? <Link className="cls3-row__title" href={row.href}>{row.title}</Link> : <span className="cls3-row__title">{row.title}</span>}
+        {row.progress > 0 && (
+          <div className="cls-bar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={row.progress} aria-label={row.title}>
+            <i style={{ width: `${row.progress}%` }} />
+          </div>
+        )}
+        {row.parts.length > 0 && (
+          <button type="button" className="cls3-linkbtn" aria-expanded={open} aria-controls={detailsId} onClick={() => setOpen(!open)}>
+            {t(open ? messages.v2HideDetails : messages.v2Details)}
+          </button>
+        )}
       </div>
-      <p className="cls3-note">{t(messages.grPartOneNote)}</p>
-    </section>
+      <div className="cls3-row__col cls3-col-start"><span>{t(messages.v2Started)}</span><b>{date(row.startedAt)}</b></div>
+      <div className="cls3-row__col cls3-col-due"><span>{t(messages.v2Due)}</span><b className={late ? 'is-late' : undefined}>{date(row.dueAt)}</b></div>
+      <div className="cls3-row__col cls3-col-done"><span>{t(messages.v2Completed)}</span><b>{date(row.completedAt)}</b></div>
+      <div className="cls3-row__col cls3-col-score">
+        <span>{t(messages.v2BestScore)}</span>
+        <b className="cls3-row__score">
+          {row.score == null ? '—' : <>{`${row.score}%`}<small>{t(messages.v2PassMark, { pct: passMark })}</small></>}
+        </b>
+      </div>
+      <div className="cls3-row__col cls3-col-status"><span>{t(messages.v2Status)}</span><StatusChip status={row.status} /></div>
+      <div className="cls3-row__mobile" aria-hidden="true">
+        {row.dueAt && <span>{`${t(messages.v2Due)}: ${date(row.dueAt)}`}</span>}
+        {row.completedAt && <span>{`${t(messages.v2Completed)}: ${date(row.completedAt)}`}</span>}
+        {row.score != null && <span>{`${t(messages.v2BestScore)}: ${row.score}%`}</span>}
+      </div>
+      {open && <div className="cls3-row__more" id={detailsId}><PartsTable row={row} passMark={passMark} /></div>}
+    </li>
   );
 };
-SummaryTable.propTypes = {
-  courses: PropTypes.arrayOf(PropTypes.shape({ course_key: PropTypes.string })).isRequired,
+GradeRow.propTypes = {
+  row: PropTypes.shape({
+    code: PropTypes.string,
+    title: PropTypes.string,
+    category: PropTypes.string,
+    required: PropTypes.bool,
+    status: PropTypes.string,
+    progress: PropTypes.number,
+    href: PropTypes.string,
+    score: PropTypes.number,
+    startedAt: PropTypes.string,
+    dueAt: PropTypes.string,
+    completedAt: PropTypes.string,
+    parts: PropTypes.arrayOf(PropTypes.shape({})),
+  }).isRequired,
   passMark: PropTypes.number.isRequired,
+  index: PropTypes.number.isRequired,
 };
 
 const GradesView = ({
@@ -169,60 +189,69 @@ const GradesView = ({
 }) => {
   const intl = useClassroomIntl();
   const t = (m, v) => intl.formatMessage(m, v);
-  const strip = (
-    <PageStrip id="cls3-grades-strip" title={t(messages.shell3Grades)}>{t(messages.pageGradesIntro, { pct: passMark })}</PageStrip>
-  );
+  const [q, setQ] = useState('');
+  const [tone, setTone] = useState('all');
+  const [sort, setSort] = useState('recent');
+  const pageRef = usePageEnter([status]);
+  const rows = useMemo(() => gradeRows({ dashboard, grades, locale: intl.locale }), [dashboard, grades, intl.locale]);
+
+  const intro = <PageStrip id="cls3-grades-strip" title={t(messages.shell3Grades)}>{t(messages.v2GradesSub)}</PageStrip>;
   if (status === 'loading') {
     return (
-      <div className="cls3-page" aria-busy="true">
-        {strip}
-        <div className="cls3-stats cls3-stats--3">{[0, 1, 2].map((i) => <Skeleton key={i} height={88} radius={16} />)}</div>
-        <Skeleton height={260} radius={16} />
+      <div className="cls3-v2" aria-busy="true">
+        {intro}
+        {[0, 1, 2].map((i) => <Skeleton key={i} height={118} radius={16} />)}
       </div>
     );
   }
-
-  let body;
-  if (grades) {
-    const parts = (grades.courses || []).flatMap((c) => c.parts || []);
-    const graded = parts.filter((p) => p.score != null).length;
-    body = (
-      <>
-        <StatCards average={grades.summary?.average_pct ?? null} graded={graded} pending={parts.length - graded} />
-        {(grades.courses || []).length === 0 && <p className="cls3-empty">{t(messages.grEmpty)}</p>}
-        {(grades.courses || []).map((c) => <CourseTableCard key={c.course_key} course={c} passMark={passMark} />)}
-      </>
-    );
-  } else {
-    const courses = (dashboard?.courses || []);
-    const scored = courses.filter((c) => c.score_pct != null);
-    body = (
-      <>
-        <StatCards
-          average={avg(scored.map((c) => c.score_pct))}
-          graded={scored.length}
-          pending={courses.length - scored.length}
-        />
-        {courses.length === 0
-          ? <p className="cls3-empty">{t(messages.grEmpty)}</p>
-          : <SummaryTable courses={courses} passMark={passMark} />}
-      </>
-    );
-  }
+  const needle = q.trim().toLowerCase();
+  const shown = rows
+    .filter((r) => tone === 'all' || statusTone(r.status) === tone)
+    .filter((r) => !needle || `${r.title} ${r.code || ''}`.toLowerCase().includes(needle))
+    .sort(sorters[sort]);
 
   return (
-    <div className="cls3-page">
-      {strip}
+    <div className="cls3-v2" ref={pageRef}>
+      {intro}
       {status === 'error' && <Notice onRetry={onRetry}>{t(messages.notAvailable)}</Notice>}
-      {status !== 'error' && body}
+      {status !== 'error' && (
+        <>
+          <div className="cls3-filters">
+            <label className="cls3-field" htmlFor="cls3-gr-q">
+              <KitIcon src={Search} size={18} />
+              <span className="cls-sr">{t(messages.v2Search)}</span>
+              <input id="cls3-gr-q" type="search" value={q} placeholder={t(messages.v2Search)} onChange={(e) => setQ(e.target.value)} />
+            </label>
+            <div className="cls3-filters__end">
+              <label className="cls3-sel-label" htmlFor="cls3-gr-status">{t(messages.v2Status)}</label>
+              <select id="cls3-gr-status" className="cls3-sel" value={tone} onChange={(e) => setTone(e.target.value)}>
+                <option value="all">{t(messages.mlAll)}</option>
+                {STATUS_TONES.map((k) => <option key={k} value={k}>{t(TONE_LABEL[k])}</option>)}
+              </select>
+              <label className="cls-sr" htmlFor="cls3-gr-sort">{t(messages.mlSort)}</label>
+              <select id="cls3-gr-sort" className="cls3-sel" value={sort} onChange={(e) => setSort(e.target.value)}>
+                {Object.entries(SORTS).map(([k, m]) => <option key={k} value={k}>{t(m)}</option>)}
+              </select>
+            </div>
+          </div>
+          <p className="cls3-count" role="status">{t(messages.coursesCount, { n: shown.length })}</p>
+          {shown.length > 0 ? (
+            <ul className="cls3-rows">
+              {shown.map((r, i) => <GradeRow key={r.key} row={r} passMark={passMark} index={i} />)}
+            </ul>
+          ) : <p className="cls3-empty">{t(rows.length ? messages.coursesEmpty : messages.grEmpty)}</p>}
+        </>
+      )}
     </div>
   );
 };
 
 GradesView.propTypes = {
-  dashboard: PropTypes.shape({ courses: PropTypes.arrayOf(PropTypes.shape({})) }), // CA-11
-  grades: PropTypes.shape({ // CA-16 data (Part 2)
-    summary: PropTypes.shape({ average_pct: PropTypes.number }),
+  dashboard: PropTypes.shape({ // CA-11
+    courses: PropTypes.arrayOf(PropTypes.shape({})),
+    deadlines: PropTypes.arrayOf(PropTypes.shape({})),
+  }),
+  grades: PropTypes.shape({ // CA-16: course rows with dates + parts
     courses: PropTypes.arrayOf(PropTypes.shape({})),
   }),
   status: PropTypes.oneOf(['loading', 'ready', 'error']),

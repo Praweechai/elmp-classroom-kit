@@ -12,6 +12,7 @@ var _CourseCard = _interopRequireWildcard(require("../components/CourseCard2"));
 var _Feedback = require("../components/Feedback");
 var _KitIcon = _interopRequireDefault(require("../components/KitIcon"));
 var _PageStrip = _interopRequireDefault(require("../components/PageStrip"));
+var _Learner = require("../components/Learner21");
 var _MyLearningView = require("./MyLearningView");
 var _jsxRuntime = require("react/jsx-runtime");
 var cache;
@@ -21,13 +22,14 @@ function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbol
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
-function _toPrimitive(t, e) { if ("object" != typeof t || !t) return t; var r; if ("undefined" != typeof Symbol && void 0 !== (r = t[Symbol.toPrimitive])) { var i = r.call(t, e || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === e ? String : Number)(t); } // S-101 Courses (F-132): page strip, status chips (All / Not started / In progress / Completed), name filter,
+function _toPrimitive(t, e) { if ("object" != typeof t || !t) return t; var r; if ("undefined" != typeof Symbol && void 0 !== (r = t[Symbol.toPrimitive])) { var i = r.call(t, e || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === e ? String : Number)(t); } // S-101 Courses (F-132; kit 2.1: status chips in the four D-92 colours + Required / Optional): page strip, name filter,
 // category pills, grid/list. Part 1 = CA-11 courses (enrolled + required). Part 2 = CA-15 `catalogue`
 // (adds open courses, covers, hours). `initialQuery` / `initialCategory` come from the top-bar search and
 // the Explore menu (the fork reads ?q= and ?category=).
 const DAY = 86400000;
-const STATUS_FILTERS = [['all', _i18n.messages.mlAll], ['not_started', _i18n.messages.statusNotStarted], ['in_progress', _i18n.messages.statusInProgress], ['completed', _i18n.messages.statusCompleted]];
-// overdue / due soon / almost done all count as "In progress" for the status filter.
+const STATUS_FILTERS = [['all', _i18n.messages.mlAll], ..._Learner.STATUS_TONES.map(k => [k, _Learner.TONE_LABEL[k]])];
+const NEED_FILTERS = [['all', _i18n.messages.mlAll], ['required', _i18n.messages.cardRequired], ['optional', _i18n.messages.v2Optional]];
+// Kit 2.0 grouping (kept for the forks): overdue / due soon / almost done count as "In progress".
 const statusGroup = status => ['completed', 'not_started'].includes(status) ? status : 'in_progress';
 
 // CA-15 entry → CourseCard2 props.
@@ -74,6 +76,8 @@ const CoursesView = ({
   const [q, setQ] = (0, _react.useState)(initialQuery);
   const [cat, setCat] = (0, _react.useState)(initialCategory || 'all');
   const [layout, setLayout] = (0, _react.useState)('grid');
+  const [need, setNeed] = (0, _react.useState)('all');
+  const pageRef = (0, _Learner.usePageEnter)([status]);
   const cards = (0, _react.useMemo)(() => {
     if (catalogue) {
       return catalogue.map(e => entryToCard(e, {
@@ -107,12 +111,13 @@ const CoursesView = ({
   }
   const categories = [...new Map(cards.map(c => [catKey(c), (0, _CourseCard.categoryLabel)(c.category, intl)])).entries()];
   const needle = q.trim().toLowerCase();
-  const shown = cards.filter(c => group === 'all' || statusGroup(c.status) === group).filter(c => cat === 'all' || catKey(c) === cat).filter(c => !needle || `${c.title} ${c.code || ''}`.toLowerCase().includes(needle))
+  const shown = cards.filter(c => group === 'all' || (0, _Learner.statusTone)(c.status) === group).filter(c => need === 'all' || need === 'required' === c.required).filter(c => cat === 'all' || catKey(c) === cat).filter(c => !needle || `${c.title} ${c.code || ''}`.toLowerCase().includes(needle))
   // required first, then A–Z: the training HR asked for stays on top
   .sort((a, b) => Number(b.required) - Number(a.required) || a.title.localeCompare(b.title));
-  const filtered = group !== 'all' || cat !== 'all' || needle;
+  const filtered = group !== 'all' || cat !== 'all' || need !== 'all' || needle;
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
     className: "cls3-page",
+    ref: pageRef,
     children: [strip, status === 'error' && /*#__PURE__*/(0, _jsxRuntime.jsx)(_Feedback.Notice, {
       onRetry: onRetry,
       children: t(_i18n.messages.notAvailable)
@@ -124,7 +129,7 @@ const CoursesView = ({
         "aria-label": t(_i18n.messages.coursesFilterStatus),
         children: STATUS_FILTERS.map(([k, m]) => /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
           type: "button",
-          className: "cls3-pill",
+          className: `cls3-pill${k === 'all' ? '' : ` cls3-pill--tone cls3-tone--${k}`}`,
           "aria-pressed": group === k,
           onClick: () => setGroup(k),
           children: t(m)
@@ -163,6 +168,17 @@ const CoursesView = ({
           }, k))
         })]
       })]
+    }), /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
+      className: "cls3-pills cls3-pills--quiet",
+      role: "group",
+      "aria-label": t(_i18n.messages.cardRequired),
+      children: NEED_FILTERS.map(([k, m]) => /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
+        type: "button",
+        className: "cls3-pill",
+        "aria-pressed": need === k,
+        onClick: () => setNeed(k),
+        children: t(m)
+      }, k))
     }), categories.length > 1 && /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
       className: "cls3-pills cls3-pills--quiet",
       role: "group",
@@ -196,6 +212,7 @@ const CoursesView = ({
         onClick: () => {
           setGroup('all');
           setCat('all');
+          setNeed('all');
           setQ('');
         },
         children: t(_i18n.messages.coursesClear)
