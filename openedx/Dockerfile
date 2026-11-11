@@ -9,13 +9,16 @@ FROM ${BASE_IMAGE}
 # --no-deps: never let pip change Open edX's own pinned packages (h5p-xblock only needs XBlock).
 ARG H5P_XBLOCK_VERSION=0.2.19
 COPY --chown=app:app openedx/elmp-activity /openedx/elmp-activity
+# ELMP lesson blocks (Plan 5 · doc 10 V-3): elmp_quiz, elmp_video, elmp_activity. Their JS/CSS is inlined into the
+# page fragment by the blocks themselves, so no collectstatic step is needed.
+COPY --chown=app:app openedx/elmp-xblocks /openedx/elmp-xblocks
 # XBlock "public" files are normally gathered by collectstatic when the base image is built; copy
 # h5pxblock's into place so local_resource_url (/static/xblock/resources/h5pxblock/...) works.
-RUN pip install --no-cache-dir --no-deps "h5p-xblock==${H5P_XBLOCK_VERSION}" /openedx/elmp-activity \
-    && rm -rf /openedx/elmp-activity \
+RUN pip install --no-cache-dir --no-deps "h5p-xblock==${H5P_XBLOCK_VERSION}" /openedx/elmp-activity /openedx/elmp-xblocks \
+    && rm -rf /openedx/elmp-activity /openedx/elmp-xblocks \
     && pkg="$(python -c 'import importlib.util as u, os; print(os.path.dirname(u.find_spec("h5pxblock").origin))')" \
     && mkdir -p /openedx/staticfiles/xblock/resources/h5pxblock \
     && cp -r "$pkg/public" /openedx/staticfiles/xblock/resources/h5pxblock/public
 
 LABEL org.opencontainers.image.source="https://github.com/Praweechai/elmp-classroom-kit" \
-      org.opencontainers.image.description="ELMP Open edX: base + h5p-xblock + elmp-activity"
+      org.opencontainers.image.description="ELMP Open edX: base + h5p-xblock + elmp-activity + elmp-xblocks"

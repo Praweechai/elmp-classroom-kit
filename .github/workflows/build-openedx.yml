@@ -100,11 +100,17 @@ jobs:
             set -e
             python - <<"PY"
           from importlib.metadata import entry_points, version
-          print("h5p-xblock", version("h5p-xblock"), "| elmp-activity", version("elmp-activity"))
+          print("h5p-xblock", version("h5p-xblock"), "| elmp-activity", version("elmp-activity"),
+                "| elmp-xblocks", version("elmp-xblocks"))
           blocks = {e.name for e in entry_points(group="xblock.v1")}
           apps = {e.name for e in entry_points(group="lms.djangoapp")}
           assert "h5pxblock" in blocks, "h5pxblock XBlock entry point missing"
           assert "elmp_activity" in apps, "elmp_activity plugin entry point missing"
+          for name in ("elmp_quiz", "elmp_video", "elmp_activity"):
+              assert name in blocks, name + " XBlock entry point missing"
+          from importlib.resources import files
+          for f in ("elmp-blocks.js", "elmp-blocks.css", "elmp-studio.js", "elmp-studio.css", "elmp-studio.html"):
+              assert files("elmp_xblocks").joinpath("static", f).read_text(encoding="utf-8"), f + " missing"
           for name in ("drag-and-drop-v2", "poll"):
               assert name in blocks, name + " missing (should be built in)"
           print("entry points ok")
@@ -117,7 +123,11 @@ jobs:
           from django.conf import settings
           assert \"elmp_activity.middleware.ActivityScriptMiddleware\" in settings.MIDDLEWARE
           import h5pxblock.h5pxblock
-          print(\"$mod: middleware + h5pxblock ok\")
+          from xblock.core import XBlock
+          for name in (\"elmp_quiz\", \"elmp_video\", \"elmp_activity\"):
+              cls = XBlock.load_class(name)
+              assert cls.studio_view and cls.student_view, name
+          print(\"$mod: middleware + h5pxblock + 3 ELMP blocks ok\")
           " && exit 0 || echo "($mod not loadable here, trying next)"
             done
             echo "no settings module could load"; exit 1'

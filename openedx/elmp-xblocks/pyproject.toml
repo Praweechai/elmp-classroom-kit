@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "elmp-xblocks"
-version = "0.1.0"
+version = "0.2.0"
 description = "ELMP lesson blocks: quiz, video and activity with the Mission Hospital Learning look."
 license = { text = "AGPL-3.0" }
 requires-python = ">=3.11"
