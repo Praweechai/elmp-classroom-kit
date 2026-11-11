@@ -45,7 +45,8 @@ jobs:
         with:
           name: storybook-static
           path: storybook-static
-      - run: npx playwright install --with-deps chromium
+      # GitHub runners sometimes cannot reach the Ubuntu mirrors (seen 2026-11-11); the libraries are already on the image
+      - run: npx playwright install --with-deps chromium || npx playwright install chromium
       - name: Screenshots at 1440 / 390 / 360, EN + TH
         run: npx playwright test --update-snapshots=missing
       - name: Collect new baselines (commit them after review)
