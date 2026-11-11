@@ -8,35 +8,18 @@ does (the image has no jsonschema) and fills in defaults. Answers and explanatio
 - grade():            mode exam — score + review with right/wrong and explanation, never the right choice
 """
 import random
-import re
+
+from .common import ID, BlockError, text
+from .common import is_text as _is_text
 
 MODES = ("check", "exam")
 QUIZ_KEYS = {"mode", "title", "intro", "max_attempts", "pass_pct", "shuffle", "weight", "questions"}
 QUESTION_KEYS = {"id", "type", "prompt", "choices", "answer", "explain"}
 DEFAULTS = {"max_attempts": 3, "pass_pct": 80, "shuffle": False, "weight": None}
-ID = re.compile(r"^[a-z0-9][a-z0-9_-]{0,39}$")
-MAX_TEXT = 2000
 
 
-class QuizError(ValueError):
+class QuizError(BlockError):
     pass
-
-
-# ---------- text: "plain" or {"en": ..., "th": ...} ----------
-
-def _is_text(value):
-    if isinstance(value, str):
-        return 0 < len(value) <= MAX_TEXT
-    if isinstance(value, dict) and value and set(value) <= {"en", "th"} and "en" in value:
-        return all(isinstance(v, str) and 0 < len(v) <= MAX_TEXT for v in value.values())
-    return False
-
-
-def text(value, lang="en"):
-    """The text for this language: Thai when asked and written, else English, else ''."""
-    if isinstance(value, dict):
-        return value.get(lang) or value.get("en") or ""
-    return value or ""
 
 
 # ---------- checking the author's data ----------

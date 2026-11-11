@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "elmp-xblocks"
 version = "0.1.0"
-description = "ELMP lesson blocks: quiz and video with the Mission Hospital Learning look."
+description = "ELMP lesson blocks: quiz, video and activity with the Mission Hospital Learning look."
 license = { text = "AGPL-3.0" }
 requires-python = ">=3.11"
 dependencies = []  # XBlock and web-fragments come with Open edX
@@ -16,6 +16,7 @@ dependencies = []  # XBlock and web-fragments come with Open edX
 [project.entry-points."xblock.v1"]
 elmp_quiz = "elmp_xblocks.quiz:ElmpQuizBlock"
 elmp_video = "elmp_xblocks.video:ElmpVideoBlock"
+elmp_activity = "elmp_xblocks.activity:ElmpActivityBlock"
 
 [tool.setuptools]
 packages = ["elmp_xblocks"]
