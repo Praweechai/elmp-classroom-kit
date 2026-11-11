@@ -168,7 +168,7 @@ def test_block_page_and_complete_once():
 def test_block_practice_uses_server_clock():
     block = block_for("practice")
     assert call(block, "finish", {})["reason"] == "not_done"
-    call(block, "start", {})
+    call(block, "start_timer", {})
     block.clock.now += 5
     assert call(block, "finish", {})["reason"] == "not_done"
     block.clock.now += 20

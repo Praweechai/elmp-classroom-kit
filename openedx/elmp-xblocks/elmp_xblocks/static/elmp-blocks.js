@@ -532,7 +532,7 @@
     on(ctx, {
       go() {
         st.left = total; st.running = true; st.done = false; render();
-        post(ctx, 'start', {}).catch(() => {});
+        post(ctx, 'start_timer', {}).catch(() => {});
         const started = Date.now();
         clearInterval(st.timer);
         st.timer = setInterval(() => {

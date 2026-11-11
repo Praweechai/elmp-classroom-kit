@@ -69,8 +69,11 @@ class ElmpActivityBlock(StudioJsonMixin, XBlock):
         return frag
 
     @XBlock.json_handler
-    def start(self, data, suffix=""):  # pylint: disable=unused-argument
-        """practice: the timer starts (the server keeps the time, so finishing early is refused)."""
+    def start_timer(self, data, suffix=""):  # pylint: disable=unused-argument
+        """practice: the timer starts (the server keeps the time, so finishing early is refused).
+
+        Not called `start`: Open edX reads `start` on every block as its start date (course tree build fails).
+        """
         self.started_at = self.clock()
         return {"ok": True}
 

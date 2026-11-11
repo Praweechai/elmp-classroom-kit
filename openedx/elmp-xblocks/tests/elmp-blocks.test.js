@@ -312,14 +312,14 @@ test('practice: start tells the server, timer runs, finish at the end', async ()
   const start = Date.now();
   jest.spyOn(Date, 'now').mockImplementation(() => start);
   click(root, '[data-a="go"]');
-  expect(calls[0].handler).toBe('start');
+  expect(calls[0].handler).toBe('start_timer');
   Date.now.mockImplementation(() => start + 2000);
   jest.advanceTimersByTime(300);
   expect(root.querySelector('.ring__txt b').textContent).toBe('3');
   expect(root.querySelector('.rub-steps li.is-now')).not.toBeNull();
   Date.now.mockImplementation(() => start + 5100);
   jest.advanceTimersByTime(300);
-  expect(calls.map((c) => c.handler)).toEqual(['start', 'finish']);
+  expect(calls.map((c) => c.handler)).toEqual(['start_timer', 'finish']);
   expect(root.textContent).toContain('Well done!');
   Date.now.mockRestore();
   jest.useRealTimers();
