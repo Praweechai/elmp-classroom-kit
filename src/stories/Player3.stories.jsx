@@ -35,3 +35,18 @@ export const Dark = {
   render: (_, { globals }) => player(globals.locale, { initialDisplay: { theme: 'dark', textScale: 120 } }),
 };
 export const NoResources = { render: (_, { globals }) => player(globals.locale, { resources: [], initialDisplay: {} }) };
+
+// Player 4 (doc 10 V-4.01): session clock + focus block, knowledge check, certificate row, reading line, end card.
+const v4 = {
+  sessionClock: true,
+  knowledge: { correct: 5, total: 8 },
+  certificate: { href: '#certificate', unlocked: false },
+  initialDisplay: {},
+};
+export const Player4 = { render: (_, { globals }) => player(globals.locale, { ...v4, left: ['video', 'quiz-check'] }) };
+export const Player4PageDone = {
+  render: (_, { globals }) => player(globals.locale, { ...v4, left: [], certificate: { href: '#certificate', unlocked: true } }),
+};
+export const Player4Dark = {
+  render: (_, { globals }) => player(globals.locale, { ...v4, left: ['order'], initialDisplay: { theme: 'dark' } }),
+};

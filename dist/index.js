@@ -99,6 +99,12 @@ Object.defineProperty(exports, "CertificatePreview", {
     return _CertificatePreview.default;
   }
 });
+Object.defineProperty(exports, "CertificateRow", {
+  enumerable: true,
+  get: function () {
+    return _Player3.CertificateRow;
+  }
+});
 Object.defineProperty(exports, "CertificatesView", {
   enumerable: true,
   get: function () {
@@ -261,6 +267,24 @@ Object.defineProperty(exports, "EncouragementBanner", {
     return _Dashboard.EncouragementBanner;
   }
 });
+Object.defineProperty(exports, "EndCard", {
+  enumerable: true,
+  get: function () {
+    return _Player3.EndCard;
+  }
+});
+Object.defineProperty(exports, "FOCUS_CHOICES", {
+  enumerable: true,
+  get: function () {
+    return _Player3.FOCUS_CHOICES;
+  }
+});
+Object.defineProperty(exports, "FocusBreakDialog", {
+  enumerable: true,
+  get: function () {
+    return _Player3.FocusBreakDialog;
+  }
+});
 Object.defineProperty(exports, "Gauge", {
   enumerable: true,
   get: function () {
@@ -319,6 +343,12 @@ Object.defineProperty(exports, "KitIcon", {
   enumerable: true,
   get: function () {
     return _KitIcon.default;
+  }
+});
+Object.defineProperty(exports, "KnowledgeCard", {
+  enumerable: true,
+  get: function () {
+    return _Player3.KnowledgeCard;
   }
 });
 Object.defineProperty(exports, "LanguageToggle", {
@@ -471,6 +501,12 @@ Object.defineProperty(exports, "ProgressView", {
     return _ProgressView.default;
   }
 });
+Object.defineProperty(exports, "ReadingLine", {
+  enumerable: true,
+  get: function () {
+    return _Player3.ReadingLine;
+  }
+});
 Object.defineProperty(exports, "RequiredGroup", {
   enumerable: true,
   get: function () {
@@ -505,6 +541,12 @@ Object.defineProperty(exports, "SearchBox", {
   enumerable: true,
   get: function () {
     return _Shell2.SearchBox;
+  }
+});
+Object.defineProperty(exports, "SessionTimer", {
+  enumerable: true,
+  get: function () {
+    return _Player3.SessionTimer;
   }
 });
 Object.defineProperty(exports, "SidebarNav", {
@@ -663,6 +705,12 @@ Object.defineProperty(exports, "chunks", {
     return _useActivitySender.chunks;
   }
 });
+Object.defineProperty(exports, "clockText", {
+  enumerable: true,
+  get: function () {
+    return _Player3.clockText;
+  }
+});
 Object.defineProperty(exports, "coursePercent", {
   enumerable: true,
   get: function () {
@@ -765,6 +813,12 @@ Object.defineProperty(exports, "learningTimeShape", {
     return _Learner.learningTimeShape;
   }
 });
+Object.defineProperty(exports, "leftText", {
+  enumerable: true,
+  get: function () {
+    return _Player3.leftText;
+  }
+});
 Object.defineProperty(exports, "localized", {
   enumerable: true,
   get: function () {
@@ -811,6 +865,12 @@ Object.defineProperty(exports, "sanitizeDisplay", {
   enumerable: true,
   get: function () {
     return _useDisplaySettings.sanitizeDisplay;
+  }
+});
+Object.defineProperty(exports, "scrollFraction", {
+  enumerable: true,
+  get: function () {
+    return _Player3.scrollFraction;
   }
 });
 Object.defineProperty(exports, "statusGroup", {
@@ -927,6 +987,12 @@ Object.defineProperty(exports, "usePortal", {
     return _usePortal.default;
   }
 });
+Object.defineProperty(exports, "useSession", {
+  enumerable: true,
+  get: function () {
+    return _Player3.useSession;
+  }
+});
 Object.defineProperty(exports, "useSidebar3", {
   enumerable: true,
   get: function () {
@@ -956,6 +1022,7 @@ require("./styles/classroom.css");
 require("./styles/shell3.css");
 require("./styles/player3.css");
 require("./styles/learner21.css");
+require("./styles/player4.css");
 var _tokens2 = _interopRequireDefault(require("./tokens/tokens"));
 var _i18n = require("./i18n");
 var _KitIcon = _interopRequireDefault(require("./components/KitIcon"));
@@ -1000,6 +1067,7 @@ var _GradesView = _interopRequireWildcard(require("./views/GradesView"));
 var _ProgressView = _interopRequireWildcard(require("./views/ProgressView"));
 var _CertificatesView2 = _interopRequireWildcard(require("./views/CertificatesView2"));
 var _Player2 = _interopRequireWildcard(require("./components/Player3"));
+var _Player3 = require("./components/Player4");
 var _useDisplaySettings = _interopRequireWildcard(require("./player/useDisplaySettings"));
 var _Learner = require("./components/Learner21");
 var cache;

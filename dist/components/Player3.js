@@ -14,6 +14,7 @@ var _useDisplaySettings = _interopRequireWildcard(require("../player/useDisplayS
 var _KitIcon = _interopRequireDefault(require("./KitIcon"));
 var _LinkContext = require("./LinkContext");
 var _Shell = require("./Shell3");
+var _Player = require("./Player4");
 var _jsxRuntime = require("react/jsx-runtime");
 var cache;
 function _interopRequireWildcard(e, t) { if (!t && e && e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c && {}.hasOwnProperty.call(e, c) && ((r = a && Object.getOwnPropertyDescriptor(e, c)) && (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
@@ -310,13 +311,16 @@ const UnitRow = ({
   const state = item.locked && 'locked' || item.complete && 'done' || 'open';
   const stateText = [item.current && t(_i18n.messages.outlineHere), item.locked && t(_i18n.messages.outlineLocked) || (item.complete ? t(_i18n.messages.outlineComplete) : t(_i18n.messages.outlineNotDone))].filter(Boolean).join(', ');
   const body = /*#__PURE__*/(0, _jsxRuntime.jsxs)(_jsxRuntime.Fragment, {
-    children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
+    children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
       className: "cls3-unit__dot",
       "aria-hidden": "true",
-      children: item.locked && /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
+      children: [item.locked && /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
         src: _icons.Lock,
         size: 12
-      })
+      }), !item.locked && item.complete && /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
+        src: _icons.Check,
+        size: 12
+      })]
     }), /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
       className: "cls3-unit__num cls-num",
       "aria-hidden": "true",
@@ -355,7 +359,9 @@ const OutlinePanel = ({
   onNavigate,
   id,
   onClose,
-  overlay = false
+  overlay = false,
+  knowledge,
+  certificate
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
   const t = (m, v) => intl.formatMessage(m, v);
@@ -454,6 +460,9 @@ const OutlinePanel = ({
             }
           })
         })]
+      }), knowledge && /*#__PURE__*/(0, _jsxRuntime.jsx)(_Player.KnowledgeCard, {
+        correct: knowledge.correct,
+        total: knowledge.total
       }), /*#__PURE__*/(0, _jsxRuntime.jsx)("ul", {
         className: "cls3-mods",
         children: sections.map((s, si) => {
@@ -507,6 +516,9 @@ const OutlinePanel = ({
       }), needle && sections.every(s => !s.items.some(it => it.title.toLowerCase().includes(needle)) && !s.title.toLowerCase().includes(needle)) && /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
         className: "cls3-menu__none",
         children: t(_i18n.messages.pl3NoMatches)
+      }), certificate && !needle && /*#__PURE__*/(0, _jsxRuntime.jsx)(_Player.CertificateRow, {
+        href: certificate.href,
+        unlocked: certificate.unlocked
       })]
     }), tab === 'resources' && /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
       className: "cls3-outline__panel",
@@ -544,7 +556,17 @@ OutlinePanel.propTypes = {
   onNavigate: _propTypes.default.func,
   id: _propTypes.default.string,
   onClose: _propTypes.default.func,
-  overlay: _propTypes.default.bool // learning app on phones: fixed over the lesson
+  overlay: _propTypes.default.bool,
+  // learning app on phones: fixed over the lesson
+  knowledge: _propTypes.default.shape({
+    correct: _propTypes.default.number,
+    total: _propTypes.default.number
+  }),
+  // Player 4: check questions
+  certificate: _propTypes.default.shape({
+    href: _propTypes.default.string,
+    unlocked: _propTypes.default.bool
+  }) // Player 4: last row
 };
 
 // ---- Pager: big side arrows + footer "‹ Previous · n / N · Next ›" ----
@@ -708,7 +730,9 @@ const PlayerTopBar3 = ({
   locale,
   onLocaleChange,
   fullscreen,
-  onToggleFullscreen
+  onToggleFullscreen,
+  session,
+  sessionPaused
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
   const Link = (0, _LinkContext.useLinkComponent)();
@@ -745,6 +769,9 @@ const PlayerTopBar3 = ({
       className: "cls3-ptop__title",
       title: courseTitle,
       children: courseTitle
+    }), session && /*#__PURE__*/(0, _jsxRuntime.jsx)(_Player.SessionTimer, {
+      session: session,
+      paused: sessionPaused
     }), /*#__PURE__*/(0, _jsxRuntime.jsx)(PlayerToolbar, {
       settings: display.settings,
       onChange: display.update,
@@ -778,7 +805,10 @@ PlayerTopBar3.propTypes = {
   locale: _propTypes.default.string,
   onLocaleChange: _propTypes.default.func,
   fullscreen: _propTypes.default.bool,
-  onToggleFullscreen: _propTypes.default.func
+  onToggleFullscreen: _propTypes.default.func,
+  session: _propTypes.default.shape({}),
+  // Player 4: useSession() → "This session" clock + focus block
+  sessionPaused: _propTypes.default.bool // idle timer paused → the clock looks paused
 };
 
 // ---- The whole player ----
@@ -795,7 +825,11 @@ const PlayerLayout3 = ({
   onDisplayChange,
   initialDisplay,
   unitTitle,
-  children
+  children,
+  sessionClock = false,
+  knowledge,
+  certificate,
+  left
 }) => {
   const intl = (0, _i18n.useClassroomIntl)();
   const t = (m, v) => intl.formatMessage(m, v);
@@ -807,6 +841,11 @@ const PlayerLayout3 = ({
   } = display;
   const [outlineOpen, setOutlineOpen] = (0, _react.useState)(wide);
   const full = useFullscreen(() => root.current);
+  const session = (0, _Player.useSession)({
+    running: sessionClock
+  });
+  const scroller = (0, _react.useRef)(null);
+  const getScroller = (0, _react.useCallback)(() => scroller.current, []);
   const units = (0, _react.useMemo)(() => flattenOutline(sections), [sections]);
   const at = units.findIndex(u => u.current);
   const current = at >= 0 ? units[at] : null;
@@ -843,7 +882,10 @@ const PlayerLayout3 = ({
       locale: locale,
       onLocaleChange: onLocaleChange,
       fullscreen: full.on,
-      onToggleFullscreen: full.toggle
+      onToggleFullscreen: full.toggle,
+      session: sessionClock ? session : undefined
+    }), sessionClock && /*#__PURE__*/(0, _jsxRuntime.jsx)(_Player.FocusBreakDialog, {
+      session: session
     }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
       className: "cls3-pbody",
       children: [outlineOpen && /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
@@ -858,7 +900,9 @@ const PlayerLayout3 = ({
         resources: resources,
         progress: progress,
         onNavigate: navigated,
-        onClose: () => setOutlineOpen(false)
+        onClose: () => setOutlineOpen(false),
+        knowledge: knowledge,
+        certificate: certificate
       }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("main", {
         className: "cls3-pmain",
         children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(UnitPager, {
@@ -868,6 +912,7 @@ const PlayerLayout3 = ({
           onNavigate: onNavigate
         }), /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
           className: "cls3-pmain__scroll",
+          ref: scroller,
           children: /*#__PURE__*/(0, _jsxRuntime.jsxs)("article", {
             className: "cls3-lesson",
             children: [current?.sectionTitle && /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
@@ -876,9 +921,17 @@ const PlayerLayout3 = ({
             }), /*#__PURE__*/(0, _jsxRuntime.jsx)("h1", {
               className: "cls3-lesson__title",
               children: unitTitle || current?.title
+            }), left !== undefined && /*#__PURE__*/(0, _jsxRuntime.jsx)(_Player.ReadingLine, {
+              getScroller: getScroller
             }), /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
               className: "cls3-lesson__frame",
               children: children
+            }), left !== undefined && /*#__PURE__*/(0, _jsxRuntime.jsx)(_Player.EndCard, {
+              left: left,
+              complete: Boolean(current?.complete),
+              next: next,
+              prev: prev,
+              onNavigate: onNavigate
             }), /*#__PURE__*/(0, _jsxRuntime.jsx)(UnitPager, {
               prev: prev,
               next: next,
@@ -907,6 +960,18 @@ PlayerLayout3.propTypes = {
   // (settings) → the fork posts them to the lesson iframe (postDisplay)
   initialDisplay: _propTypes.default.shape({}),
   unitTitle: _propTypes.default.string,
-  children: _propTypes.default.node
+  children: _propTypes.default.node,
+  // Player 4 (V-4.01), all optional
+  sessionClock: _propTypes.default.bool,
+  // "This session" clock + focus break
+  knowledge: _propTypes.default.shape({
+    correct: _propTypes.default.number,
+    total: _propTypes.default.number
+  }),
+  certificate: _propTypes.default.shape({
+    href: _propTypes.default.string,
+    unlocked: _propTypes.default.bool
+  }),
+  left: _propTypes.default.arrayOf(_propTypes.default.string) // given → reading line + end card; [] = page complete
 };
 var _default = exports.default = PlayerLayout3;

@@ -3,6 +3,7 @@ import './styles/classroom.css';
 import './styles/shell3.css';
 import './styles/player3.css';
 import './styles/learner21.css';
+import './styles/player4.css';
 
 export { default as tokens } from './tokens/tokens';
 export {
@@ -87,6 +88,10 @@ export {
   default as PlayerLayout3, OutlinePanel, PlayerToolbar, PlayerTopBar3, UnitPager, flattenOutline, useArrowKeys,
   useFullscreen,
 } from './components/Player3';
+export {
+  CertificateRow, EndCard, FOCUS_CHOICES, FocusBreakDialog, KnowledgeCard, ReadingLine, SessionTimer, clockText,
+  leftText, scrollFraction, useSession,
+} from './components/Player4';
 export {
   default as useDisplaySettings, DEFAULT_DISPLAY, DISPLAY_KEY, DISPLAY_MESSAGE, TEXT_SCALE, displayAttributes,
   displayMessage, isDefaultDisplay, postDisplay, sanitizeDisplay, useLessonDisplay,

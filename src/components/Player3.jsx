@@ -1,10 +1,10 @@
 import {
-  useEffect, useId, useMemo, useRef, useState,
+  useCallback, useEffect, useId, useMemo, useRef, useState,
 } from 'react';
 import PropTypes from 'prop-types';
 import {
-  AccessibilityNew, ArrowBackIos, ChevronLeft, ChevronRight, Close, DarkMode, Description, ExpandMore, Fullscreen,
-  FullscreenExit, LightMode, Lock, MenuOpen, Search,
+  AccessibilityNew, ArrowBackIos, Check, ChevronLeft, ChevronRight, Close, DarkMode, Description, ExpandMore,
+  Fullscreen, FullscreenExit, LightMode, Lock, MenuOpen, Search,
 } from '@openedx/paragon/icons';
 
 import { messages, useClassroomIntl } from '../i18n';
@@ -12,6 +12,9 @@ import useDisplaySettings, { TEXT_SCALE, displayAttributes } from '../player/use
 import KitIcon from './KitIcon';
 import { useLinkComponent } from './LinkContext';
 import { LanguageMenu, useDropdown } from './Shell3';
+import {
+  CertificateRow, EndCard, FocusBreakDialog, KnowledgeCard, ReadingLine, SessionTimer, useSession,
+} from './Player4';
 
 // S-105 Course player 3 (F-136, D-81, NetAcad arrangement): own top bar (outline toggle, "‹ My Learning",
 // logo, course title, the five tools), left panel with Course outline / Resources tabs, main area with
@@ -238,7 +241,10 @@ const UnitRow = ({ item, number, onNavigate }) => {
   ].filter(Boolean).join(', ');
   const body = (
     <>
-      <span className="cls3-unit__dot" aria-hidden="true">{item.locked && <KitIcon src={Lock} size={12} />}</span>
+      <span className="cls3-unit__dot" aria-hidden="true">
+        {item.locked && <KitIcon src={Lock} size={12} />}
+        {!item.locked && item.complete && <KitIcon src={Check} size={12} />}
+      </span>
       <span className="cls3-unit__num cls-num" aria-hidden="true">{number}</span>
       <span className="cls3-unit__title">{item.title}</span>
       <span className="cls-sr">{` (${stateText})`}</span>
@@ -262,7 +268,7 @@ const UnitRow = ({ item, number, onNavigate }) => {
 UnitRow.propTypes = { item: itemShape.isRequired, number: PropTypes.string.isRequired, onNavigate: PropTypes.func };
 
 export const OutlinePanel = ({
-  sections = [], resources = [], progress, onNavigate, id, onClose, overlay = false,
+  sections = [], resources = [], progress, onNavigate, id, onClose, overlay = false, knowledge, certificate,
 }) => {
   const intl = useClassroomIntl();
   const t = (m, v) => intl.formatMessage(m, v);
@@ -339,6 +345,7 @@ export const OutlinePanel = ({
               </div>
             </div>
           )}
+          {knowledge && <KnowledgeCard correct={knowledge.correct} total={knowledge.total} />}
           <ul className="cls3-mods">
             {sections.map((s, si) => {
               const items = s.items.map((it, ii) => [it, `${si + 1}.${ii + 1}`])
@@ -372,6 +379,7 @@ export const OutlinePanel = ({
           </ul>
           {needle && sections.every((s) => !s.items.some((it) => it.title.toLowerCase().includes(needle))
             && !s.title.toLowerCase().includes(needle)) && <p className="cls3-menu__none">{t(messages.pl3NoMatches)}</p>}
+          {certificate && !needle && <CertificateRow href={certificate.href} unlocked={certificate.unlocked} />}
         </div>
       )}
 
@@ -401,6 +409,8 @@ OutlinePanel.propTypes = {
   id: PropTypes.string,
   onClose: PropTypes.func,
   overlay: PropTypes.bool, // learning app on phones: fixed over the lesson
+  knowledge: PropTypes.shape({ correct: PropTypes.number, total: PropTypes.number }), // Player 4: check questions
+  certificate: PropTypes.shape({ href: PropTypes.string, unlocked: PropTypes.bool }), // Player 4: last row
 };
 
 // ---- Pager: big side arrows + footer "‹ Previous · n / N · Next ›" ----
@@ -493,7 +503,7 @@ export function useFullscreen(getTarget) {
 // ---- Player top bar on its own (the learning app puts it in its header slot) ----
 export const PlayerTopBar3 = ({
   courseTitle, backHref, logoUrl, outlineOpen, outlineId, onToggleOutline, display, units, onSelectUnit,
-  locale, onLocaleChange, fullscreen, onToggleFullscreen,
+  locale, onLocaleChange, fullscreen, onToggleFullscreen, session, sessionPaused,
 }) => {
   const intl = useClassroomIntl();
   const Link = useLinkComponent();
@@ -518,6 +528,7 @@ export const PlayerTopBar3 = ({
       </Link>
       {logoUrl && <img className="cls3-ptop__logo" src={logoUrl} alt={t(messages.brand)} />}
       <p className="cls3-ptop__title" title={courseTitle}>{courseTitle}</p>
+      {session && <SessionTimer session={session} paused={sessionPaused} />}
       <PlayerToolbar
         settings={display.settings}
         onChange={display.update}
@@ -549,12 +560,14 @@ PlayerTopBar3.propTypes = {
   onLocaleChange: PropTypes.func,
   fullscreen: PropTypes.bool,
   onToggleFullscreen: PropTypes.func,
+  session: PropTypes.shape({}), // Player 4: useSession() → "This session" clock + focus block
+  sessionPaused: PropTypes.bool, // idle timer paused → the clock looks paused
 };
 
 // ---- The whole player ----
 const PlayerLayout3 = ({
   courseTitle, backHref, logoUrl, sections = [], resources = [], progress, locale, onLocaleChange, onNavigate,
-  onDisplayChange, initialDisplay, unitTitle, children,
+  onDisplayChange, initialDisplay, unitTitle, children, sessionClock = false, knowledge, certificate, left,
 }) => {
   const intl = useClassroomIntl();
   const t = (m, v) => intl.formatMessage(m, v);
@@ -564,6 +577,9 @@ const PlayerLayout3 = ({
   const { settings } = display;
   const [outlineOpen, setOutlineOpen] = useState(wide);
   const full = useFullscreen(() => root.current);
+  const session = useSession({ running: sessionClock });
+  const scroller = useRef(null);
+  const getScroller = useCallback(() => scroller.current, []);
 
   const units = useMemo(() => flattenOutline(sections), [sections]);
   const at = units.findIndex((u) => u.current);
@@ -603,7 +619,9 @@ const PlayerLayout3 = ({
         onLocaleChange={onLocaleChange}
         fullscreen={full.on}
         onToggleFullscreen={full.toggle}
+        session={sessionClock ? session : undefined}
       />
+      {sessionClock && <FocusBreakDialog session={session} />}
 
       <div className="cls3-pbody">
         {outlineOpen && (
@@ -623,15 +641,27 @@ const PlayerLayout3 = ({
             progress={progress}
             onNavigate={navigated}
             onClose={() => setOutlineOpen(false)}
+            knowledge={knowledge}
+            certificate={certificate}
           />
         )}
         <main className="cls3-pmain">
           <UnitPager variant="arrows" prev={prev} next={next} onNavigate={onNavigate} />
-          <div className="cls3-pmain__scroll">
+          <div className="cls3-pmain__scroll" ref={scroller}>
             <article className="cls3-lesson">
               {current?.sectionTitle && <p className="cls3-lesson__crumb">{current.sectionTitle}</p>}
               <h1 className="cls3-lesson__title">{unitTitle || current?.title}</h1>
+              {left !== undefined && <ReadingLine getScroller={getScroller} />}
               <div className="cls3-lesson__frame">{children}</div>
+              {left !== undefined && (
+                <EndCard
+                  left={left}
+                  complete={Boolean(current?.complete)}
+                  next={next}
+                  prev={prev}
+                  onNavigate={onNavigate}
+                />
+              )}
               <UnitPager prev={prev} next={next} index={at + 1} total={units.length} onNavigate={onNavigate} />
             </article>
           </div>
@@ -655,6 +685,11 @@ PlayerLayout3.propTypes = {
   initialDisplay: PropTypes.shape({}),
   unitTitle: PropTypes.string,
   children: PropTypes.node,
+  // Player 4 (V-4.01), all optional
+  sessionClock: PropTypes.bool, // "This session" clock + focus break
+  knowledge: PropTypes.shape({ correct: PropTypes.number, total: PropTypes.number }),
+  certificate: PropTypes.shape({ href: PropTypes.string, unlocked: PropTypes.bool }),
+  left: PropTypes.arrayOf(PropTypes.string), // given → reading line + end card; [] = page complete
 };
 
 export default PlayerLayout3;
