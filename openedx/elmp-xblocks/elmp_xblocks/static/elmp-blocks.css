@@ -299,3 +299,8 @@ html[data-elmp-theme="dark"] .elmp-block {
 }
 html[data-elmp-motion="on"] .elmp-block *, html[data-elmp-motion="on"] .elmp-block *::before,
 html[data-elmp-motion="on"] .elmp-block *::after { animation: none !important; transition: none !important; }
+/* Fade in as the block comes into view — only when the player drives it (bridge v2 sets data-elmp-reveal). */
+html[data-elmp-reveal="on"] .elmp-block { transition: opacity .5s cubic-bezier(.2, .8, .2, 1), transform .5s cubic-bezier(.2, .8, .2, 1); }
+html[data-elmp-reveal="on"] .elmp-block:not(.is-in) { opacity: 0; transform: translateY(16px); }
+html[data-elmp-motion="on"] .elmp-block { transition: none; }
+@media (prefers-reduced-motion: reduce) { html[data-elmp-reveal="on"] .elmp-block { transition: none; } }

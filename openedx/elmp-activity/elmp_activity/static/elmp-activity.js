@@ -4,6 +4,13 @@
  * Tells the player when the learner is active and when a video plays, and pauses every
  * video when the player asks ({type: 'elmp.pause'}). Applies the player's display settings
  * ({type: 'elmp.display'}, Plan 5) as data- attributes on <html>.
+ * Bridge v2 (Plan 5 · doc 10 §4.1, V-4.02):
+ *  - frame → player {type: 'elmp.requirements', unit, left}: ELMP lesson blocks still open on this page
+ *    (left: null = the page has no ELMP blocks). Sent at start and whenever a block changes.
+ *  - player → frame {type: 'elmp.viewport', top, height}: the part of this page on screen (the player scrolls,
+ *    not the frame) → blocks fade in as they come into view. Off until the first message, so nothing hides elsewhere.
+ *  - frame → player {type: 'elmp.scroll', unit, top}: a "Scroll to begin" button asks the player to scroll.
+ *  - player → frame {type: 'elmp.ask'}: send the requirements again.
  * Sends only: kind, unit id, H5P verb. No personal data (NFR-D5).
  */
 (function () {
@@ -29,10 +36,65 @@
   var lastInput = 0;
   var beat = null;
 
+  function post(msg) {
+    try { window.parent.postMessage(msg, parentOrigin); } catch (e) { /* parent gone */ }
+  }
+
   function send(kind, extra) {
     var msg = { type: 'elmp.activity', v: 1, kind: kind, unit: unit };
     if (extra) { Object.keys(extra).forEach(function (k) { msg[k] = extra[k]; }); }
-    try { window.parent.postMessage(msg, parentOrigin); } catch (e) { /* parent gone */ }
+    post(msg);
+  }
+
+  // ---- Bridge v2: what is left on this page ----
+  var lastLeft;
+  function requirements(force) {
+    var reg = window.ElmpBlocks;
+    var left = null;
+    try { left = reg && reg.blocks && reg.blocks.length ? reg.left() : null; } catch (e) { left = null; }
+    var key = JSON.stringify(left);
+    if (!force && key === lastLeft) { return; }
+    lastLeft = key;
+    post({ type: 'elmp.requirements', v: 1, unit: unit, left: left });
+  }
+
+  // ---- Bridge v2: fade blocks in as they come into view (the player tells us what is on screen) ----
+  var REVEAL = '.elmp-block, .elmp-rv';
+  var view = null;
+  function reveal() {
+    if (!view) { return; }
+    var root = document.documentElement;
+    var still = root.getAttribute('data-elmp-motion') === 'on'
+      || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    var bottom = view.top + view.height * 0.92;
+    var els = document.querySelectorAll(REVEAL);
+    for (var i = 0; i < els.length; i += 1) {
+      var el = els[i];
+      if (!el.classList.contains('is-in')) {
+        var top = el.getBoundingClientRect().top + (window.scrollY || 0);
+        if (still || top < bottom) { el.classList.add('is-in'); }
+      }
+    }
+  }
+  function onViewport(d) {
+    var top = Number(d.top);
+    var height = Number(d.height);
+    if (!isFinite(top) || !isFinite(height) || height <= 0) { return; }
+    view = { top: Math.max(0, top), height: height };
+    document.documentElement.setAttribute('data-elmp-reveal', 'on');
+    reveal();
+  }
+
+  // ---- Bridge v2: "Scroll to begin" → the player scrolls to the next part ----
+  function onScrollAsk(event) {
+    var btn = event.target && event.target.closest && event.target.closest('[data-elmp-scroll-next]');
+    if (!btn) { return; }
+    var from = btn.closest('section, .elmp-hero') || btn;
+    var nextEl = from.nextElementSibling;
+    var target = nextEl || from;
+    var y = target.getBoundingClientRect().top + (window.scrollY || 0);
+    event.preventDefault();
+    post({ type: 'elmp.scroll', v: 1, unit: unit, top: Math.max(0, Math.round(y)) });
   }
 
   function media() {
@@ -122,7 +184,9 @@
 
   window.addEventListener('message', function (event) {
     if (event.origin !== parentOrigin || !event.data) { return; }
-    if (event.data.type === 'elmp.display') { applyDisplay(event.data); return; }
+    if (event.data.type === 'elmp.display') { applyDisplay(event.data); reveal(); return; }
+    if (event.data.type === 'elmp.viewport') { onViewport(event.data); return; }
+    if (event.data.type === 'elmp.ask') { requirements(true); return; }
     if (event.data.type !== 'elmp.pause') { return; }
     media().forEach(function (m) { try { m.pause(); } catch (e) { /* ignore */ } });
     stopBeat();
@@ -134,4 +198,11 @@
     scan(document);
   }, SCAN_MS);
   send('ready');
+
+  document.addEventListener('elmp:block', function () { requirements(false); reveal(); });
+  document.addEventListener('click', onScrollAsk);
+  // ELMP blocks start when the page has loaded; say what is left once they have.
+  requirements(true);
+  window.addEventListener('load', function () { requirements(false); });
+  setTimeout(function () { requirements(false); }, 1500);
 }());

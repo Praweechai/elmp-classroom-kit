@@ -7,3 +7,7 @@ __pycache__/
 storybook-static/
 playwright-report/
 test-results/
+
+# Python packaging leftovers
+openedx/**/build/
+*.egg-info/
