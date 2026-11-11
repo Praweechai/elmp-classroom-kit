@@ -90,6 +90,15 @@ describe('PortalClient', () => {
     await expect(client.me()).rejects.toMatchObject({ name: 'PortalError', code });
   });
 
+  it('Learner v2: CA-16 grades and CA-17 compliance are cached GETs', async () => {
+    const { http, httpClient } = fakeHttp(() => Promise.resolve({ data: { data: {} } }));
+    const client = createPortalClient({ baseUrl: BASE, httpClient });
+    await client.grades();
+    await client.compliance();
+    await client.compliance();
+    expect(http.get.mock.calls.map(([url]) => url)).toEqual([`${BASE}/grades`, `${BASE}/compliance`]);
+  });
+
   it('does nothing when the Classroom API is switched off (D-57)', async () => {
     const { http, httpClient } = fakeHttp();
     const client = createPortalClient({ baseUrl: BASE, httpClient, enabled: false });

@@ -93,6 +93,9 @@ export function createPortalClient({
     certificateLink: (code) => request('post', `/certificates/${encodeURIComponent(code)}/link`),
     markRead: (id) => request('post', `/notifications/${encodeURIComponent(id)}/read`),
     markAllRead: () => request('post', '/notifications/read-all'),
+    // Learner v2 (doc 10 §7, built in V-6): CA-16 grades rows + CA-17 "Am I up to date?" (cached 60 s).
+    grades: (opts) => cached('/grades', opts),
+    compliance: (opts) => cached('/compliance', opts),
   };
 }
 

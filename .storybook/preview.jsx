@@ -17,6 +17,7 @@ import '../src/tokens/tokens.css';
 import '../src/styles/classroom.css';
 import '../src/styles/shell3.css';
 import '../src/styles/player3.css';
+import '../src/styles/learner21.css';
 
 const preview = {
   globalTypes: {

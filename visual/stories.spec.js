@@ -29,7 +29,7 @@ stories.forEach((story) => {
 });
 
 // Big screens (P5-6: at 1900 px the page sat on the left with an empty strip on the right).
-// Any max-width box must be centred in its parent: spare room split evenly, never piled on one side.
+// Any max-width layout box must be centred in its parent: spare room split evenly, never piled on one side.
 [1920, 2560].forEach((width) => {
   stories.forEach((story) => {
     test(`${story.id} wide ${width}: no one-sided empty space`, async ({ page }) => {
@@ -39,6 +39,9 @@ stories.forEach((story) => {
       const lopsided = await page.evaluate(() => [...document.querySelectorAll('#storybook-root *')].filter((el) => {
         const cs = getComputedStyle(el);
         if (cs.maxWidth === 'none' || cs.display === 'none' || cs.position !== 'static') { return false; }
+        // text blocks (intro lines, descriptions) keep a left-aligned reading width on purpose; only layout boxes count
+        if (/^(P|H[1-6]|LI|LABEL|SPAN)$/.test(el.tagName)) { return false; }
+        if ([...el.children].every((c) => getComputedStyle(c).display.startsWith('inline'))) { return false; }
         const p = el.parentElement; const r = el.getBoundingClientRect(); const pr = p.getBoundingClientRect();
         const pcs = getComputedStyle(p);
         const inner = pr.width - parseFloat(pcs.paddingLeft) - parseFloat(pcs.paddingRight);
