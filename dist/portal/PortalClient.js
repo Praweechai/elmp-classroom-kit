@@ -139,7 +139,33 @@ function createPortalClient({
     markAllRead: () => request('post', '/notifications/read-all'),
     // Learner v2 (doc 10 §7, built in V-6): CA-16 grades rows + CA-17 "Am I up to date?" (cached 60 s).
     grades: opts => cached('/grades', opts),
-    compliance: opts => cached('/compliance', opts)
+    compliance: opts => cached('/compliance', opts),
+    // Plan 5 Part 2 (doc 02 §5): CA-13 achievements, CA-14 HR banner, CA-15 catalogue (+ search suggestions).
+    achievements: opts => cached('/achievements', opts),
+    announcement: opts => cached('/announcement', opts),
+    catalogue: (params, opts) => {
+      const {
+        q = '',
+        category = '',
+        page = 1,
+        perPage = 20
+      } = params || {};
+      const qs = new URLSearchParams();
+      if (q) {
+        qs.set('q', q);
+      }
+      if (category) {
+        qs.set('category', category);
+      }
+      if (page > 1) {
+        qs.set('page', String(page));
+      }
+      if (perPage !== 20) {
+        qs.set('per_page', String(perPage));
+      }
+      const s = qs.toString();
+      return cached(`/catalogue${s ? `?${s}` : ''}`, opts);
+    }
   };
 }
 let defaultClient;

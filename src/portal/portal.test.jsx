@@ -99,6 +99,22 @@ describe('PortalClient', () => {
     expect(http.get.mock.calls.map(([url]) => url)).toEqual([`${BASE}/grades`, `${BASE}/compliance`]);
   });
 
+  it('Part 2: CA-13 achievements, CA-14 banner, CA-15 catalogue with search, category, page and size', async () => {
+    const { http, httpClient } = fakeHttp(() => Promise.resolve({ data: { data: [] } }));
+    const client = createPortalClient({ baseUrl: BASE, httpClient });
+    await client.achievements();
+    await client.announcement();
+    await client.catalogue();
+    await client.catalogue({
+      q: 'hand hygiene', category: 'safety', page: 2, perPage: 5,
+    });
+    await client.catalogue(); // cached
+    expect(http.get.mock.calls.map(([url]) => url)).toEqual([
+      `${BASE}/achievements`, `${BASE}/announcement`, `${BASE}/catalogue`,
+      `${BASE}/catalogue?q=hand+hygiene&category=safety&page=2&per_page=5`,
+    ]);
+  });
+
   it('does nothing when the Classroom API is switched off (D-57)', async () => {
     const { http, httpClient } = fakeHttp();
     const client = createPortalClient({ baseUrl: BASE, httpClient, enabled: false });
