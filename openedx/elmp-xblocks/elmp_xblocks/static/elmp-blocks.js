@@ -30,6 +30,11 @@
     again: ['Again', 'อีกครั้ง'], gotIt: ['Got it', 'จำได้แล้ว'], allLearned: ['All cards learned!', 'จำได้ครบทุกการ์ดแล้ว!'], studyAgain: ['Study again', 'ทบทวนอีกครั้ง'],
     seconds: ['seconds', 'วินาที'], startPractice: ['Start practice', 'เริ่มฝึก'], wellDone: ['Well done!', 'เยี่ยมมาก!'],
     done: ['Done', 'เสร็จแล้ว'], score: ['Score', 'คะแนน'],
+    correctAnswer: ['Correct answer:', 'คำตอบที่ถูก:'], youGot: ['You got {n} of {m} right', 'ตอบถูก {n} จาก {m} ข้อ'],
+    dragOrder: ['Drag the steps into the right order, then check.', 'ลากเรียงขั้นตอนให้ถูกลำดับ แล้วกดตรวจ'],
+    checkOrder: ['Check order', 'ตรวจลำดับ'], notOrder: ['Not yet — the red steps are in the wrong place. Drag them again.', 'ยังไม่ถูก — ขั้นตอนสีแดงอยู่ผิดตำแหน่ง ลองลากใหม่'],
+    moveUp: ['Move up', 'เลื่อนขึ้น'], moveDown: ['Move down', 'เลื่อนลง'], dragHandle: ['Drag to move', 'ลากเพื่อย้าย'],
+    dragCard: ['Drag the card into a box — or tap a box.', 'ลากการ์ดไปวางในกล่อง หรือแตะที่กล่อง'],
     previewOnly: ['Preview — answers are checked and saved only in the course.', 'ตัวอย่าง — ระบบตรวจและบันทึกคำตอบเฉพาะในหลักสูตรจริง'],
   };
 
@@ -118,48 +123,67 @@
   /* =====================================================================================
      QUIZ — check mode (inline questions, instant feedback, not graded)
      ===================================================================================== */
+  // V-7.02 (owner): answer every question, one "Submit answers", then right/wrong per question with the right
+  // choice shown on a wrong answer, and "Try again" to answer everything again. The server checks each answer.
   function quizCheck(ctx) {
     const { cfg, t } = ctx;
-    const st = { pick: {}, res: Object.assign({}, cfg.checked || {}), retry: {} };
-    Object.keys(st.res).forEach((qid) => { st.pick[qid] = st.res[qid].given || []; });
+    const qs = cfg.questions;
+    let st;
+    const fresh = () => ({ pick: {}, res: {}, shown: false, busy: false });
+    st = fresh(); // the server keeps only right/wrong per question, so a reload starts clean (the block stays done)
+    const answered = () => qs.every((q) => (st.pick[q.id] || []).length > 0);
+    const letters = (q, ids) => q.choices.map((c, i) => (ids.indexOf(c.id) >= 0 ? `${KEYS[i]}. ${c.text}` : null)).filter(Boolean).join(', ');
 
     function question(q, qi) {
-      const res = st.res[q.id]; const show = !!res && !st.retry[q.id]; const sel = st.pick[q.id] || [];
+      const res = st.shown ? st.res[q.id] : null; const sel = st.pick[q.id] || [];
       const multi = q.type === 'multi';
       const choices = q.choices.map((c, i) => {
         const pick = sel.indexOf(c.id) >= 0;
-        const cls = show ? (res.correct && res.answer.indexOf(c.id) >= 0 ? 'is-right' : (pick && !res.correct ? 'is-wrong' : '')) : '';
-        return `<button class="choice ${multi ? 'choice--multi' : ''} ${cls}" data-a="pick" data-v="${esc(q.id)}|${esc(c.id)}" aria-pressed="${pick}" ${show ? 'disabled' : ''}>`
+        const right = res && res.answer && res.answer.indexOf(c.id) >= 0;
+        const cls = res ? (right ? 'is-right' : (pick ? 'is-wrong' : '')) : '';
+        return `<button class="choice ${multi ? 'choice--multi' : ''} ${cls}" data-a="pick" data-v="${esc(q.id)}|${esc(c.id)}" aria-pressed="${pick}" ${res ? 'disabled' : ''}>`
           + `<span class="choice__key">${multi ? (pick ? ic('check') : '') : KEYS[i]}</span><span>${esc(c.text)}</span></button>`;
       }).join('');
-      const fb = show
-        ? `<div class="nb-q__fb">${ic(res.correct ? 'check' : 'x')}<div><b>${t(res.correct ? 'great' : 'notQuite')}</b> ${esc(res.explain)}</div>`
-          + `${res.correct ? '' : `<button class="btn btn--sm btn--ghost" data-a="retry" data-v="${esc(q.id)}">${ic('refresh')} ${t('tryAgain')}</button>`}</div>`
-        : `<button class="btn btn--primary btn--sm nb-q__go" data-a="check" data-v="${esc(q.id)}" ${sel.length && !st.busy ? '' : 'disabled'}>${t('check')}</button>`;
-      return `<div class="nb-q ${show ? (res.correct ? 'is-ok' : 'is-bad') : ''}"><p class="nb-q__p"><span>${qi + 1}</span>${esc(q.prompt)}${multi ? ` <em>${t('selectAll')}</em>` : ''}</p>`
+      const fb = res
+        ? `<div class="nb-q__fb" role="status">${ic(res.correct ? 'check' : 'x')}<div><b>${t(res.correct ? 'great' : 'notQuite')}</b> `
+          + `${!res.correct && res.answer ? `<span class="nb-q__ans">${t('correctAnswer')} <b>${esc(letters(q, res.answer))}</b></span> ` : ''}${esc(res.explain)}</div></div>`
+        : '';
+      return `<div class="nb-q ${res ? (res.correct ? 'is-ok' : 'is-bad') : ''}"><p class="nb-q__p"><span>${qi + 1}</span>${esc(q.prompt)}${multi ? ` <em>${t('selectAll')}</em>` : ''}</p>`
         + `<div class="choices" role="group">${choices}</div>${fb}</div>`;
     }
     function render() {
-      const n = cfg.questions.filter((q) => st.res[q.id]).length;
-      paint(ctx, `<div class="nb-check"><div class="nb-check__h">${ic('target')} <b>${esc(cfg.title || t('checkTitle'))}</b><small>${n} / ${cfg.questions.length}</small></div>`
-        + `${cfg.intro ? `<p class="eb-intro">${esc(cfg.intro)}</p>` : ''}${cfg.questions.map(question).join('')}</div>`);
+      const right = qs.filter((q) => st.res[q.id] && st.res[q.id].correct).length;
+      const head = st.shown ? `${right} / ${qs.length}` : `${qs.filter((q) => (st.pick[q.id] || []).length).length} / ${qs.length}`;
+      const foot = st.shown
+        ? `<div class="nb-check__foot"><b class="nb-check__score">${esc(t('youGot').replace('{n}', right).replace('{m}', qs.length))}</b>`
+          + `<button class="btn btn--ghost btn--sm" data-a="again">${ic('refresh')} ${t('tryAgain')}</button></div>`
+        : `<div class="nb-check__foot"><button class="btn btn--primary nb-q__go" data-a="submit" ${answered() && !st.busy ? '' : 'disabled'}>${t('submit')}</button>`
+          + `${answered() ? '' : `<small>${t('answerAll')}</small>`}</div>`;
+      paint(ctx, `<div class="nb-check"><div class="nb-check__h">${ic('target')} <b>${esc(cfg.title || t('checkTitle'))}</b><small>${head}</small></div>`
+        + `${cfg.intro ? `<p class="eb-intro">${esc(cfg.intro)}</p>` : ''}${qs.map(question).join('')}${foot}</div>`);
     }
     on(ctx, {
       pick(v) {
-        const [qid, cid] = v.split('|'); const q = cfg.questions.find((x) => x.id === qid); const cur = st.pick[qid] || [];
+        if (st.shown) { return; }
+        const [qid, cid] = v.split('|'); const q = qs.find((x) => x.id === qid); const cur = st.pick[qid] || [];
         st.pick[qid] = q.type === 'multi' ? (cur.indexOf(cid) >= 0 ? cur.filter((x) => x !== cid) : cur.concat(cid)) : [cid];
         render();
       },
-      check(qid) {
+      submit() {
+        if (!answered()) { return; }
         st.busy = true; render();
-        post(ctx, 'check', { question: qid, given: st.pick[qid] || [] }).then((r) => {
-          st.busy = false;
-          if (r.ok) { st.res[qid] = { correct: r.correct, explain: r.explain, answer: r.answer, given: st.pick[qid] }; delete st.retry[qid]; ctx.complete = true; tell(ctx); }
-          render();
-          if (!r.ok) { flash(ctx, r.message || t('offline')); }
-        }).catch(() => { st.busy = false; render(); flash(ctx, t('offline')); });
+        Promise.all(qs.map((q) => post(ctx, 'check', { question: q.id, given: st.pick[q.id] })))
+          .then((rs) => {
+            st.busy = false;
+            const bad = rs.find((r) => !r.ok);
+            if (bad) { render(); flash(ctx, bad.message || t('offline')); return; }
+            rs.forEach((r, i) => { st.res[qs[i].id] = { correct: r.correct, explain: r.explain, answer: r.answer }; });
+            st.shown = true; ctx.complete = true; tell(ctx);
+            render();
+          })
+          .catch(() => { st.busy = false; render(); flash(ctx, t('offline')); });
       },
-      retry(qid) { st.retry[qid] = true; st.pick[qid] = []; render(); },
+      again() { st = fresh(); render(); },
     });
     render();
   }
@@ -397,26 +421,86 @@
     render();
   }
 
+  /* Drag with Pointer Events (V-7.02): one code path for mouse, pen and touch. Listens on the window from
+     pointerdown to pointerup, so the drag keeps going when the pointer leaves the item, and captures the pointer
+     when it can. A move under 5 px is a tap, not a drag. Buttons inside the item keep working. CSS sets
+     touch-action: none only on what is dragged, so the page still scrolls on phones. */
+  function draggable(ctx, sel, h) {
+    ctx.root.addEventListener('pointerdown', (e) => {
+      const el = e.target.closest(sel);
+      if (!el || !ctx.root.contains(el) || e.button > 0 || e.target.closest('button')) { return; }
+      e.preventDefault(); // no text selection, no native image drag
+      const s = { el, id: e.pointerId, x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, dx: 0, dy: 0, on: false };
+      try { el.setPointerCapture(e.pointerId); } catch (err) { /* old browser: the window listeners still follow */ }
+      const move = (ev) => {
+        if (ev.pointerId !== s.id) { return; }
+        s.x = ev.clientX; s.y = ev.clientY; s.dx = s.x - s.x0; s.dy = s.y - s.y0;
+        if (!s.on) {
+          if (Math.abs(s.dx) + Math.abs(s.dy) < 5) { return; }
+          s.on = true; el.classList.add('is-drag'); ctx.root.classList.add('is-dragging');
+          if (h.start) { h.start(s); }
+        }
+        ev.preventDefault();
+        h.move(s);
+      };
+      const end = (ev) => {
+        if (ev.pointerId !== s.id) { return; }
+        window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', end); window.removeEventListener('pointercancel', end);
+        el.classList.remove('is-drag'); ctx.root.classList.remove('is-dragging');
+        if (s.on) { h.drop(s, ev.type === 'pointercancel'); }
+      };
+      window.addEventListener('pointermove', move, { passive: false });
+      window.addEventListener('pointerup', end);
+      window.addEventListener('pointercancel', end);
+    });
+  }
+
+  // Order (V-7.02): a list the learner drags into order (or moves with ↑ / ↓), then "Check order".
+  // Wrong places turn red; the server gets the order only when it is right (its "done when" rule).
   function order(ctx) {
     const { cfg, t } = ctx;
     const all = cfg.items.map((_, i) => i);
-    const st = { placed: cfg.complete ? all.slice() : [], pool: shuffle(all), wrong: null };
+    const st = { list: cfg.complete ? all.slice() : shuffle(all), wrong: [], done: !!cfg.complete, tried: false };
+    const grip = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>';
     function render() {
-      const n = cfg.items.length; const full = st.placed.length === n;
-      paint(ctx, `${title(ctx)}<div class="order-slots">${cfg.items.map((x, i) => {
-        const f = st.placed.indexOf(i) >= 0; const nx = !f && i === st.placed.length;
-        return `<div class="slot ${f ? 'is-filled' : ''} ${nx ? 'is-next' : ''}"><b>${i + 1}</b><span>${f ? esc(x) : (nx ? t('tapNext') : '')}</span></div>`;
-      }).join('')}</div>`
-        + (full ? `<div class="nb-ok">${ic('check')} ${t('allInOrder')}</div>`
-          : `<div class="pool">${st.pool.filter((i) => st.placed.indexOf(i) < 0).map((i) => `<button data-a="ord" data-v="${i}" class="${st.wrong === i ? 'is-wrong' : ''}">${esc(cfg.items[i])}</button>`).join('')}</div>`));
+      const n = cfg.items.length;
+      const rows = st.list.map((i, pos) => `<li class="nb-ord__it ${st.done ? 'is-ok' : ''} ${st.wrong.indexOf(pos) >= 0 ? 'is-wrong' : ''}" data-i="${i}">`
+        + `${st.done ? '' : `<span class="nb-ord__h" title="${t('dragHandle')}">${grip}</span>`}<b class="nb-ord__n">${pos + 1}</b><span class="nb-ord__t">${esc(cfg.items[i])}</span>`
+        + (st.done ? `<span class="nb-ord__ok">${ic('check')}</span>`
+          : `<span class="nb-ord__mv"><button type="button" data-a="up" data-v="${pos}" aria-label="${t('moveUp')}: ${esc(cfg.items[i])}" ${pos === 0 ? 'disabled' : ''}>↑</button>`
+            + `<button type="button" data-a="down" data-v="${pos}" aria-label="${t('moveDown')}: ${esc(cfg.items[i])}" ${pos === n - 1 ? 'disabled' : ''}>↓</button></span>`)
+        + '</li>').join('');
+      paint(ctx, `${title(ctx)}${st.done ? '' : `<p class="eb-intro">${t('dragOrder')}</p>`}<ol class="nb-ord">${rows}</ol>`
+        + (st.done ? `<div class="nb-ok">${ic('check')} ${t('allInOrder')}</div>`
+          : `${st.wrong.length ? `<div class="nb-ord__fb" role="status">${ic('x')} ${t('notOrder')}</div>` : ''}`
+            + `<button type="button" class="btn btn--primary nb-ord__go" data-a="check">${t('checkOrder')}</button>`));
     }
+    const focusBtn = (a, p) => { const b = ctx.root.querySelectorAll(`[data-a="${a}"]`)[p]; if (b && !b.disabled) { b.focus(); } };
+    const swap = (a, b) => { const x = st.list[a]; st.list[a] = st.list[b]; st.list[b] = x; st.wrong = []; render(); };
     on(ctx, {
-      ord(v) {
-        const i = Number(v);
-        if (i === st.placed.length) {
-          st.placed.push(i);
-          if (st.placed.length === cfg.items.length && !cfg.complete) { finish(ctx, { order: st.placed }); }
-        } else { st.wrong = i; setTimeout(() => { st.wrong = null; render(); }, 450); }
+      up(v) { const p = Number(v); if (p > 0) { swap(p, p - 1); focusBtn('up', p - 1); } },
+      down(v) { const p = Number(v); if (p < st.list.length - 1) { swap(p, p + 1); focusBtn('down', p + 1); } },
+      check() {
+        st.wrong = st.list.map((i, pos) => (i === pos ? -1 : pos)).filter((p) => p >= 0);
+        if (!st.wrong.length) {
+          st.done = true;
+          if (!cfg.complete) { finish(ctx, { order: st.list.slice() }); }
+        }
+        render();
+      },
+    });
+    draggable(ctx, '.nb-ord__it', {
+      move(s) {
+        // Move the neighbours around the dragged row (the row itself never leaves the page, so the drag survives).
+        const list = s.el.parentNode;
+        const prev = s.el.previousElementSibling; const next = s.el.nextElementSibling;
+        const mid = (el) => { const r = el.getBoundingClientRect(); return r.top + r.height / 2; };
+        if (next && s.y > mid(next)) { list.insertBefore(next, s.el); } else if (prev && s.y < mid(prev)) { list.insertBefore(prev, s.el.nextSibling); }
+        Array.prototype.forEach.call(list.children, (li, k) => { li.querySelector('.nb-ord__n').textContent = k + 1; li.classList.remove('is-wrong'); });
+      },
+      drop(s) {
+        st.list = Array.prototype.map.call(s.el.parentNode.children, (li) => Number(li.getAttribute('data-i')));
+        st.wrong = [];
         render();
       },
     });
@@ -467,14 +551,33 @@
         return;
       }
       const it = cfg.items[st.i];
-      paint(ctx, `${title(ctx)}<div class="nb-sort"><div class="nb-sort__meta">${t('card')} ${st.i + 1} / ${n}</div>`
-        + `<div class="nb-sort__card ${st.fb ? (st.fb.ok ? 'is-ok' : 'is-bad') : ''}" aria-live="polite">${esc(it.text)}${st.fb && it.why ? `<small>${ic(st.fb.ok ? 'check' : 'x')} ${esc(it.why)}</small>` : ''}</div>`
+      paint(ctx, `${title(ctx)}<div class="nb-sort"><div class="nb-sort__meta">${t('card')} ${st.i + 1} / ${n}${st.fb ? '' : ` · ${t('dragCard')}`}</div>`
+        + `<div class="nb-sort__card ${st.fb ? (st.fb.ok ? 'is-ok' : 'is-bad') : 'is-draggable'}" aria-live="polite">${esc(it.text)}${st.fb && it.why ? `<small>${ic(st.fb.ok ? 'check' : 'x')} ${esc(it.why)}</small>` : ''}</div>`
         + (st.fb ? `<button class="btn btn--primary" data-a="next">${t('nextCard')} ${ic('arrow')}</button>`
           : `<div class="nb-sort__bins">${cfg.bins.map((b, i) => `<button class="nb-bin nb-bin--${i}" data-a="bin" data-v="${i}">${ic(i ? 'refresh' : 'hand')}<b>${esc(b)}</b></button>`).join('')}</div>`)
         + '</div>');
     }
+    const place = (b) => { const ok = cfg.items[st.i].bin === b; st.placed[st.i] = b; st.fb = { ok }; if (ok) { st.right += 1; } render(); };
+    // V-7.02: the card follows the pointer; dropped on a box = the same as tapping that box; anywhere else = back.
+    const binAt = (s) => {
+      const hit = ctx.root.ownerDocument.elementFromPoint(s.x, s.y);
+      const b = hit && hit.closest ? hit.closest('.nb-bin') : null;
+      return b && ctx.root.contains(b) ? b : null;
+    };
+    draggable(ctx, '.nb-sort__card.is-draggable', {
+      move(s) {
+        s.el.style.transform = `translate(${s.dx}px, ${s.dy}px) rotate(${Math.max(-6, Math.min(6, s.dx / 30))}deg)`;
+        s.el.style.pointerEvents = 'none'; // so the box under the pointer is found
+        const over = binAt(s);
+        Array.prototype.forEach.call(ctx.root.querySelectorAll('.nb-bin'), (b) => b.classList.toggle('is-over', b === over));
+      },
+      drop(s, cancelled) {
+        const b = cancelled ? null : binAt(s);
+        if (b) { place(Number(b.getAttribute('data-v'))); } else { render(); }
+      },
+    });
     on(ctx, {
-      bin(v) { const b = Number(v); const ok = cfg.items[st.i].bin === b; st.placed[st.i] = b; st.fb = { ok }; if (ok) { st.right += 1; } render(); },
+      bin(v) { place(Number(v)); },
       next() {
         st.i += 1; st.fb = null;
         if (st.i >= n) { finish(ctx, { placed: st.placed }); }

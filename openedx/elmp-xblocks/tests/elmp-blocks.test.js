@@ -62,39 +62,66 @@ test('author mistake shows a message and stays "not done"', () => {
 
 /* ---------- quiz: check mode ---------- */
 
-test('check mode: pick, check with CSRF, feedback, retry; tells the page once done', async () => {
+test('check mode (V-7.02): answer all → one Submit → right/wrong per question, right answer shown when wrong → Try again', async () => {
   const quiz = EX('quiz-check-1-3.json');
-  const q = quiz.questions[0];
-  const wrong = q.choices.find((c) => !q.answer.includes(c.id)).id;
+  const qs = quiz.questions;
+  const wrong = qs[0].choices.find((c) => !qs[0].answer.includes(c.id));
   const events = [];
   document.addEventListener('elmp:block', (e) => events.push(e.detail));
   const root = mount('quiz', { block: 'quiz', mode: 'check', questions: publicQs(quiz), checked: {}, complete: false });
   expect(window.ElmpBlocks.left()).toEqual(['quiz-check']);
-  expect(root.querySelector('.nb-q__go').disabled).toBe(true);
+  expect(root.querySelector('[data-a="check"]')).toBeNull(); // no per-question "Check" any more
+  const submit = () => root.querySelector('[data-a="submit"]');
+  expect(submit().disabled).toBe(true);
 
-  click(root, `[data-a="pick"][data-v="${q.id}|${wrong}"]`);
-  replies.check = { ok: true, correct: false, explain: 'Because.', answer: q.answer };
-  click(root, `[data-a="check"][data-v="${q.id}"]`);
-  await flush();
-  expect(calls[0]).toMatchObject({ handler: 'check', body: { question: q.id, given: [wrong] } });
+  click(root, `[data-a="pick"][data-v="${qs[0].id}|${wrong.id}"]`); // Q1 wrong
+  qs.slice(1).forEach((q) => q.answer.forEach((c) => click(root, `[data-a="pick"][data-v="${q.id}|${c}"]`))); // the rest right
+  expect(root.querySelector('.nb-q__fb')).toBeNull(); // nothing shown before Submit
+  expect(submit().disabled).toBe(false);
+  const byId = Object.fromEntries(qs.map((q) => [q.id, q]));
+  replies.check = (body) => ({
+    ok: true, correct: byId[body.question].answer.slice().sort().join() === body.given.slice().sort().join(), explain: 'Because.', answer: byId[body.question].answer,
+  });
+  click(root, '[data-a="submit"]');
+  await flush(); await flush();
+  expect(calls.map((c) => c.handler)).toEqual(qs.map(() => 'check'));
+  expect(calls[0]).toMatchObject({ body: { question: qs[0].id, given: [wrong.id] } });
   expect(calls[0].headers['X-CSRFToken']).toBe('tok123');
-  const box = root.querySelector('.nb-q');
-  expect(box.classList.contains('is-bad')).toBe(true);
-  expect(box.querySelector('.choice.is-wrong')).not.toBeNull();
-  expect(box.querySelector('.choice.is-right')).toBeNull(); // wrong try: right choice not shown (prototype)
-  expect(box.textContent).toContain('Because.');
+  const boxes = all(root, '.nb-q');
+  expect(boxes[0].classList.contains('is-bad')).toBe(true);
+  expect(boxes[0].querySelector('.choice.is-wrong')).not.toBeNull();
+  expect(boxes[0].querySelector('.choice.is-right')).not.toBeNull(); // the right choice is shown on a wrong answer
+  const right = qs[0].choices.find((c) => c.id === qs[0].answer[0]);
+  expect(boxes[0].querySelector('.nb-q__ans').textContent).toContain(right.text);
+  expect(boxes.slice(1).every((x) => x.classList.contains('is-ok'))).toBe(true);
+  expect(root.textContent).toContain(`You got ${qs.length - 1} of ${qs.length} right`);
+  expect(all(root, '.choice').every((c) => c.disabled)).toBe(true);
   expect(window.ElmpBlocks.left()).toEqual([]);
   expect(events.pop()).toEqual({ kind: 'quiz-check', complete: true });
 
-  click(root, `[data-a="retry"][data-v="${q.id}"]`);
-  expect(root.querySelector('.nb-q').classList.contains('is-bad')).toBe(false);
+  click(root, '[data-a="again"]'); // Try again: everything clear, Submit back
+  expect(root.querySelector('.nb-q.is-bad, .nb-q.is-ok')).toBeNull();
+  expect(root.querySelector('[aria-pressed="true"]')).toBeNull();
+  expect(submit().disabled).toBe(true);
+});
+
+test('check mode: a failed save shows a message and keeps the answers', async () => {
+  const quiz = EX('quiz-check-1-3.json');
+  const root = mount('quiz', { block: 'quiz', mode: 'check', questions: publicQs(quiz), checked: {} });
+  quiz.questions.forEach((q) => q.answer.forEach((c) => click(root, `[data-a="pick"][data-v="${q.id}|${c}"]`)));
+  replies.check = { ok: false, message: 'Server busy' };
+  click(root, '[data-a="submit"]');
+  await flush(); await flush();
+  expect(root.textContent).toContain('Server busy');
+  expect(root.querySelector('.nb-q__fb')).toBeNull();
+  expect(root.querySelector('[data-a="submit"]').disabled).toBe(false);
 });
 
 test('check mode: Thai words', () => {
   const quiz = EX('quiz-check-1-3.json');
   const root = mount('quiz', { block: 'quiz', mode: 'check', lang: 'th', title: '', questions: publicQs(quiz), checked: {} });
   expect(root.textContent).toContain('ตรวจสอบความเข้าใจ');
-  expect(root.querySelector('.nb-q__go').textContent).toBe('ตรวจคำตอบ');
+  expect(root.querySelector('[data-a="submit"]').textContent).toBe('ส่งคำตอบ');
 });
 
 /* ---------- quiz: exam mode ---------- */
@@ -251,15 +278,68 @@ test('hotspot: finish only after every spot is opened', async () => {
   expect(calls).toEqual([expect.objectContaining({ handler: 'finish', body: { opened: a.spots.map((s) => s.n) } })]);
 });
 
-test('order: wrong pick shakes, right picks fill slots, then finish with the order', async () => {
+/* Pointer drag in jsdom: rows are 60 px tall, stacked; elementFromPoint is faked. */
+function pointer(el, type, x, y, id = 1) {
+  const e = new MouseEvent(type, {
+    bubbles: true, cancelable: true, clientX: x, clientY: y, button: 0,
+  });
+  Object.defineProperty(e, 'pointerId', { value: id });
+  el.dispatchEvent(e);
+}
+function stackRows(root, sel) {
+  all(root, sel).forEach((li) => {
+    // eslint-disable-next-line no-param-reassign
+    li.getBoundingClientRect = () => {
+      const k = Array.prototype.indexOf.call(li.parentNode.children, li);
+      return {
+        top: k * 60, height: 60, left: 0, width: 300,
+      };
+    };
+  });
+}
+const shown = (root) => all(root, '.nb-ord__it').map((li) => Number(li.getAttribute('data-i')));
+
+test('order (V-7.02): drag rows into order with the pointer, ↑/↓ also work; wrong places turn red; finish only when right', async () => {
   const a = act('order');
   const root = mount('activity', a);
-  click(root, '[data-a="ord"][data-v="1"]');
-  expect(root.querySelector('.is-wrong')).not.toBeNull();
-  a.items.forEach((_, i) => click(root, `[data-a="ord"][data-v="${i}"]`));
+  expect(root.textContent).toContain('Drag the steps');
+  click(root, '[data-a="check"]'); // shuffled → wrong
+  expect(all(root, '.nb-ord__it.is-wrong').length).toBeGreaterThan(0);
+  expect(root.textContent).toContain('Not yet');
+  expect(calls).toHaveLength(0);
+  stackRows(root, '.nb-ord__it');
+  const from = shown(root).indexOf(0);
+  const row = all(root, '.nb-ord__it')[from];
+  pointer(row, 'pointerdown', 10, from * 60 + 30);
+  for (let y = from * 60 + 30; y >= 0; y -= 10) { pointer(window, 'pointermove', 10, y); }
+  if (from > 0) { expect(row.classList.contains('is-drag')).toBe(true); }
+  pointer(window, 'pointerup', 10, 0);
+  expect(shown(root)[0]).toBe(0);
+  expect(root.querySelector('.is-drag')).toBeNull();
+  for (let guard = 0; guard < 100; guard += 1) { // ↑ buttons put the rest in order
+    const now = shown(root);
+    const p = now.findIndex((v, k) => k > 0 && now[k - 1] > v);
+    if (p < 0) { break; }
+    click(root, `[data-a="up"][data-v="${p}"]`);
+  }
+  expect(shown(root)).toEqual(a.items.map((_, i) => i));
+  click(root, '[data-a="check"]');
   await flush();
-  expect(all(root, '.slot.is-filled')).toHaveLength(a.items.length);
   expect(calls[0].body).toEqual({ order: a.items.map((_, i) => i) });
+  expect(root.textContent).toContain('All in order');
+  expect(all(root, '.nb-ord__it.is-ok')).toHaveLength(a.items.length);
+});
+
+test('order: a tiny move is not a drag, and buttons never start one', () => {
+  const root = mount('activity', act('order'));
+  const before = shown(root);
+  const row = root.querySelector('.nb-ord__it');
+  pointer(row, 'pointerdown', 10, 10); pointer(window, 'pointermove', 12, 11); pointer(window, 'pointerup', 12, 11);
+  expect(row.classList.contains('is-drag')).toBe(false);
+  pointer(root.querySelector('[data-a="down"]'), 'pointerdown', 10, 10); pointer(window, 'pointermove', 10, 200);
+  expect(root.querySelector('.is-drag')).toBeNull();
+  pointer(window, 'pointerup', 10, 200);
+  expect(shown(root)).toEqual(before);
 });
 
 test('scenario: choices follow the story, feedback shows, end sends the path', async () => {
@@ -291,6 +371,28 @@ test('sort: card by card with why, then finish with every placement; score ring'
   await flush();
   expect(calls[0].body).toEqual({ placed: a.items.map((it) => it.bin) });
   expect(root.querySelector('.ring__txt b').textContent).toBe(`${a.items.length}/${a.items.length}`);
+});
+
+test('sort (V-7.02): drag the card onto a box = placing it; dropped elsewhere it goes back', () => {
+  const a = act('sort');
+  const root = mount('activity', a);
+  const it = a.items[0];
+  let under = null;
+  document.elementFromPoint = jest.fn(() => under);
+  let card = root.querySelector('.nb-sort__card.is-draggable');
+  pointer(card, 'pointerdown', 100, 100); pointer(window, 'pointermove', 140, 160);
+  expect(card.style.transform).toContain('translate(40px, 60px)');
+  pointer(window, 'pointerup', 140, 160); // empty space → back
+  expect(root.querySelector('.nb-sort__card').classList.contains('is-ok')).toBe(false);
+  expect(root.querySelector('[data-a="bin"]')).not.toBeNull();
+  card = root.querySelector('.nb-sort__card.is-draggable');
+  under = root.querySelector(`.nb-bin[data-v="${it.bin}"] b`);
+  pointer(card, 'pointerdown', 100, 100); pointer(window, 'pointermove', 100, 220);
+  expect(root.querySelector(`.nb-bin[data-v="${it.bin}"]`).classList.contains('is-over')).toBe(true);
+  pointer(window, 'pointerup', 100, 220); // on the right box → placed
+  expect(root.querySelector('.nb-sort__card').classList.contains('is-ok')).toBe(true);
+  expect(root.querySelector('[data-a="next"]')).not.toBeNull();
+  delete document.elementFromPoint;
 });
 
 test('deck: flip, Again sends the card back, Got it on every card finishes', async () => {

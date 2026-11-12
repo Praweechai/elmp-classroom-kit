@@ -322,3 +322,45 @@ html[data-elmp-reveal="on"] .elmp-block { transition: opacity .5s cubic-bezier(.
 html[data-elmp-reveal="on"] .elmp-block:not(.is-in) { opacity: 0; transform: translateY(16px); }
 html[data-elmp-motion="on"] .elmp-block { transition: none; }
 @media (prefers-reduced-motion: reduce) { html[data-elmp-reveal="on"] .elmp-block { transition: none; } }
+
+/* ---- V-7.02 (owner walk-through) ---- */
+/* Short check quiz: one Submit for all questions; results show the right answer on a wrong one */
+.elmp-block .nb-check__foot {display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 16px 18px; border-top: 1px solid var(--line); background: var(--sunken);}
+.elmp-block .nb-check__foot small {color: var(--t3); font-weight: 600;}
+.elmp-block .nb-check__foot .nb-q__go {margin-top: 0;}
+.elmp-block .nb-check__score {font-size: 1.02rem;}
+.elmp-block .nb-q__fb {grid-template-columns: 22px 1fr;}
+.elmp-block .nb-q__ans {display: block; margin: 2px 0 4px;}
+/* Order: drag the rows (or ↑ / ↓) into order */
+.elmp-block .nb-ord {list-style: none; margin: 0; padding: 0; display: grid; gap: 10px;}
+.elmp-block .nb-ord__it {display: grid; grid-template-columns: 28px 36px 1fr auto; gap: 10px; align-items: center; min-height: 58px; padding: 8px 10px 8px 6px;
+  border-radius: 14px; border: 1.5px solid var(--line); background: var(--surface); box-shadow: var(--shadow-1); cursor: grab; user-select: none; -webkit-user-select: none;
+  transition: border-color .12s, box-shadow .12s, background .12s;}
+.elmp-block .nb-ord__it:hover {border-color: var(--action);}
+.elmp-block .nb-ord__h {display: grid; place-items: center; width: 28px; height: 40px; color: var(--t3); touch-action: none; cursor: grab;}
+.elmp-block .nb-ord__h svg {width: 20px; height: 20px; fill: currentColor;}
+.elmp-block .nb-ord__n {width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--sunken); color: var(--t2); font-variant-numeric: tabular-nums;}
+.elmp-block .nb-ord__t {font-weight: 600; font-size: .95rem;}
+.elmp-block .nb-ord__mv {display: flex; gap: 4px;}
+.elmp-block .nb-ord__mv button {width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--t2); font-weight: 700; cursor: pointer;}
+.elmp-block .nb-ord__mv button:hover:not(:disabled) {border-color: var(--action); color: var(--action);}
+.elmp-block .nb-ord__mv button:disabled {opacity: .35; cursor: default;}
+.elmp-block .nb-ord__it.is-drag {cursor: grabbing; border-color: var(--action); background: var(--action-tint); box-shadow: 0 10px 24px rgb(0 0 0 / .16); transform: scale(1.02); position: relative; z-index: 2;}
+.elmp-block.is-dragging, .elmp-block.is-dragging * {cursor: grabbing !important;}
+.elmp-block .nb-ord__it.is-wrong {border-color: var(--red-500); background: var(--red-50);}
+.elmp-block .nb-ord__it.is-wrong .nb-ord__n {background: var(--red-500); color: #fff;}
+.elmp-block .nb-ord__it.is-ok {grid-template-columns: 36px 1fr auto; padding-left: 10px; border-color: var(--green-500); background: var(--green-50); cursor: default;}
+.elmp-block .nb-ord__it.is-ok .nb-ord__n {background: var(--green-500); color: #fff;}
+.elmp-block .nb-ord__ok {color: var(--green-500); display: grid; place-items: center; padding-right: 6px;}
+.elmp-block .nb-ord__fb {margin-top: 12px; display: flex; gap: 8px; align-items: center; padding: 12px 14px; border-radius: 12px; background: var(--st-over-tint); color: var(--st-over-text); font-size: .9rem;}
+.elmp-block .nb-ord__go {margin-top: 14px;}
+/* Sort: drag the card into a box (tapping a box still works) */
+.elmp-block .nb-sort__card.is-draggable {cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; position: relative; z-index: 2;}
+.elmp-block .nb-sort__card.is-drag {cursor: grabbing; transition: none; animation: none; box-shadow: 0 16px 32px rgb(0 0 0 / .2);}
+.elmp-block .nb-bin.is-over {border-color: var(--action) !important; background: var(--action-tint) !important; transform: scale(1.04);}
+@media (max-width: 520px) {
+  .elmp-block .nb-ord__it {grid-template-columns: 24px 30px 1fr auto; gap: 8px;}
+  .elmp-block .nb-ord__n {width: 30px; height: 30px;}
+  .elmp-block .nb-ord__mv {flex-direction: column; gap: 4px;}
+  .elmp-block .nb-ord__mv button {width: 34px; height: 30px;}
+}

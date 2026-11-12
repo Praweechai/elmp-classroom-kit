@@ -44,11 +44,16 @@ test('opens with a preview drawn by the learner screens; preview never saves', a
   const el = open({ kind: 'order', items: ['a', 'b', 'c'] });
   await flush();
   expect(calls[0][0]).toBe('studio_preview');
-  expect(el.querySelector('.es-preview .slot')).not.toBeNull();
-  el.querySelector('.es-preview [data-a="ord"][data-v="0"]').click();
-  el.querySelector('.es-preview [data-a="ord"][data-v="1"]').click();
-  el.querySelector('.es-preview [data-a="ord"][data-v="2"]').click();
+  expect(el.querySelector('.es-preview .nb-ord__it')).not.toBeNull();
+  for (let guard = 0; guard < 20; guard += 1) { // put the rows in order with the ↑ buttons, then Check
+    const now = Array.from(el.querySelectorAll('.es-preview .nb-ord__it')).map((li) => Number(li.getAttribute('data-i')));
+    const p = now.findIndex((v, k) => k > 0 && now[k - 1] > v);
+    if (p < 0) { break; }
+    el.querySelector(`.es-preview [data-a="up"][data-v="${p}"]`).click();
+  }
+  el.querySelector('.es-preview [data-a="check"]').click();
   await flush();
+  expect(el.querySelector('.es-preview').textContent).toContain('All in order');
   expect(calls.map((c) => c[0])).toEqual(['studio_preview']); // the preview's finish did not reach the server
 });
 
