@@ -97,25 +97,19 @@ describe('Today card + week columns (D-93)', () => {
   });
 });
 
-describe('Shell 3 dark mode (kit 2.1)', () => {
+describe('Shell 3 display (dark mode removed, V-7.02)', () => {
   const links = { home: '#h', courses: '#c', signOut: '#o' };
-  it('button toggles data-theme on the shell and saves it in elmp.display', () => {
+  it('no dark mode button; the shell is always light', () => {
     const { container } = renderKit(<ClassroomShell3 current="home" title="My Learning" links={links}><p>x</p></ClassroomShell3>);
-    const shell = container.querySelector('.cls3-shell');
-    expect(shell).toHaveAttribute('data-theme', 'light');
-    const btn = screen.getByRole('button', { name: 'Dark mode' });
-    expect(btn).toHaveAttribute('aria-pressed', 'false');
-    fireEvent.click(btn);
-    expect(shell).toHaveAttribute('data-theme', 'dark');
-    expect(btn).toHaveAttribute('aria-pressed', 'true');
-    expect(JSON.parse(window.localStorage.getItem(DISPLAY_KEY)).theme).toBe('dark');
+    expect(container.querySelector('.cls3-shell')).toHaveAttribute('data-theme', 'light');
+    expect(screen.queryByRole('button', { name: 'Dark mode' })).toBeNull();
   });
 
-  it('starts from the saved player setting (one choice for player and pages); reduce motion carried over', () => {
+  it('an old saved "dark" turns light; reduce motion still carried over from the player', () => {
     window.localStorage.setItem(DISPLAY_KEY, JSON.stringify({ theme: 'dark', reduceMotion: true }));
     const { container } = renderKit(<ClassroomShell3 current="home" title="My Learning" links={links}><p>x</p></ClassroomShell3>);
     const shell = container.querySelector('.cls3-shell');
-    expect(shell).toHaveAttribute('data-theme', 'dark');
+    expect(shell).toHaveAttribute('data-theme', 'light');
     expect(shell).toHaveAttribute('data-motion', 'reduce');
   });
 

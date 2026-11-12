@@ -91,7 +91,7 @@ test('applies display settings from the player only (Plan 5 · P5-3.02)', () => 
   playerSays(win, {
     type: 'elmp.display', theme: 'dark', textScale: 999, contrast: true, spacing: false, reduceMotion: true,
   }, 'http://apps.local.openedx.io');
-  expect(html.getAttribute('data-elmp-theme')).toBe('dark');
+  expect(html.getAttribute('data-elmp-theme')).toBe('light'); // V-7.02: dark mode removed, always light
   expect(html.getAttribute('data-elmp-contrast')).toBe('on');
   expect(html.hasAttribute('data-elmp-spacing')).toBe(false);
   expect(html.getAttribute('data-elmp-motion')).toBe('on');
@@ -102,6 +102,20 @@ test('applies display settings from the player only (Plan 5 · P5-3.02)', () => 
   expect(html.style.getPropertyValue('--elmp-text-scale')).toBe('1');
   playerSays(win, { type: 'elmp.display', theme: 'dark' }, 'http://evil.example');
   expect(html.getAttribute('data-elmp-theme')).toBe('light');
+});
+
+test('keeps Indigo dark mode off the lesson — always light (V-7.02)', async () => {
+  // Indigo's dark-theme.js adds body.indigo-dark-theme 200 ms after load when the computer is in dark
+  // mode, even with its toggle off → light text on our white lesson card.
+  const win = lessonFrame('http://apps.local.openedx.io');
+  win.document.body.classList.add('indigo-dark-theme');
+  await tick();
+  expect(win.document.body.classList.contains('indigo-dark-theme')).toBe(false);
+  playerSays(win, { type: 'elmp.display', theme: 'dark' }, 'http://apps.local.openedx.io');
+  win.document.body.classList.add('indigo-dark-theme'); // late add, as Indigo's timer does
+  await tick();
+  expect(win.document.body.classList.contains('indigo-dark-theme')).toBe(false);
+  expect(win.document.documentElement.getAttribute('data-elmp-theme')).toBe('light');
 });
 
 /* ---------- Bridge v2 (Plan 5 · doc 10 V-4.02) ---------- */

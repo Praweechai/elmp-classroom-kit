@@ -3,8 +3,8 @@ import {
 } from 'react';
 import PropTypes from 'prop-types';
 import {
-  AccessibilityNew, ArrowBackIos, Check, ChevronLeft, ChevronRight, Close, DarkMode, Description, ExpandMore,
-  Fullscreen, FullscreenExit, LightMode, Lock, MenuOpen, Search,
+  AccessibilityNew, ArrowBackIos, Check, ChevronLeft, ChevronRight, Close, Description, ExpandMore,
+  Fullscreen, FullscreenExit, Lock, MenuOpen, Search,
 } from '@openedx/paragon/icons';
 
 import { messages, useClassroomIntl } from '../i18n';
@@ -54,7 +54,7 @@ export function useArrowKeys(onPrev, onNext, enabled = true) {
   }, [onPrev, onNext, enabled]);
 }
 
-// ---- Toolbar: dark mode, search in course, language, accessibility panel, full screen ----
+// ---- Toolbar: search in course, language, accessibility panel, full screen ----
 export const PlayerToolbar = ({
   settings, onChange, onReset, units = [], onSelectUnit, locale, onLocaleChange, fullscreen, onToggleFullscreen,
 }) => {
@@ -69,21 +69,9 @@ export const PlayerToolbar = ({
   const results = needle
     ? units.filter((u) => !u.locked && `${u.title} ${u.sectionTitle}`.toLowerCase().includes(needle)).slice(0, 8)
     : [];
-  const dark = settings.theme === 'dark';
-
+  // V-7.02 (owner): no dark mode — the player is always light, so no dark mode button.
   return (
     <div className="cls3-ptools" ref={dd.ref} role="toolbar" aria-label={t(messages.pl3Tools)}>
-      <button
-        type="button"
-        className="cls3-ptool"
-        aria-pressed={dark}
-        aria-label={t(messages.pl3Dark)}
-        title={t(messages.pl3Dark)}
-        onClick={() => onChange({ theme: dark ? 'light' : 'dark' })}
-      >
-        <KitIcon src={dark ? LightMode : DarkMode} size={20} />
-      </button>
-
       <div className="cls3-dd">
         <button
           type="button"

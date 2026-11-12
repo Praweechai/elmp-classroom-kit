@@ -174,13 +174,28 @@
     var root = document.documentElement;
     var scale = Math.round(Number(d.textScale) / 10) * 10;
     scale = isFinite(scale) ? Math.min(160, Math.max(80, scale)) : 100;
-    root.setAttribute('data-elmp-theme', d.theme === 'dark' ? 'dark' : 'light');
+    root.setAttribute('data-elmp-theme', 'light'); // V-7.02 (owner): dark mode removed, lessons always light
     ['contrast', 'spacing', 'reduceMotion'].forEach(function (k) {
       var attr = 'data-elmp-' + (k === 'reduceMotion' ? 'motion' : k);
       if (d[k] === true) { root.setAttribute(attr, 'on'); } else { root.removeAttribute(attr); }
     });
     root.style.setProperty('--elmp-text-scale', String(scale / 100));
   }
+
+  // V-7.02: Indigo's dark-theme.js adds body.indigo-dark-theme ~200 ms after load whenever the computer is in
+  // dark mode (even with INDIGO_ENABLE_DARK_TOGGLE off) → near-white text on our white lesson card. The player's
+  // own theme (data-elmp-theme + elmp-lesson.css) owns light and dark here, so keep Indigo's class off.
+  function noIndigoDark() {
+    var body = document.body;
+    if (body && body.classList.contains('indigo-dark-theme')) { body.classList.remove('indigo-dark-theme'); }
+  }
+  function watchIndigo() {
+    noIndigoDark();
+    if (document.body && window.MutationObserver) {
+      new MutationObserver(noIndigoDark).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    }
+  }
+  if (document.body) { watchIndigo(); } else { document.addEventListener('DOMContentLoaded', watchIndigo); }
 
   window.addEventListener('message', function (event) {
     if (event.origin !== parentOrigin || !event.data) { return; }

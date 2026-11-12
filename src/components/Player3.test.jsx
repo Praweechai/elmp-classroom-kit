@@ -88,20 +88,19 @@ describe('PlayerLayout3', () => {
     expect(screen.getByRole('complementary')).toBeInTheDocument();
   });
 
-  it('dark mode + accessibility panel set the root, persist, and are reported for the lesson', () => {
+  it('no dark mode button (V-7.02); accessibility panel sets the root, persists, and is reported for the lesson', () => {
     const onDisplayChange = jest.fn();
     player({ onDisplayChange });
-    fireEvent.click(screen.getByRole('button', { name: 'Dark mode' }));
-    expect(root()).toHaveAttribute('data-theme', 'dark');
+    expect(screen.queryByRole('button', { name: 'Dark mode' })).toBeNull();
+    expect(root()).toHaveAttribute('data-theme', 'light');
     fireEvent.click(screen.getByRole('button', { name: 'Accessibility options' }));
     fireEvent.click(screen.getByRole('button', { name: 'Larger text' }));
     expect(root().style.getPropertyValue('--cls3-text-scale')).toBe('1.1');
     fireEvent.click(screen.getByRole('switch', { name: 'High contrast' }));
     expect(root()).toHaveAttribute('data-contrast', 'high');
-    expect(JSON.parse(window.localStorage.getItem(DISPLAY_KEY))).toMatchObject({ theme: 'dark', textScale: 110, contrast: true });
-    expect(onDisplayChange).toHaveBeenLastCalledWith(expect.objectContaining({ theme: 'dark', textScale: 110, contrast: true }));
+    expect(JSON.parse(window.localStorage.getItem(DISPLAY_KEY))).toMatchObject({ theme: 'light', textScale: 110, contrast: true });
+    expect(onDisplayChange).toHaveBeenLastCalledWith(expect.objectContaining({ theme: 'light', textScale: 110, contrast: true }));
     fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
-    expect(root()).toHaveAttribute('data-theme', 'light');
     expect(root()).not.toHaveAttribute('data-contrast');
   });
 
@@ -149,7 +148,7 @@ describe('display settings', () => {
   it('sanitizes values and builds the lesson message', () => {
     expect(sanitizeDisplay({ theme: 'neon', textScale: 999, contrast: 'yes' })).toEqual({ ...DEFAULT_DISPLAY, textScale: 160 });
     expect(sanitizeDisplay({ textScale: 74 })).toMatchObject({ textScale: 80 });
-    expect(displayMessage({ theme: 'dark' })).toEqual({ type: 'elmp.display', ...DEFAULT_DISPLAY, theme: 'dark' });
+    expect(displayMessage({ theme: 'dark' })).toEqual({ type: 'elmp.display', ...DEFAULT_DISPLAY }); // V-7.02: dark mode removed, always light
   });
 
   it('postDisplay sends to the frame with the given origin and never throws', () => {
@@ -182,7 +181,7 @@ describe('useLessonDisplay', () => {
   };
 
   it('posts on mount, on change, and when the lesson says ready (from its own frame and origin only)', () => {
-    const settings = { ...DEFAULT_DISPLAY, theme: 'dark' };
+    const settings = { ...DEFAULT_DISPLAY, spacing: true };
     const { rerender } = render(<Frame settings={settings} />);
     const win = document.querySelector('iframe').contentWindow;
     const post = jest.spyOn(win, 'postMessage');
@@ -194,6 +193,6 @@ describe('useLessonDisplay', () => {
     window.dispatchEvent(new MessageEvent('message', { data: { ...ready, kind: 'input' }, origin: LESSON, source: win }));
     expect(post).not.toHaveBeenCalled();
     window.dispatchEvent(new MessageEvent('message', { data: ready, origin: LESSON, source: win }));
-    expect(post).toHaveBeenCalledWith(expect.objectContaining({ theme: 'dark', spacing: true }), LESSON);
+    expect(post).toHaveBeenCalledWith(expect.objectContaining({ theme: 'light', spacing: true }), LESSON);
   });
 });

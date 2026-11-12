@@ -465,7 +465,7 @@ export const ClassroomShell3 = ({
 }) => {
   const intl = useClassroomIntl();
   const [state, toggle] = useSidebar3();
-  const { settings, update } = useDisplaySettings(display);
+  const { settings } = useDisplaySettings(display);
   const Page = pageAs === 'div' ? 'div' : 'main';
   // Kit 2.1: pause looping alerts while the tab is hidden (battery; doc 10 motion rules).
   useEffect(() => {
@@ -492,8 +492,6 @@ export const ClassroomShell3 = ({
             helpItems={helpItems}
             unread={unread}
             onOpenMessages={onOpenMessages}
-            dark={settings.theme === 'dark'}
-            onToggleDark={() => update({ theme: settings.theme === 'dark' ? 'light' : 'dark' })}
           />
           <Page className="cls3-shell__page" id={Page === 'main' ? 'main' : undefined}>{children}</Page>
           <footer className="cls3-footer">
