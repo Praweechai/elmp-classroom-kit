@@ -12,7 +12,8 @@
 /* Banner (CA-14) */
 .cls3-banner { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 10px 52px 10px 20px; background: var(--cls-banner); color: var(--cls-banner-text); font-size: 14px; position: relative; }
 .cls3-banner--urgent { background: var(--cls-banner-urgent); }
-.cls3-banner a { color: inherit; font-weight: 600; text-decoration: underline; }
+/* Beats Paragon's `p > a[href]:not(.btn)` (blue link on the green banner was unreadable, P5-9 live check). */
+.cls3-banner a, .cls3-banner a[href]:not(.btn), .cls3-banner a[href]:not(.btn):hover, .cls3-banner a[href]:not(.btn):visited { color: inherit; font-weight: 600; text-decoration: underline; }
 .cls3-banner__close { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: inherit; cursor: pointer; }
 .cls3-banner__close:hover { background: rgb(255 255 255 / .15); }
 .cls3-banner :focus-visible { outline-color: #fff; }
