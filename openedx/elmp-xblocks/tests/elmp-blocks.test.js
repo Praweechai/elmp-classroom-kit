@@ -124,6 +124,16 @@ test('check mode: Thai words', () => {
   expect(root.querySelector('[data-a="submit"]').textContent).toBe('ส่งคำตอบ');
 });
 
+test('check mode: keyboard focus stays on the picked answer after the screen redraws', () => {
+  const quiz = EX('quiz-check-1-3.json');
+  const root = mount('quiz', { block: 'quiz', mode: 'check', title: '', questions: publicQs(quiz), checked: {} });
+  const second = root.querySelectorAll('.nb-q')[0].querySelectorAll('.choice')[1];
+  const v = second.getAttribute('data-v');
+  second.focus(); second.click();
+  expect(document.activeElement.getAttribute('data-v')).toBe(v);
+  expect(document.activeElement.getAttribute('aria-pressed')).toBe('true');
+});
+
 /* ---------- quiz: exam mode ---------- */
 
 function examConfig(extra) {

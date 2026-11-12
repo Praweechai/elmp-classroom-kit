@@ -102,7 +102,15 @@
   /* ---------- small UI helpers ---------- */
   function paint(ctx, html) {
     const y = window.scrollY;
+    // Keep keyboard focus: innerHTML drops the focused button, so focus its new copy (same action + value).
+    const a = document.activeElement;
+    const key = a && ctx.root.contains(a) && a.getAttribute('data-a') ? [a.getAttribute('data-a'), a.getAttribute('data-v')] : null;
     ctx.root.innerHTML = html;
+    if (key) {
+      const b = Array.prototype.find.call(ctx.root.querySelectorAll('[data-a]'),
+        (el) => el.getAttribute('data-a') === key[0] && el.getAttribute('data-v') === key[1] && !el.disabled);
+      if (b) { b.focus({ preventScroll: true }); }
+    }
     if (window.scrollY !== y) { window.scrollTo(0, y); }
   }
   function flash(ctx, message) {
