@@ -73,7 +73,7 @@ function useArrowKeys(onPrev, onNext, enabled = true) {
   }, [onPrev, onNext, enabled]);
 }
 
-// ---- Toolbar: dark mode, search in course, language, accessibility panel, full screen ----
+// ---- Toolbar: search in course, language, accessibility panel, full screen ----
 const PlayerToolbar = ({
   settings,
   onChange,
@@ -94,26 +94,13 @@ const PlayerToolbar = ({
   const a11yId = (0, _react.useId)();
   const needle = q.trim().toLowerCase();
   const results = needle ? units.filter(u => !u.locked && `${u.title} ${u.sectionTitle}`.toLowerCase().includes(needle)).slice(0, 8) : [];
-  const dark = settings.theme === 'dark';
+  // V-7.02 (owner): no dark mode — the player is always light, so no dark mode button.
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
     className: "cls3-ptools",
     ref: dd.ref,
     role: "toolbar",
     "aria-label": t(_i18n.messages.pl3Tools),
-    children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
-      type: "button",
-      className: "cls3-ptool",
-      "aria-pressed": dark,
-      "aria-label": t(_i18n.messages.pl3Dark),
-      title: t(_i18n.messages.pl3Dark),
-      onClick: () => onChange({
-        theme: dark ? 'light' : 'dark'
-      }),
-      children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_KitIcon.default, {
-        src: dark ? _icons.LightMode : _icons.DarkMode,
-        size: 20
-      })
-    }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
+    children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
       className: "cls3-dd",
       children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
         type: "button",

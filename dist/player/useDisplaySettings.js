@@ -35,7 +35,8 @@ const DEFAULT_DISPLAY = exports.DEFAULT_DISPLAY = Object.freeze({
 const sanitizeDisplay = (value = {}) => {
   const scale = Math.round(Number(value.textScale) / TEXT_SCALE.step) * TEXT_SCALE.step;
   return {
-    theme: value.theme === 'dark' ? 'dark' : 'light',
+    theme: 'light',
+    // V-7.02 (owner): dark mode removed — an old saved "dark" turns light
     textScale: Number.isFinite(scale) ? Math.min(TEXT_SCALE.max, Math.max(TEXT_SCALE.min, scale)) : 100,
     contrast: value.contrast === true,
     spacing: value.spacing === true,

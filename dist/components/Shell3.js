@@ -715,8 +715,7 @@ const ClassroomShell3 = ({
   const intl = (0, _i18n.useClassroomIntl)();
   const [state, toggle] = useSidebar3();
   const {
-    settings,
-    update
+    settings
   } = (0, _useDisplaySettings.default)(display);
   const Page = pageAs === 'div' ? 'div' : 'main';
   // Kit 2.1: pause looping alerts while the tab is hidden (battery; doc 10 motion rules).
@@ -756,11 +755,7 @@ const ClassroomShell3 = ({
           onSearch: onSearch,
           helpItems: helpItems,
           unread: unread,
-          onOpenMessages: onOpenMessages,
-          dark: settings.theme === 'dark',
-          onToggleDark: () => update({
-            theme: settings.theme === 'dark' ? 'light' : 'dark'
-          })
+          onOpenMessages: onOpenMessages
         }), /*#__PURE__*/(0, _jsxRuntime.jsx)(Page, {
           className: "cls3-shell__page",
           id: Page === 'main' ? 'main' : undefined,
